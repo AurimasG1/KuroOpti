@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="KuroOpti.API/KuroOpti.API.csproj" />
+  <Project Path="KuroOpti.Console/KuroOpti.Console.csproj" />
+  <Project Path="KuroOpti.Data/KuroOpti.Data.csproj" />
+  <Project Path="KuroOpti.Entities/KuroOpti.Entities.csproj" />
+  <Project Path="KuroOpti.Repositories/KuroOpti.Repositories.csproj" />
+  <Project Path="KuroOpti.Services.Test/KuroOpti.Services.Test.csproj" />
+  <Project Path="KuroOpti.Services/KuroOpti.Services.csproj" />
+</Solution>
