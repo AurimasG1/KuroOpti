@@ -7,5 +7,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KuroOpti.Data\KuroOpti.Data.csproj" />
+    <ProjectReference Include="..\KuroOpti.Entities\KuroOpti.Entities.csproj" />
   </ItemGroup>
 </Project>
