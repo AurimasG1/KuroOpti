@@ -29,6 +29,12 @@ namespace KuroOpti.Data
             {
                 entity.HasKey(x => x.Id);
 
+                entity.Property(x => x.Name).HasMaxLength(255);
+                entity.Property(x => x.Address).HasMaxLength(255);
+                entity.Property(x => x.Municipality).HasMaxLength(255);
+
+                entity.HasIndex(x => new { x.Name, x.Address }).IsUnique();
+
                 entity.Property(x => x.Latitude).HasPrecision(9, 6);
                 entity.Property(x => x.Longitude).HasPrecision(9, 6);
 

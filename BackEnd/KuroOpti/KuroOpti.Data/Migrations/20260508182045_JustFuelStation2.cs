@@ -13,7 +13,8 @@ namespace KuroOpti.Data.Migrations
             migrationBuilder.RenameColumn(
                 name: "Petrol95Price",
                 table: "FuelStations",
-                newName: "PetrolPrice");
+                newName: "PetrolPrice"
+            );
         }
 
         /// <inheritdoc />
@@ -22,7 +23,8 @@ namespace KuroOpti.Data.Migrations
             migrationBuilder.RenameColumn(
                 name: "PetrolPrice",
                 table: "FuelStations",
-                newName: "Petrol95Price");
+                newName: "Petrol95Price"
+            );
         }
     }
 }
