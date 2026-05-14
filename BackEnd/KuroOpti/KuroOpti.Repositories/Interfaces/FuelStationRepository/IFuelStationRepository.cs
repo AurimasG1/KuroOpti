@@ -1,6 +1,6 @@
 using KuroOpti.Entities;
 
-namespace KuroOpti.Repositories
+namespace KuroOpti.Repositories.Interfaces.FuelStationRepository
 {
     public interface IFuelStationRepository
     {
