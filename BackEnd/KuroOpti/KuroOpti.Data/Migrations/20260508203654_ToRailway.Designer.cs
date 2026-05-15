@@ -4,6 +4,7 @@ using KuroOpti.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KuroOpti.Data.Migrations
 {
     [DbContext(typeof(KuroOptiDbContext))]
-    partial class KuroOptiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260508203654_ToRailway")]
+    partial class ToRailway
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,8 +35,7 @@ namespace KuroOpti.Data.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.Property<decimal>("DieselPrice")
                         .HasPrecision(6, 3)
@@ -53,13 +55,11 @@ namespace KuroOpti.Data.Migrations
 
                     b.Property<string>("Municipality")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.Property<decimal>("PetrolPrice")
                         .HasPrecision(6, 3)
@@ -69,9 +69,6 @@ namespace KuroOpti.Data.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Name", "Address")
-                        .IsUnique();
 
                     b.ToTable("FuelStations");
                 });

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace KuroOpti.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class ToRailway : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -25,15 +25,33 @@ namespace KuroOpti.Data.Migrations
                                 "MySql:ValueGenerationStrategy",
                                 MySqlValueGenerationStrategy.IdentityColumn
                             ),
-                        ExternalId = table
-                            .Column<string>(type: "longtext", nullable: true)
-                            .Annotation("MySql:CharSet", "utf8mb4"),
                         Name = table
                             .Column<string>(type: "longtext", nullable: false)
                             .Annotation("MySql:CharSet", "utf8mb4"),
-                        Brand = table
+                        Municipality = table
                             .Column<string>(type: "longtext", nullable: false)
                             .Annotation("MySql:CharSet", "utf8mb4"),
+                        Address = table
+                            .Column<string>(type: "longtext", nullable: false)
+                            .Annotation("MySql:CharSet", "utf8mb4"),
+                        DieselPrice = table.Column<decimal>(
+                            type: "decimal(6,3)",
+                            precision: 6,
+                            scale: 3,
+                            nullable: false
+                        ),
+                        PetrolPrice = table.Column<decimal>(
+                            type: "decimal(6,3)",
+                            precision: 6,
+                            scale: 3,
+                            nullable: false
+                        ),
+                        LpgPrice = table.Column<decimal>(
+                            type: "decimal(6,3)",
+                            precision: 6,
+                            scale: 3,
+                            nullable: false
+                        ),
                         Latitude = table.Column<decimal>(
                             type: "decimal(9,6)",
                             precision: 9,
@@ -46,12 +64,7 @@ namespace KuroOpti.Data.Migrations
                             scale: 6,
                             nullable: false
                         ),
-                        Address = table
-                            .Column<string>(type: "longtext", nullable: true)
-                            .Annotation("MySql:CharSet", "utf8mb4"),
-                        City = table
-                            .Column<string>(type: "longtext", nullable: true)
-                            .Annotation("MySql:CharSet", "utf8mb4"),
+                        UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     },
                     constraints: table =>
                     {
@@ -84,44 +97,6 @@ namespace KuroOpti.Data.Migrations
                     constraints: table =>
                     {
                         table.PrimaryKey("PK_Users", x => x.Id);
-                    }
-                )
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder
-                .CreateTable(
-                    name: "FuelPrices",
-                    columns: table => new
-                    {
-                        Id = table
-                            .Column<int>(type: "int", nullable: false)
-                            .Annotation(
-                                "MySql:ValueGenerationStrategy",
-                                MySqlValueGenerationStrategy.IdentityColumn
-                            ),
-                        StationId = table.Column<int>(type: "int", nullable: false),
-                        FuelType = table
-                            .Column<string>(type: "longtext", nullable: false)
-                            .Annotation("MySql:CharSet", "utf8mb4"),
-                        Price = table.Column<decimal>(
-                            type: "decimal(6,3)",
-                            precision: 6,
-                            scale: 3,
-                            nullable: false
-                        ),
-                        ValidFrom = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                        ValidTo = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    },
-                    constraints: table =>
-                    {
-                        table.PrimaryKey("PK_FuelPrices", x => x.Id);
-                        table.ForeignKey(
-                            name: "FK_FuelPrices_FuelStations_StationId",
-                            column: x => x.StationId,
-                            principalTable: "FuelStations",
-                            principalColumn: "Id",
-                            onDelete: ReferentialAction.Cascade
-                        );
                     }
                 )
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -225,12 +200,6 @@ namespace KuroOpti.Data.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FuelPrices_StationId",
-                table: "FuelPrices",
-                column: "StationId"
-            );
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Routes_UserId",
                 table: "Routes",
                 column: "UserId"
@@ -259,11 +228,9 @@ namespace KuroOpti.Data.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(name: "FuelPrices");
+            migrationBuilder.DropTable(name: "FuelStations");
 
             migrationBuilder.DropTable(name: "SearchLogs");
-
-            migrationBuilder.DropTable(name: "FuelStations");
 
             migrationBuilder.DropTable(name: "Routes");
 
