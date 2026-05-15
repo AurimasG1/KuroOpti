@@ -60,7 +60,6 @@ namespace KuroOpti.Data
             modelBuilder.Entity<SearchLog>(entity =>
             {
                 entity.HasKey(x => x.Id);
-
                 entity
                     .HasOne(x => x.User)
                     .WithMany(u => u.SearchLogs)
