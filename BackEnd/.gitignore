@@ -4,7 +4,11 @@ obj/
 *.user
 *.suo
 *.db
+*.log
+*.nupkg
+packages/
 appsettings.Development.json
 komandos.txt
 sln add.txt
 .github
+*.lscache
