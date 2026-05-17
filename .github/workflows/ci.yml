@@ -57,7 +57,7 @@ jobs:
             --connection "Server=127.0.0.1;Port=3306;Database=testdb;User=root;Password=root" \
             || true
 
-          FILE=$(ls BackEnd/KuroOpti/KuroOpti.Data/Migrations/*_TempMigrationCheck*.cs 2>/dev/null || true)
+          FILE=$(ls BackEnd/KuroOpti.Data/Migrations/*_TempMigrationCheck*.cs 2>/dev/null || true)
 
           if [ -z "$FILE" ]; then
             echo "✔ No pending migrations (no file generated)."
