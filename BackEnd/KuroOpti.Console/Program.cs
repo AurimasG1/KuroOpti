@@ -1,4 +1,8 @@
 ﻿using KuroOpti.Data;
+using KuroOpti.Repositories;
+using KuroOpti.Repositories.Implementations;
+using KuroOpti.Repositories.Interfaces;
+using KuroOpti.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,13 +20,9 @@ namespace KuroOpti.Console
             {
                 var serviceProvider = scope.ServiceProvider;
                 var dbContext = serviceProvider.GetRequiredService<KuroOptiDbContext>();
-                // dbContext.Database.EnsureDeleted();
                 dbContext.Database.Migrate();
-                // var productService = serviceProvider.GetRequiredService<IProductService>();
-                // var basketService = serviceProvider.GetRequiredService<IBasketService>();
-                // var userService = serviceProvider.GetRequiredService<IVartotojasService>();
-                // var orderService = serviceProvider.GetRequiredService<IOrderService>();
-                // var orderRepo = serviceProvider.GetRequiredService<IOrderRepository>();
+                var userService = serviceProvider.GetRequiredService<IUserService>();
+ 
             }
         }
 
@@ -51,15 +51,8 @@ namespace KuroOpti.Console
                                 ServerVersion.AutoDetect(connectionString)
                             );
                         });
-                        // services.AddScoped<IProductRepository, ProductRepository>();
-                        // services.AddScoped<IBasketRepository, BasketRepository>();
-                        // services.AddScoped<IProductService, ProductService>();
-                        // services.AddScoped<IBasketService, BasketService>();
-                        // services.AddScoped<IVartotojasRepository, VartotojasRepository>();
-                        // services.AddScoped<IVartotojasService, VartotojasService>();
-                        // services.AddScoped<IPasswordHasher, PasswordHasher>();
-                        // services.AddScoped<IOrderRepository, OrderRepository>();
-                        // services.AddScoped<IOrderService, OrderService>();
+                        services.AddScoped<IUserRepository, UserRepository>();
+                        services.AddScoped<IFuelStationRepository, FuelStationRepository>();
                     }
                 );
 

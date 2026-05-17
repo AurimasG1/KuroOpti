@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\User\\Desktop\\Techin\\KuroOpti\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\User\\Desktop\\Techin\\KuroOpti\\BackEnd\\KuroOpti\\KuroOpti.Repositories\\Implementations\\UserRepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:BackEnd\\KuroOpti\\KuroOpti.Repositories\\Implementations\\UserRepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{ADEBA389-0166-CABA-3613-E47763830268}|BackEnd\\KuroOpti.Repositories\\KuroOpti.Repositories.csproj|c:\\users\\user\\desktop\\techin\\kuroopti\\backend\\kuroopti.repositories\\interfaces\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ADEBA389-0166-CABA-3613-E47763830268}|BackEnd\\KuroOpti.Repositories\\KuroOpti.Repositories.csproj|solutionrelative:backend\\kuroopti.repositories\\interfaces\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\User\\Desktop\\Techin\\KuroOpti\\BackEnd\\KuroOpti\\KuroOpti.Repositories\\Interfaces\\IUserRepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:BackEnd\\KuroOpti\\KuroOpti.Repositories\\Interfaces\\IUserRepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{ADEBA389-0166-CABA-3613-E47763830268}|BackEnd\\KuroOpti.Repositories\\KuroOpti.Repositories.csproj|c:\\users\\user\\desktop\\techin\\kuroopti\\backend\\kuroopti.repositories\\implementations\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ADEBA389-0166-CABA-3613-E47763830268}|BackEnd\\KuroOpti.Repositories\\KuroOpti.Repositories.csproj|solutionrelative:backend\\kuroopti.repositories\\implementations\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,8 +18,34 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UserRepository.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\Techin\\KuroOpti\\BackEnd\\KuroOpti.Repositories\\Implementations\\UserRepository.cs",
+              "RelativeDocumentMoniker": "BackEnd\\KuroOpti.Repositories\\Implementations\\UserRepository.cs",
+              "ToolTip": "C:\\Users\\User\\Desktop\\Techin\\KuroOpti\\BackEnd\\KuroOpti.Repositories\\Implementations\\UserRepository.cs",
+              "RelativeToolTip": "BackEnd\\KuroOpti.Repositories\\Implementations\\UserRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-17T09:58:33.363Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "IUserRepository.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\Techin\\KuroOpti\\BackEnd\\KuroOpti.Repositories\\Interfaces\\IUserRepository.cs",
+              "RelativeDocumentMoniker": "BackEnd\\KuroOpti.Repositories\\Interfaces\\IUserRepository.cs",
+              "ToolTip": "C:\\Users\\User\\Desktop\\Techin\\KuroOpti\\BackEnd\\KuroOpti.Repositories\\Interfaces\\IUserRepository.cs",
+              "RelativeToolTip": "BackEnd\\KuroOpti.Repositories\\Interfaces\\IUserRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-17T09:58:20.299Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
@@ -39,32 +65,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "IUserRepository.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Desktop\\Techin\\KuroOpti\\BackEnd\\KuroOpti\\KuroOpti.Repositories\\Interfaces\\IUserRepository.cs",
-              "RelativeDocumentMoniker": "BackEnd\\KuroOpti\\KuroOpti.Repositories\\Interfaces\\IUserRepository.cs",
-              "ToolTip": "C:\\Users\\User\\Desktop\\Techin\\KuroOpti\\BackEnd\\KuroOpti\\KuroOpti.Repositories\\Interfaces\\IUserRepository.cs",
-              "RelativeToolTip": "BackEnd\\KuroOpti\\KuroOpti.Repositories\\Interfaces\\IUserRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-14T13:41:24.797Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "UserRepository.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Desktop\\Techin\\KuroOpti\\BackEnd\\KuroOpti\\KuroOpti.Repositories\\Implementations\\UserRepository.cs",
-              "RelativeDocumentMoniker": "BackEnd\\KuroOpti\\KuroOpti.Repositories\\Implementations\\UserRepository.cs",
-              "ToolTip": "C:\\Users\\User\\Desktop\\Techin\\KuroOpti\\BackEnd\\KuroOpti\\KuroOpti.Repositories\\Implementations\\UserRepository.cs",
-              "RelativeToolTip": "BackEnd\\KuroOpti\\KuroOpti.Repositories\\Implementations\\UserRepository.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAABUAAAADAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-14T13:39:47.825Z",
-              "EditorCaption": ""
             }
           ]
         }

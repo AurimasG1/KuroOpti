@@ -36,13 +36,13 @@ jobs:
           dotnet-version: "10.0.x"
 
       - name: Restore dependencies
-        run: dotnet restore BackEnd/KuroOpti/KuroOpti.slnx
+        run: dotnet restore KuroOpti.slnx
 
       - name: Build solution
-        run: dotnet build BackEnd/KuroOpti/KuroOpti.slnx --configuration Release --no-restore
+        run: dotnet build KuroOpti.slnx --configuration Release --no-restore
 
       - name: Run tests
-        run: dotnet test BackEnd/KuroOpti/KuroOpti.slnx --configuration Release --no-build --verbosity normal
+        run: dotnet test KuroOpti.slnx --configuration Release --no-build --verbosity normal
       - name: Check for pending EF Core migrations
         run: |
           dotnet tool install --global dotnet-ef
@@ -51,13 +51,13 @@ jobs:
           echo "Checking if EF Core detects pending migrations..."
 
           dotnet ef migrations add _TempMigrationCheck \
-            --project BackEnd/KuroOpti/KuroOpti.Data \
-            --startup-project BackEnd/KuroOpti/KuroOpti.Console \
+            --project BackEnd/KuroOpti.Data \
+            --startup-project BackEnd/KuroOpti.Console \
             --output-dir Migrations \
             --connection "Server=127.0.0.1;Port=3306;Database=testdb;User=root;Password=root" \
             || true
 
-          FILE=$(ls BackEnd/KuroOpti/KuroOpti.Data/Migrations/*_TempMigrationCheck*.cs 2>/dev/null || true)
+          FILE=$(ls BackEnd/KuroOpti.Data/Migrations/*_TempMigrationCheck*.cs 2>/dev/null || true)
 
           if [ -z "$FILE" ]; then
             echo "✔ No pending migrations (no file generated)."
@@ -73,6 +73,6 @@ jobs:
             rm -f "$FILE"
           fi
 
-            --project BackEnd/KuroOpti/KuroOpti.Data \
-            --startup-project BackEnd/KuroOpti/KuroOpti.Console \
+            --project BackEnd/KuroOpti.Data \
+            --startup-project BackEnd/KuroOpti.Console \
             --connection "Server=127.0.0.1;Port=3306;Database=testdb;User=root;Password=root"

@@ -1,4 +1,4 @@
-﻿using KuroOpti.Data;
+using KuroOpti.Data;
 using KuroOpti.Entities;
 using KuroOpti.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +26,11 @@ namespace KuroOpti.Repositories.Implementations
 			return await _context.Users.FindAsync(id);
 		}
 
+		public async Task<User?> GetByEmailAsync(string email)
+		{
+			return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+		}
+
 		public async Task UpdateAsync(User user)
 		{
 			_context.Users.Update(user);
@@ -40,7 +45,10 @@ namespace KuroOpti.Repositories.Implementations
 
 		public async Task<List<User>> GetAllAsync(int page, int itemsPerPage)
 		{
-			return await _context.Users.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToListAsync();
+			return await _context
+				.Users.Skip((page - 1) * itemsPerPage)
+				.Take(itemsPerPage)
+				.ToListAsync();
 		}
 	}
 }

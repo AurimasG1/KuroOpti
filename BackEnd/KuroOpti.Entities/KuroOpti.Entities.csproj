@@ -4,8 +4,4 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\KuroOpti.Repositories\KuroOpti.Repositories.csproj" />
-  </ItemGroup>
 </Project>

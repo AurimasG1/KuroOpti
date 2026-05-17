@@ -6,3 +6,5 @@ obj/
 *.db
 appsettings.Development.json
 komandos.txt
+sln add.txt
+.github
