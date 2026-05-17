@@ -1,6 +1,0 @@
-@KuroOpti.API_HostAddress = http://localhost:5211
-
-GET {{KuroOpti.API_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
