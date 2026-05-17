@@ -42,7 +42,7 @@ jobs:
         run: dotnet build BackEnd/KuroOpti.slnx --configuration Release --no-restore
 
       - name: Run tests
-        run: dotnet test BackEnd/KuroOpti.slnx --configuration Release --no-build --verbosity normal
+        run: dotnet test KuroOpti.slnx --configuration Release --no-build --verbosity normal
       - name: Check for pending EF Core migrations
         run: |
           dotnet tool install --global dotnet-ef
