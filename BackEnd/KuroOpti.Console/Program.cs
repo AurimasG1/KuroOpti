@@ -22,7 +22,6 @@ namespace KuroOpti.Console
                 var dbContext = serviceProvider.GetRequiredService<KuroOptiDbContext>();
                 dbContext.Database.Migrate();
                 var userService = serviceProvider.GetRequiredService<IUserService>();
- 
             }
         }
 

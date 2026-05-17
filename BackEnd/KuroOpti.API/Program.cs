@@ -56,7 +56,6 @@ builder.Services.AddDbContext<KuroOptiDbContext>(options =>
     )
 );
 
-
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
