@@ -2,6 +2,7 @@
 using KuroOpti.Repositories;
 using KuroOpti.Repositories.Implementations;
 using KuroOpti.Repositories.Interfaces;
+using KuroOpti.Services.Implementations;
 using KuroOpti.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +23,7 @@ namespace KuroOpti.Console
                 var dbContext = serviceProvider.GetRequiredService<KuroOptiDbContext>();
                 dbContext.Database.Migrate();
                 var userService = serviceProvider.GetRequiredService<IUserService>();
+                var userRepo = serviceProvider.GetRequiredService<IUserRepository>();
             }
         }
 
@@ -51,6 +53,7 @@ namespace KuroOpti.Console
                             );
                         });
                         services.AddScoped<IUserRepository, UserRepository>();
+                        services.AddScoped<IUserService, UserService>();
                         services.AddScoped<IFuelStationRepository, FuelStationRepository>();
                     }
                 );
