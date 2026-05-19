@@ -12,3 +12,6 @@ komandos.txt
 sln add.txt
 .github
 *.lscache
+.copilitindices/
+.ProjectEvaluation/
+.DS_Store

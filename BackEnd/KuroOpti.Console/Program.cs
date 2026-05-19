@@ -13,7 +13,7 @@ namespace KuroOpti.Console
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             var host = BuildHost();
 
@@ -24,6 +24,8 @@ namespace KuroOpti.Console
                 dbContext.Database.Migrate();
                 var userService = serviceProvider.GetRequiredService<IUserService>();
                 var userRepo = serviceProvider.GetRequiredService<IUserRepository>();
+                IFuelPriceImporter importer = serviceProvider.GetRequiredService<IFuelPriceImporter>();
+                await importer.ImportAsync();
             }
         }
 
@@ -55,8 +57,13 @@ namespace KuroOpti.Console
                         services.AddScoped<IUserRepository, UserRepository>();
                         services.AddScoped<IUserService, UserService>();
                         services.AddScoped<IFuelStationRepository, FuelStationRepository>();
+
+                        services.AddHttpClient<EnaFuelPriceImporter>();
+                        services.AddScoped<IFuelPriceImporter, EnaFuelPriceImporter>();
                     }
                 );
+
+
 
             return host.Build();
         }
