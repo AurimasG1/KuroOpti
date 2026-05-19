@@ -22,8 +22,8 @@ namespace KuroOpti.Console
                 var serviceProvider = scope.ServiceProvider;
                 var dbContext = serviceProvider.GetRequiredService<KuroOptiDbContext>();
                 dbContext.Database.Migrate();
-                // var userService = serviceProvider.GetRequiredService<IUserService>();
-
+                var userService = serviceProvider.GetRequiredService<IUserService>();
+                var userRepo = serviceProvider.GetRequiredService<IUserRepository>();
                 IFuelPriceImporter importer = serviceProvider.GetRequiredService<IFuelPriceImporter>();
                 await importer.ImportAsync();
             }
@@ -55,6 +55,7 @@ namespace KuroOpti.Console
                             );
                         });
                         services.AddScoped<IUserRepository, UserRepository>();
+                        services.AddScoped<IUserService, UserService>();
                         services.AddScoped<IFuelStationRepository, FuelStationRepository>();
 
                         services.AddHttpClient<EnaFuelPriceImporter>();
