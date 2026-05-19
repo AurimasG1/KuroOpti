@@ -1,14 +1,11 @@
 ﻿using KuroOpti.Data;
 using KuroOpti.Repositories;
-using KuroOpti.Repositories.Implementations;
-using KuroOpti.Repositories.Interfaces;
 using KuroOpti.Services.Implementations;
 using KuroOpti.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
 namespace KuroOpti.Console
 {
     internal class Program
@@ -17,16 +14,17 @@ namespace KuroOpti.Console
         {
             var host = BuildHost();
 
-            using (var scope = host.Services.CreateScope())
-            {
-                var serviceProvider = scope.ServiceProvider;
-                var dbContext = serviceProvider.GetRequiredService<KuroOptiDbContext>();
-                dbContext.Database.Migrate();
-                var userService = serviceProvider.GetRequiredService<IUserService>();
-                var userRepo = serviceProvider.GetRequiredService<IUserRepository>();
-                IFuelPriceImporter importer = serviceProvider.GetRequiredService<IFuelPriceImporter>();
-                await importer.ImportAsync();
-            }
+            using var scope = host.Services.CreateScope();
+            var serviceProvider = scope.ServiceProvider;
+
+            // Migracijos
+            var dbContext = serviceProvider.GetRequiredService<KuroOptiDbContext>();
+            await dbContext.Database.MigrateAsync();
+
+            // Importeris
+            IFuelPriceImporter importer = serviceProvider.GetRequiredService<IFuelPriceImporter>();
+            await importer.ImportAsync();
+
         }
 
         public static IHost BuildHost()
@@ -54,16 +52,11 @@ namespace KuroOpti.Console
                                 ServerVersion.AutoDetect(connectionString)
                             );
                         });
-                        services.AddScoped<IUserRepository, UserRepository>();
-                        services.AddScoped<IUserService, UserService>();
                         services.AddScoped<IFuelStationRepository, FuelStationRepository>();
-
                         services.AddHttpClient<EnaFuelPriceImporter>();
                         services.AddScoped<IFuelPriceImporter, EnaFuelPriceImporter>();
                     }
                 );
-
-
 
             return host.Build();
         }
