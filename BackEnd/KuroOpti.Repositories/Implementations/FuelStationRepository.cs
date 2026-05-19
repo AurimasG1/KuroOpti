@@ -44,5 +44,40 @@ namespace KuroOpti.Repositories
                 await _db.SaveChangesAsync();
             }
         }
+
+        public async Task UpsertAllAsync(List<FuelStation> stations)
+        {
+            Dictionary<string, FuelStation> existing = await _db.FuelStations
+                .ToDictionaryAsync(s => s.Name + "|" + s.Address);
+
+            HashSet<string> incomingKeys = new();
+
+            foreach (FuelStation incoming in stations)
+            {
+                string key = incoming.Name + "|" + incoming.Address;
+                incomingKeys.Add(key);
+
+                if (existing.TryGetValue(key, out FuelStation? dbStation))
+                {
+                    dbStation.Municipality = incoming.Municipality;
+                    dbStation.DieselPrice = incoming.DieselPrice;
+                    dbStation.PetrolPrice = incoming.PetrolPrice;
+                    dbStation.LpgPrice = incoming.LpgPrice;
+                    dbStation.UpdatedAt = incoming.UpdatedAt;
+                }
+                else
+                {
+                    _db.FuelStations.Add(incoming);
+                }
+            }
+
+            foreach (KeyValuePair<string, FuelStation> kvp in existing)
+            {
+                if (incomingKeys.Contains(kvp.Key) == false)
+                    _db.FuelStations.Remove(kvp.Value);
+            }
+
+            await _db.SaveChangesAsync();
+        }
     }
 }

@@ -14,3 +14,4 @@ sln add.txt
 *.lscache
 .copilitindices/
 .ProjectEvaluation/
+.DS_Store

@@ -9,5 +9,6 @@ namespace KuroOpti.Repositories
         Task AddAsync(FuelStation station);
         Task UpdateAsync(FuelStation station);
         Task DeleteAsync(int id);
+        Task UpsertAllAsync(List<FuelStation> stations);
     }
 }
