@@ -2,6 +2,7 @@
 using KuroOpti.Repositories;
 using KuroOpti.Repositories.Implementations;
 using KuroOpti.Repositories.Interfaces;
+using KuroOpti.Services.Implementations;
 using KuroOpti.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,7 +13,7 @@ namespace KuroOpti.Console
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             var host = BuildHost();
 
@@ -21,8 +22,10 @@ namespace KuroOpti.Console
                 var serviceProvider = scope.ServiceProvider;
                 var dbContext = serviceProvider.GetRequiredService<KuroOptiDbContext>();
                 dbContext.Database.Migrate();
-                var userService = serviceProvider.GetRequiredService<IUserService>();
- 
+                // var userService = serviceProvider.GetRequiredService<IUserService>();
+
+                IFuelPriceImporter importer = serviceProvider.GetRequiredService<IFuelPriceImporter>();
+                await importer.ImportAsync();
             }
         }
 
@@ -53,8 +56,13 @@ namespace KuroOpti.Console
                         });
                         services.AddScoped<IUserRepository, UserRepository>();
                         services.AddScoped<IFuelStationRepository, FuelStationRepository>();
+
+                        services.AddHttpClient<EnaFuelPriceImporter>();
+                        services.AddScoped<IFuelPriceImporter, EnaFuelPriceImporter>();
                     }
                 );
+
+
 
             return host.Build();
         }
