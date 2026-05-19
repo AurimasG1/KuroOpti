@@ -18,7 +18,7 @@ namespace KuroOpti.Services
             return await _repository.GetAllAsync();
         }
 
-        public async Task<FuelStation> GetFuelStationById(int id)
+        public async Task<FuelStation> GetFuelStationById(int id) 
         {
             var station = await _repository.GetByIdAsync(id);
 
