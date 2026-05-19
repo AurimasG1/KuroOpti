@@ -1,0 +1,12 @@
+c:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Common\bin\Debug\net10.0\KuroOpti.Common.deps.json
+c:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Common\bin\Debug\net10.0\KuroOpti.Common.dll
+c:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Common\bin\Debug\net10.0\KuroOpti.Common.pdb
+c:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Common\obj\Debug\net10.0\KuroOpti.Common.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Common\obj\Debug\net10.0\KuroOpti.Common.AssemblyInfoInputs.cache
+c:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Common\obj\Debug\net10.0\KuroOpti.Common.AssemblyInfo.cs
+c:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Common\obj\Debug\net10.0\KuroOpti.Common.csproj.CoreCompileInputs.cache
+c:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Common\obj\Debug\net10.0\KuroOpti.Common.sourcelink.json
+c:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Common\obj\Debug\net10.0\KuroOpti.Common.dll
+c:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Common\obj\Debug\net10.0\refint\KuroOpti.Common.dll
+c:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Common\obj\Debug\net10.0\KuroOpti.Common.pdb
+c:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Common\obj\Debug\net10.0\ref\KuroOpti.Common.dll

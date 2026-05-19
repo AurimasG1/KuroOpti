@@ -1,0 +1,12 @@
+C:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Entities\bin\Debug\net10.0\KuroOpti.Entities.deps.json
+C:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Entities\bin\Debug\net10.0\KuroOpti.Entities.dll
+C:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Entities\bin\Debug\net10.0\KuroOpti.Entities.pdb
+C:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Entities\obj\Debug\net10.0\KuroOpti.Entities.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Entities\obj\Debug\net10.0\KuroOpti.Entities.AssemblyInfoInputs.cache
+C:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Entities\obj\Debug\net10.0\KuroOpti.Entities.AssemblyInfo.cs
+C:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Entities\obj\Debug\net10.0\KuroOpti.Entities.csproj.CoreCompileInputs.cache
+C:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Entities\obj\Debug\net10.0\KuroOpti.Entities.sourcelink.json
+C:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Entities\obj\Debug\net10.0\KuroOpti.Entities.dll
+C:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Entities\obj\Debug\net10.0\refint\KuroOpti.Entities.dll
+C:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Entities\obj\Debug\net10.0\KuroOpti.Entities.pdb
+C:\Users\aurim\Documents\GitHub\techin\c#\KuroOpti\BackEnd\KuroOpti.Entities\obj\Debug\net10.0\ref\KuroOpti.Entities.dll

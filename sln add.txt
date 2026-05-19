@@ -1,0 +1,10 @@
+dotnet sln add BackEnd/KuroOpti.API/KuroOpti.API.csproj
+dotnet sln add BackEnd/KuroOpti.Data/KuroOpti.Data.csproj
+dotnet sln add BackEnd/KuroOpti.Entities/KuroOpti.Entities.csproj
+dotnet sln add BackEnd/KuroOpti.Repositories/KuroOpti.Repositories.csproj
+dotnet sln add BackEnd/KuroOpti.Services/KuroOpti.Services.csproj
+dotnet sln add BackEnd/KuroOpti.Services.Test/KuroOpti.Services.Test.csproj
+dotnet sln add BackEnd/KuroOpti.Console/KuroOpti.Console.csproj
+dotnet sln add BackEnd/KuroOpti.Common/KuroOpti.Common.csproj
+
+dotnet new classlib -n KuroOpti.Common -o BackEnd/KuroOpti.Common
