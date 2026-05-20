@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\BackEnd",
+    "\\BackEnd\\KuroOpti.API",
+    "\\BackEnd\\KuroOpti.API\\Controllers",
+    "\\BackEnd\\KuroOpti.Services",
+    "\\BackEnd\\KuroOpti.Services\\Implementations",
+    "\\BackEnd\\KuroOpti.Services\\Interfaces"
+  ],
+  "SelectedNode": "\\KuroOpti.slnx",
+  "PreviewInSolutionExplorer": false
+}
