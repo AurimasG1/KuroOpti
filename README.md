@@ -1,16 +1,62 @@
-# React + Vite
+# KuroOpti
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Graduation Project
 
-Currently, two official plugins are available:
+## Setup prieš paleidžiant projektą
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- #### Įsirašyti .NET 10 SDK
 
-## React Compiler
+  https://dotnet.microsoft.com/en-us/download
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- #### Įsirašyti React projekto dependencies
 
-## Expanding the ESLint configuration
+  _\*leidžiama iš ./frontend/ direktorijos_
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+  ```
+  --legacy-peer-deps
+  ```
+
+## Projekto paleidimas
+
+#### 1. Docker konteinerio sukūrimo komanda
+
+```
+docker run --name KuroOpti -e MYSQL_ROOT_PASSWORD=root -d -p 3306:3306 mysql:lts
+```
+
+#### 2. API projekto paleidimas
+
+\_\*leidžiama iš KuroOpti/BackEnd/KuroOpti.API/ direktorijos
+
+```
+dotnet run
+```
+
+#### 3. React projekto paleidimas
+
+\_\*leidžiama iš KuroOpti/FrontEnd/ direktorijos
+
+```
+npm run dev
+```
+
+### DB migracijos komandos
+
+#### Migracijų atnaujinimas rankiniu būdu
+
+```
+dotnet ef database update
+```
+
+#### Migracijos pridėjimas
+
+_\*leidžiama iš projekto root direktorijos_  
+_\*Čia pavyzdys. Kuriant naują migraciją reikia pakeisti pavadinimą_
+
+```
+dotnet ef migrations add UpdateUserTable -p ./backend/MySavings.Data/ -s ./backend/MySavings.API/
+```
+
+### Swagger nuoroda
+
+http://localhost:5141/swagger/index.html
