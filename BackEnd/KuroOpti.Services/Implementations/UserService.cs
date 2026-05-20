@@ -16,22 +16,32 @@ namespace KuroOpti.Services.Implementations
             this.passwordHasher = new PasswordHasher<User>();
         }
 
-        public async Task<bool> RegisterAsync(string email, string password)
+        public async Task<User?> GetUserByEmailAsync(string email)
+        {
+            return await userRepository.GetByEmailAsync(email);
+        }
+
+        public async Task<User?> GetUserById(int id)
+        {
+            return await userRepository.GetByIdAsync(id);
+        }
+
+        public async Task<User?> RegisterAsync(string email, string password)
         {
             var existing = await userRepository.GetByEmailAsync(email);
             if (existing != null)
-                return false;
+                return null;
 
-            var user = new User { Email = email, Role = "User" };
+            var user = new User { Email = email.ToLowerInvariant().Trim(), Role = "user" };
             user.PasswordHash = passwordHasher.HashPassword(user, password);
 
             await userRepository.CreateAsync(user);
-            return true;
+            return user;
         }
 
         public async Task<User?> ValidateUserAsync(string email, string password)
         {
-            var user = await userRepository.GetByEmailAsync(email);
+            var user = await userRepository.GetByEmailAsync(email.Trim().ToLowerInvariant());
             if (user == null)
                 return null;
 

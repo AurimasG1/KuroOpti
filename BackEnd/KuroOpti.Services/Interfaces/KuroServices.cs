@@ -5,8 +5,5 @@ using System.Threading.Tasks;
 
 namespace KuroOpti.Services.Interfaces
 {
-    public interface KuroServices
-    {
-        
-    }
+    public interface KuroServices { }
 }
