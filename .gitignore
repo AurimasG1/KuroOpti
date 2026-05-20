@@ -15,3 +15,4 @@ sln add.txt
 .copilitindices/
 .ProjectEvaluation/
 .DS_Store
+node_modules
