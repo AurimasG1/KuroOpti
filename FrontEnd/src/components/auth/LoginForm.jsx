@@ -1,25 +1,27 @@
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaEye, FaEyeSlash, FaFacebook, FaLinkedinIn } from "react-icons/fa";
-import {login} from "../../services/authService.js"
+import { login } from "../../services/authService.js"
 
 
 const Login = ({ handleSignIn, onLoginSuccess }) => {
   const [showPassword, setShowPassword] = useState(false);
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
-      console.log("Siunčiame duomenis:", { username, password });
-      const data = await login(username, password);
+      console.log("Siunčiame duomenis:", { email, password });
+      const data = await login(email, password);
+
+      localStorage.setItem("token", data.accessToken);
 
       console.log("Atsakymas iš BackEnd:", data);
 
-      onLoginSuccess({ userName: data.username || username });
-      
+      onLoginSuccess({ email: data.user?.email, token: data.accessToken, });
+
     } catch (error) {
       alert("Klaida: " + error.message);
     }
@@ -33,10 +35,10 @@ const Login = ({ handleSignIn, onLoginSuccess }) => {
         </h1>
         <form className="flex flex-col gap-3 " onSubmit={handleSubmit}>
           <div>
-            <label for="username" className="input-label">
-              Username
+            <label for="email" className="input-label">
+              email
             </label>
-            <input id="username" type="text" className="input" value={username} onChange={(e) => setUsername(e.target.value)} required />
+            <input id="email" type="text" className="input" value={email} onChange={(e) => setEmail(e.target.value)} required />
           </div>
           <div>
             <label for="password" className="input-label">
@@ -67,7 +69,7 @@ const Login = ({ handleSignIn, onLoginSuccess }) => {
           </div>
           <button className="primary-btn cursor-pointer">Submit</button>
         </form>
-        
+
         {/* <p className="text-center text-white text-sm my-3">or login with</p>
         <div className="flex gap-6 justify-center ">
           <div className="bg-white w-9 h-9 rounded-full flex items-center justify-center shadow-custom-inset hover:scale-110 transition-all duration-300 ">
