@@ -7,7 +7,6 @@ obj/
 *.log
 *.nupkg
 packages/
-appsettings.Development.json
 komandos.txt
 sln add.txt
 .github
@@ -16,3 +15,5 @@ sln add.txt
 .ProjectEvaluation/
 .DS_Store
 node_modules/
+.env
+.env.*

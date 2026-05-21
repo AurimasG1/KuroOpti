@@ -1,62 +1,101 @@
 # KuroOpti
 
-Graduation Project
+Graduation Project – Fullstack system (React + .NET + MySQL)
 
-## Setup prieš paleidžiant projektą
+# Reikalavimai
 
-- #### Įsirašyti .NET 10 SDK
+## 1. .NET 10 SDK
 
-  https://dotnet.microsoft.com/en-us/download
+Reikalingas BackEnd projektams.
 
-- #### Įsirašyti React projekto dependencies
+https://dotnet.microsoft.com/en-us/download
 
-  _\*leidžiama iš ./frontend/ direktorijos_
+---
 
-  ```
-  --legacy-peer-deps
-  ```
+## 2. Node.js
 
-## Projekto paleidimas
+Reikalingas React FrontEnd projektui.
 
-#### 1. Docker konteinerio sukūrimo komanda
+https://nodejs.org/
 
-```
-docker run --name KuroOpti -e MYSQL_ROOT_PASSWORD=root -d -p 3306:3306 mysql:lts
-```
+---
 
-#### 2. API projekto paleidimas
+## 3. Docker Desktop
 
-\_\*leidžiama iš KuroOpti/BackEnd/KuroOpti.API/ direktorijos
+Reikalingas MySQL konteinerio paleidimui.
 
-```
-dotnet run
-```
+https://www.docker.com/products/docker-desktop/
 
-#### 3. React projekto paleidimas
+### Įsirašyti React projekto dependencies
 
 \_\*leidžiama iš KuroOpti/FrontEnd/ direktorijos
 
 ```
+--- npm install --legacy-peer-deps
+
+```
+
+## Projekto paleidimas eilės tvarka 1-5
+
+#### 1. Docker konteinerio sukūrimo komanda
+
+\_\*leidžiama iš KuroOpti direktorijos
+
+```
+docker compose up -d
+
+```
+
+#### 2. BackEnd DB migration
+
+\_\*leidžiama iš KuroOpti/BackEnd/ direktorijos
+
+```
+dotnet ef database update -p KuroOpti.Data -s KuroOpti.Console
+
+```
+
+#### 3. Console projekto paleidimas
+
+paima kuro kainų duomenis iš interneto
+importuoja juos į MySQL duombazę
+
+\_\*leidžiama iš KuroOpti/BackEnd/ direktorijos
+
+```
+dotnet run --project KuroOpti.Console
+
+```
+
+\_\*arba iš KuroOpti/BackEnd/KuroOpti.Console direktorijos
+
+---
+
+dotnet run
+
+---
+
+#### 4. API projekto paleidimas
+
+\_\*atskiras bash, leidžiama iš KuroOpti/BackEnd/ direktorijos
+
+```
+dotnet run --project KuroOpti.API
+
+```
+
+\_\*atskiras bash, arba iš KuroOpti/BackEnd/KuroOpti.API direktorijos
+
+---
+
+dotnet run
+
+---
+
+#### 5. React projekto paleidimas
+
+\_\* atskiras bash, leidžiama iš KuroOpti/FrontEnd/ direktorijos
+
+```
 npm run dev
 ```
-
-### DB migracijos komandos
-
-#### Migracijų atnaujinimas rankiniu būdu
-
-```
-dotnet ef database update
-```
-
-#### Migracijos pridėjimas
-
-_\*leidžiama iš projekto root direktorijos_  
-_\*Čia pavyzdys. Kuriant naują migraciją reikia pakeisti pavadinimą_
-
-```
-dotnet ef migrations add UpdateUserTable -p ./backend/MySavings.Data/ -s ./backend/MySavings.API/
-```
-
-### Swagger nuoroda
-
-http://localhost:5141/swagger/index.html
