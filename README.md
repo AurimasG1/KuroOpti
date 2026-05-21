@@ -8,17 +8,13 @@ Graduation Project – Fullstack system (React + .NET + MySQL)
 
 Reikalingas BackEnd projektams.
 
-```
 https://dotnet.microsoft.com/en-us/download
-```
 
 ## 2. Node.js
 
 Reikalingas React FrontEnd projektui.
 
-```
 https://nodejs.org/
-```
 
 ## 3. Docker Desktop
 
