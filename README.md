@@ -31,7 +31,7 @@ https://www.docker.com/products/docker-desktop/
 \*leidžiama iš KuroOpti/FrontEnd/ direktorijos
 
 ```
---- npm install --legacy-peer-deps
+npm install --legacy-peer-deps
 
 ```
 
