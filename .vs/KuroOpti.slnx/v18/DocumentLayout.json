@@ -3,16 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\lukas\\Documents\\GitHub\\KuroOpti\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{5DE6C6F3-3D66-3FD1-7C7F-B62DE257C1C9}|BackEnd\\KuroOpti.API\\KuroOpti.API.csproj|c:\\users\\lukas\\documents\\github\\kuroopti\\backend\\kuroopti.api\\controllers\\fuelstationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5DE6C6F3-3D66-3FD1-7C7F-B62DE257C1C9}|BackEnd\\KuroOpti.API\\KuroOpti.API.csproj|solutionrelative:backend\\kuroopti.api\\controllers\\fuelstationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EB64AB78-1EDC-B30D-B987-3493F07AA76D}|BackEnd\\KuroOpti.Console\\KuroOpti.Console.csproj|c:\\users\\lukas\\documents\\github\\kuroopti\\backend\\kuroopti.console\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EB64AB78-1EDC-B30D-B987-3493F07AA76D}|BackEnd\\KuroOpti.Console\\KuroOpti.Console.csproj|solutionrelative:backend\\kuroopti.console\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5DE6C6F3-3D66-3FD1-7C7F-B62DE257C1C9}|BackEnd\\KuroOpti.API\\KuroOpti.API.csproj|c:\\users\\lukas\\documents\\github\\kuroopti\\backend\\kuroopti.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5DE6C6F3-3D66-3FD1-7C7F-B62DE257C1C9}|BackEnd\\KuroOpti.API\\KuroOpti.API.csproj|solutionrelative:backend\\kuroopti.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\lukas\\Documents\\GitHub\\KuroOpti\\BackEnd\\KuroOpti.API\\Controllers\\FuelStationController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:BackEnd\\KuroOpti.API\\Controllers\\FuelStationController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,34 +14,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 0,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\lukas\\Documents\\GitHub\\KuroOpti\\BackEnd\\KuroOpti.API\\Program.cs",
-              "RelativeDocumentMoniker": "BackEnd\\KuroOpti.API\\Program.cs",
-              "ToolTip": "C:\\Users\\lukas\\Documents\\GitHub\\KuroOpti\\BackEnd\\KuroOpti.API\\Program.cs",
-              "RelativeToolTip": "BackEnd\\KuroOpti.API\\Program.cs",
-              "ViewState": "AgIAABkAAAAAAAAAAAAAAEEAAABGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-20T13:09:38.193Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\lukas\\Documents\\GitHub\\KuroOpti\\BackEnd\\KuroOpti.Console\\Program.cs",
-              "RelativeDocumentMoniker": "BackEnd\\KuroOpti.Console\\Program.cs",
-              "ToolTip": "C:\\Users\\lukas\\Documents\\GitHub\\KuroOpti\\BackEnd\\KuroOpti.Console\\Program.cs",
-              "RelativeToolTip": "BackEnd\\KuroOpti.Console\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-20T12:42:53.262Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
@@ -58,7 +24,7 @@
               "RelativeDocumentMoniker": "BackEnd\\KuroOpti.API\\Controllers\\FuelStationController.cs",
               "ToolTip": "C:\\Users\\lukas\\Documents\\GitHub\\KuroOpti\\BackEnd\\KuroOpti.API\\Controllers\\FuelStationController.cs",
               "RelativeToolTip": "BackEnd\\KuroOpti.API\\Controllers\\FuelStationController.cs",
-              "ViewState": "AgIAACkAAAAAAAAAAAAwwEAAAABCAAAAAAAAAA==",
+              "ViewState": "AgIAACoAAAAAAAAAAAAAADsAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-20T12:36:11.678Z",
               "EditorCaption": ""
