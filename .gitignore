@@ -1,0 +1,22 @@
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.db
+*.log
+*.nupkg
+packages/
+appsettings.Development.json
+komandos.txt
+sln add.txt
+.github
+*.lscache
+.copilitindices/
+.ProjectEvaluation/
+.DS_Store
+node_modules/
+dist
+.env
+.env.local
+.vite
