@@ -47,8 +47,9 @@ namespace KuroOpti.Repositories
 
         public async Task UpsertAllAsync(List<FuelStation> stations)
         {
-            Dictionary<string, FuelStation> existing = await _db.FuelStations
-                .ToDictionaryAsync(s => s.Name + "|" + s.Address);
+            Dictionary<string, FuelStation> existing = await _db.FuelStations.ToDictionaryAsync(s =>
+                s.Name + "|" + s.Address
+            );
 
             HashSet<string> incomingKeys = new();
 

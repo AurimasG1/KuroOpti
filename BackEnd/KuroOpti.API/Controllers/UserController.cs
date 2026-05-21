@@ -12,12 +12,18 @@ namespace KuroOpti.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService userService;
+        private readonly IUserRouteStationService userRouteStationService;
         private readonly IMapper mapper;
 
-        public UserController(IUserService userService, IMapper mapper)
+        public UserController(
+            IUserService userService,
+            IMapper mapper,
+            IUserRouteStationService userRouteStationService
+        )
         {
             this.userService = userService;
             this.mapper = mapper;
+            this.userRouteStationService = userRouteStationService;
         }
 
         [HttpGet("me")]

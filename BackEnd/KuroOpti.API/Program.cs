@@ -1,6 +1,7 @@
 using System.Text;
 using KuroOpti.API;
 using KuroOpti.Data;
+using KuroOpti.Repositories;
 using KuroOpti.Repositories.Implementations;
 using KuroOpti.Repositories.Interfaces;
 using KuroOpti.Services.Implementations;
@@ -19,12 +20,13 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend", policy =>
-    {
-        policy.WithOrigins("http://localhost:5173")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
+    options.AddPolicy(
+        "AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod();
+        }
+    );
 });
 
 builder
@@ -60,6 +62,11 @@ builder.Services.AddDbContext<KuroOptiDbContext>(options =>
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRouteStationRepository, UserRouteStationRepository>();
+builder.Services.AddScoped<IUserRouteStationService, UserRouteStationService>();
+
+builder.Services.AddScoped<IFuelStationRepository, FuelStationRepository>();
+builder.Services.AddScoped<IFuelStationService, FuelStationService>();
 
 var app = builder.Build();
 

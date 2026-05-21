@@ -2,7 +2,7 @@ using KuroOpti.Entities;
 using KuroOpti.Repositories;
 using KuroOpti.Services.Interfaces;
 
-namespace KuroOpti.Services
+namespace KuroOpti.Services.Implementations
 {
     public class FuelStationService : IFuelStationService
     {

@@ -6,6 +6,11 @@
     <Nullable>enable</Nullable>
     <UserSecretsId>5de4794c-d468-4375-b862-1b9c7002b4be</UserSecretsId>
   </PropertyGroup>
+  <ItemGroup>
+  <None Update="appsettings*.json">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+  </None>
+</ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\KuroOpti.Services\KuroOpti.Services.csproj" />

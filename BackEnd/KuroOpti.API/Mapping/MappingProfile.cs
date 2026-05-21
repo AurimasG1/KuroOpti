@@ -11,7 +11,9 @@ namespace KuroOpti.API.Mapping
         {
             CreateMap<User, UserDto>();
 
-            CreateMap<RegistrationRequest, User>().ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
+            CreateMap<RegistrationRequest, User>()
+                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
+            CreateMap<FuelStation, FuelStationDto>();
         }
     }
 }
