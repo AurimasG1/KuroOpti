@@ -1,16 +1,90 @@
-# React + Vite
+# KuroOpti
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Graduation Project – Fullstack system (React + .NET + MySQL)
 
-Currently, two official plugins are available:
+# Reikalavimai
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 1. .NET 10 SDK
 
-## React Compiler
+Reikalingas BackEnd projektams.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+https://dotnet.microsoft.com/en-us/download
 
-## Expanding the ESLint configuration
+## 2. Node.js
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Reikalingas React FrontEnd projektui.
+
+https://nodejs.org/
+
+## 3. Docker Desktop
+
+Reikalingas MySQL konteinerio paleidimui.
+
+https://www.docker.com/products/docker-desktop/
+
+### Įsirašyti React projekto dependencies
+
+\*leidžiama iš KuroOpti/FrontEnd/ direktorijos
+
+```
+npm install --legacy-peer-deps
+
+```
+
+## Projekto paleidimas eilės tvarka 1-5
+
+#### 1. Docker konteinerio sukūrimo komanda
+
+\*leidžiama iš KuroOpti direktorijos
+
+```
+docker compose up -d
+
+```
+
+#### 2. BackEnd DB migration
+
+\*leidžiama iš KuroOpti/BackEnd/ direktorijos
+
+```
+dotnet ef database update -p KuroOpti.Data -s KuroOpti.Console
+```
+
+#### 3. Console projekto paleidimas
+
+paima kuro kainų duomenis iš interneto
+importuoja juos į MySQL duombazę
+
+\*leidžiama iš KuroOpti/BackEnd/ direktorijos
+
+```
+dotnet run --project KuroOpti.Console
+```
+
+\*arba iš KuroOpti/BackEnd/KuroOpti.Console direktorijos
+
+```
+dotnet run
+```
+
+#### 4. API projekto paleidimas
+
+\*atskiras bash, leidžiama iš KuroOpti/BackEnd/ direktorijos
+
+```
+dotnet run --project KuroOpti.API
+```
+
+\*atskiras bash, arba iš KuroOpti/BackEnd/KuroOpti.API direktorijos
+
+```
+dotnet run
+```
+
+#### 5. React projekto paleidimas
+
+\* atskiras bash, leidžiama iš KuroOpti/FrontEnd/ direktorijos
+
+```
+npm run dev
+```

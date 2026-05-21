@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KuroOpti.Data.Migrations
 {
     [DbContext(typeof(KuroOptiDbContext))]
-    [Migration("20260514193826_BackToVarChar")]
-    partial class BackToVarChar
+    [Migration("20260520233657_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
