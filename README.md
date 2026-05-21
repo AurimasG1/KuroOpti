@@ -8,17 +8,17 @@ Graduation Project – Fullstack system (React + .NET + MySQL)
 
 Reikalingas BackEnd projektams.
 
+```
 https://dotnet.microsoft.com/en-us/download
-
----
+```
 
 ## 2. Node.js
 
 Reikalingas React FrontEnd projektui.
 
+```
 https://nodejs.org/
-
----
+```
 
 ## 3. Docker Desktop
 
@@ -52,7 +52,6 @@ docker compose up -d
 
 ```
 dotnet ef database update -p KuroOpti.Data -s KuroOpti.Console
-
 ```
 
 #### 3. Console projekto paleidimas
@@ -64,16 +63,13 @@ importuoja juos į MySQL duombazę
 
 ```
 dotnet run --project KuroOpti.Console
-
 ```
 
 \*arba iš KuroOpti/BackEnd/KuroOpti.Console direktorijos
 
----
-
+```
 dotnet run
-
----
+```
 
 #### 4. API projekto paleidimas
 
@@ -81,16 +77,13 @@ dotnet run
 
 ```
 dotnet run --project KuroOpti.API
-
 ```
 
 \*atskiras bash, arba iš KuroOpti/BackEnd/KuroOpti.API direktorijos
 
----
-
+```
 dotnet run
-
----
+```
 
 #### 5. React projekto paleidimas
 
