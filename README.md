@@ -28,7 +28,7 @@ https://www.docker.com/products/docker-desktop/
 
 ### Įsirašyti React projekto dependencies
 
-\_\*leidžiama iš KuroOpti/FrontEnd/ direktorijos
+\*leidžiama iš KuroOpti/FrontEnd/ direktorijos
 
 ```
 --- npm install --legacy-peer-deps
@@ -39,7 +39,7 @@ https://www.docker.com/products/docker-desktop/
 
 #### 1. Docker konteinerio sukūrimo komanda
 
-\_\*leidžiama iš KuroOpti direktorijos
+\*leidžiama iš KuroOpti direktorijos
 
 ```
 docker compose up -d
@@ -48,7 +48,7 @@ docker compose up -d
 
 #### 2. BackEnd DB migration
 
-\_\*leidžiama iš KuroOpti/BackEnd/ direktorijos
+\*leidžiama iš KuroOpti/BackEnd/ direktorijos
 
 ```
 dotnet ef database update -p KuroOpti.Data -s KuroOpti.Console
@@ -60,14 +60,14 @@ dotnet ef database update -p KuroOpti.Data -s KuroOpti.Console
 paima kuro kainų duomenis iš interneto
 importuoja juos į MySQL duombazę
 
-\_\*leidžiama iš KuroOpti/BackEnd/ direktorijos
+\*leidžiama iš KuroOpti/BackEnd/ direktorijos
 
 ```
 dotnet run --project KuroOpti.Console
 
 ```
 
-\_\*arba iš KuroOpti/BackEnd/KuroOpti.Console direktorijos
+\*arba iš KuroOpti/BackEnd/KuroOpti.Console direktorijos
 
 ---
 
@@ -77,14 +77,14 @@ dotnet run
 
 #### 4. API projekto paleidimas
 
-\_\*atskiras bash, leidžiama iš KuroOpti/BackEnd/ direktorijos
+\*atskiras bash, leidžiama iš KuroOpti/BackEnd/ direktorijos
 
 ```
 dotnet run --project KuroOpti.API
 
 ```
 
-\_\*atskiras bash, arba iš KuroOpti/BackEnd/KuroOpti.API direktorijos
+\*atskiras bash, arba iš KuroOpti/BackEnd/KuroOpti.API direktorijos
 
 ---
 
@@ -94,7 +94,7 @@ dotnet run
 
 #### 5. React projekto paleidimas
 
-\_\* atskiras bash, leidžiama iš KuroOpti/FrontEnd/ direktorijos
+\* atskiras bash, leidžiama iš KuroOpti/FrontEnd/ direktorijos
 
 ```
 npm run dev
