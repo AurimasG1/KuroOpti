@@ -1,6 +1,6 @@
-using System.Text;
 using KuroOpti.API;
 using KuroOpti.Data;
+using KuroOpti.Repositories;
 using KuroOpti.Repositories.Implementations;
 using KuroOpti.Repositories.Interfaces;
 using KuroOpti.Services.Implementations;
@@ -8,6 +8,7 @@ using KuroOpti.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +62,9 @@ builder.Services.AddDbContext<KuroOptiDbContext>(options =>
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddScoped<IFuelStationRepository, FuelStationRepository>();
+builder.Services.AddScoped<IFuelStationService, FuelStationService>();
 
 var app = builder.Build();
 

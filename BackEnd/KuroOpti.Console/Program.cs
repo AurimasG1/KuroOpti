@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 namespace KuroOpti.Console
 {
     internal class Program
@@ -13,7 +14,6 @@ namespace KuroOpti.Console
         static async Task Main(string[] args)
         {
             var host = BuildHost();
-
             using var scope = host.Services.CreateScope();
             var serviceProvider = scope.ServiceProvider;
 
@@ -24,7 +24,6 @@ namespace KuroOpti.Console
             // Importeris
             IFuelPriceImporter importer = serviceProvider.GetRequiredService<IFuelPriceImporter>();
             await importer.ImportAsync();
-
         }
 
         public static IHost BuildHost()
@@ -33,9 +32,15 @@ namespace KuroOpti.Console
                 .ConfigureAppConfiguration(
                     (context, config) =>
                     {
-                        config.SetBasePath(Directory.GetCurrentDirectory());
-                        config.AddJsonFile("appsettings.json", optional: true);
-                        config.AddUserSecrets<Program>();
+                        var env =
+                            Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")
+                            ?? "Development";
+
+                        var basePath = Path.GetDirectoryName(typeof(Program).Assembly.Location)!;
+
+                        config.SetBasePath(basePath);
+                        config.AddJsonFile("appsettings.json", optional: false);
+                        config.AddJsonFile($"appsettings.{env}.json", optional: true);
                     }
                 )
                 .ConfigureServices(
@@ -45,6 +50,11 @@ namespace KuroOpti.Console
                             "DefaultConnection"
                         );
 
+                        System.Console.WriteLine("DB CONNECTION: " + connectionString);
+
+                        if (string.IsNullOrWhiteSpace(connectionString))
+                            throw new Exception("Connection string is NULL. Config not loaded.");
+
                         services.AddDbContext<KuroOptiDbContext>(options =>
                         {
                             options.UseMySql(
@@ -52,6 +62,7 @@ namespace KuroOpti.Console
                                 ServerVersion.AutoDetect(connectionString)
                             );
                         });
+
                         services.AddScoped<IFuelStationRepository, FuelStationRepository>();
                         services.AddHttpClient<EnaFuelPriceImporter>();
                         services.AddHttpClient<NominatimGeocodingService>();
