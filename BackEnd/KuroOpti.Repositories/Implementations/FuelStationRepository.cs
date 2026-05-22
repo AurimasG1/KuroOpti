@@ -79,5 +79,23 @@ namespace KuroOpti.Repositories
 
             await _db.SaveChangesAsync();
         }
+
+        public async Task<List<FuelStation>> GetUngeocodedAsync()
+        {
+            return await _db.FuelStations
+                .Where(s => s.Latitude == 0 && s.Longitude == 0)
+                .ToListAsync();
+        }
+
+        public async Task UpdateCoordinatesAsync(int id, decimal latitude, decimal longitude)
+        {
+            FuelStation? station = await _db.FuelStations.FindAsync(id);
+            if (station == null)
+                return;
+
+            station.Latitude = latitude;
+            station.Longitude = longitude;
+            await _db.SaveChangesAsync();
+        }
     }
 }

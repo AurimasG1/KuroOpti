@@ -10,5 +10,7 @@ namespace KuroOpti.Repositories
         Task UpdateAsync(FuelStation station);
         Task DeleteAsync(int id);
         Task UpsertAllAsync(List<FuelStation> stations);
+        Task<List<FuelStation>> GetUngeocodedAsync();
+        Task UpdateCoordinatesAsync(int id, decimal latitude, decimal longitude);
     }
 }
