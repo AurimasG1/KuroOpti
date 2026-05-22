@@ -54,6 +54,8 @@ namespace KuroOpti.Console
                         });
                         services.AddScoped<IFuelStationRepository, FuelStationRepository>();
                         services.AddHttpClient<EnaFuelPriceImporter>();
+                        services.AddHttpClient<NominatimGeocodingService>();
+                        services.AddScoped<IGeocodingService, NominatimGeocodingService>();
                         services.AddScoped<IFuelPriceImporter, EnaFuelPriceImporter>();
                     }
                 );
