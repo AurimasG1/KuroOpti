@@ -1,58 +1,58 @@
 [
   {
-    "id": 1,
-    "brand": "Alauša",
-    "city": "Utenos r. sav.",
-    "address": "Palijoniškio g. 1, Utena",
-    "gasoline": 1.54,
-    "diesel": 1.60,
-    "gas": 0.75,
-    "lat": 55.5135,
-    "lng": 25.6180
+    "Id": 1,
+    "Name": "Alauša",
+    "Municipality": "Utenos r. sav.",
+    "Address": "Palijoniškio g. 1, Utena",
+    "PetrolPrice": 1.54,
+    "DieselPrice": 1.60,
+    "LpgPrice": 0.75,
+    "Latitude": 55.5135,
+    "Longitude": 25.6180
   },
   {
-    "id": 2,
-    "brand": "Circle K",
-    "city": "Vilnius",
-    "address": "Gedimino pr. 1",
-    "gasoline": 1.54,
-    "diesel": 1.60,
-    "gas": 0.75,
-    "lat": 54.6872,
-    "lng": 25.2797
+    "Id": 2,
+    "Name": "Circle K",
+    "Municipality": "Vilnius",
+    "Address": "Gedimino pr. 1",
+    "PetrolPrice": 1.54,
+    "DieselPrice": 1.60,
+    "LpgPrice": 0.75,
+    "Latitude": 54.6872,
+    "Longitude": 25.2797
   },
 
   {
-    "id": 3,
-    "brand": "Circle K",
-    "city": "Kaunas",
-    "address": "Palemono g. 171",
-    "gasoline": 1.54,
-    "diesel": 1.60, 
-    "lat": 54.9236968,
-    "lng": 24.0690468
+    "Id": 3,
+    "Name": "Circle K",
+    "Municipality": "Kaunas",
+    "Address": "Palemono g. 171",
+    "PetrolPrice": 1.54,
+    "DieselPrice": 1.60, 
+    "Latitude": 54.9236968,
+    "Longitude": 24.0690468
   },
 
     {
-    "id": 4,
-    "brand": "Circle K",
-    "city": "Ukmergė",
-    "address": "Kauno g. 37",
-    "gasoline": 1.54,
-    "diesel": 1.60,
-    "gas": 0.75,
-    "lat": 55.2444960,
-    "lng": 24.7500200
+    "Id": 4,
+    "Name": "Circle K",
+    "Municipality": "Ukmergė",
+    "Address": "Kauno g. 37",
+    "PetrolPrice": 1.54,
+    "DieselPrice": 1.60,
+    "LpgPrice": 0.75,
+    "Latitude": 55.2444960,
+    "Longitude": 24.7500200
   }, 
    {
-    "id": 5,
-    "brand": "Vildega",
-    "city": "Vilkaviškio r. sav.",
-    "address": "Vytauto g. 2D ",
-    "gasoline": 1.54,
-    "diesel": 1.60,
-    "lat": 54.6433403,
-    "lng": 23.0530856
+    "Id": 5,
+    "Name": "Vildega",
+    "Municipality": "Vilkaviškio r. sav.",
+    "Address": "Vytauto g. 2D ",
+    "PetrolPrice": 1.54,
+    "DieselPrice": 1.60,
+    "Latitude": 54.6433403,
+    "Longitude": 23.0530856
   }
 
 
