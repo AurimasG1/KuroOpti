@@ -29,6 +29,7 @@ const MapSection = ({
   return (
     <div className="h-full w-full">
       <MapContainer
+        key={`map-stations-${stations.length}`}
         center={defaultCenter}
         zoom={7}
         className="h-full w-full"
@@ -50,13 +51,13 @@ const MapSection = ({
 
         <MarkerClusterGroup
         
-          key={stations.length === 0 ? 'empty' : 'loaded'} 
+          key={`cluster-stations-${stations.length}`}
           chunkedLoading
           maxClusterRadius={50}
         >
           {stations.map((station) => (
             <StationMarker 
-              key={station.id} 
+              key={station.Id} 
               station={station} 
               onAddToRoute={onAddToRoute} 
             />

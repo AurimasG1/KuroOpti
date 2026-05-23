@@ -46,9 +46,9 @@ const MapPage = () => {
       const query = searchQuery.toLowerCase();
       const normalizedQuery = simplify(query);
       const matchesText =
-        simplify(s.brand).includes(normalizedQuery) ||
-        simplify(s.address).includes(normalizedQuery) ||
-        simplify(s.city).includes(normalizedQuery);
+        simplify(s.Name).includes(normalizedQuery) ||
+        simplify(s.Address).includes(normalizedQuery) ||
+        simplify(s.Municipality).includes(normalizedQuery);
 
       // B. Kuro tipo filtras
       let matchesFuel = true;
@@ -81,10 +81,10 @@ const MapPage = () => {
       if (prev.find((p) => p.id === station.id)) return prev;
 
       const newWaypoint = {
-        id: station.id,
-        lat: station.lat,
-        lng: station.lng,
-        brand: station.brand,
+        Id: station.Id,
+        Latitude: station.Latitude,
+        Longitude: station.Longitude,
+        Name: station.Name,
       };
 
       const updated = [...prev, newWaypoint];
@@ -92,12 +92,12 @@ const MapPage = () => {
       if (routePoints && routePoints.start) {
         updated.sort((a, b) => {
           const distA = Math.sqrt(
-            Math.pow(a.lat - routePoints.start[0], 2) +
-              Math.pow(a.lng - routePoints.start[1], 2),
+            Math.pow(a.Latitude - routePoints.start[0], 2) +
+              Math.pow(a.Longitude - routePoints.start[1], 2),
           );
           const distB = Math.sqrt(
-            Math.pow(b.lat - routePoints.start[0], 2) +
-              Math.pow(b.lng - routePoints.start[1], 2),
+            Math.pow(b.Latitude - routePoints.start[0], 2) +
+              Math.pow(b.Longitude - routePoints.start[1], 2),
           );
           return distA - distB;
         });
@@ -107,34 +107,39 @@ const MapPage = () => {
   };
 
   const handleRemoveWaypoint = (id) => {
-    setSelectedWaypoints((prev) => prev.filter((p) => p.id !== id));
+    setSelectedWaypoints((prev) => prev.filter((p) => p.Id !== id));
   };
 
-  const handleRouteFound = useCallback(
-    (coordinates) => {
-      if (!coordinates || coordinates.length === 0 || allStations.length === 0)
-        return;
+const handleRouteFound = useCallback(
+  (coordinates) => {
+    if (!coordinates || coordinates.length === 0 || allStations.length === 0)
+      return;
 
-      try {
-        const turfCoords = coordinates.map((c) => [c.lng, c.lat]);
-        const line = turf.lineString(turfCoords);
-        const buffer = turf.buffer(line, 10, { units: "kilometers" });
+    try {
+      const turfCoords = coordinates.map((c) => [c.lng || c.Longitude, c.lat || c.Latitude]);
+      
+      const line = turf.lineString(turfCoords);
+      const buffer = turf.buffer(line, 10, { units: "kilometers" });
 
-        const found = allStations.filter((station) => {
-          const stationPt = turf.point([
-            Number(station.lng),
-            Number(station.lat),
-          ]);
-          return turf.booleanPointInPolygon(stationPt, buffer);
-        });
+      const found = allStations.filter((station) => {
+        
+        const sLng = Number(station.Longitude || station.longitude || station.lng);
+        const sLat = Number(station.Latitude || station.latitude || station.lat);
 
-        setFilteredStations(found);
-      } catch (err) {
-        console.error("Filtravimo klaida:", err);
-      }
-    },
-    [allStations],
-  );
+        if (isNaN(sLng) || isNaN(sLat)) return false;
+
+        const stationPt = turf.point([sLng, sLat]); 
+        return turf.booleanPointInPolygon(stationPt, buffer);
+      });
+
+
+      setFilteredStations(found);
+    } catch (err) {
+      console.error("Filtravimo klaida:", err);
+    }
+  },
+  [allStations],
+);
 
   const handleRouteSearch = async (e) => {
     e.preventDefault();
@@ -186,7 +191,7 @@ const MapPage = () => {
       const destination = `${endLat},${endLng}`;
 
       const waypointString = selectedWaypoints
-        .map((wp) => `${wp.lat},${wp.lng}`)
+        .map((wp) => `${wp.Latitude},${wp.Longitude}`)
         .join("|");
 
       const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}${waypointString ? `&waypoints=${waypointString}` : ""}&travelmode=driving`;
@@ -274,12 +279,12 @@ const MapPage = () => {
               </h3>
               {selectedWaypoints.map((wp) => (
                 <div
-                  key={wp.id}
+                  key={wp.Id}
                   className="flex justify-between items-center text-xs mb-1 bg-slate-700 p-2 rounded"
                 >
-                  <span>{wp.brand}</span>
+                  <span>{wp.Name}</span>
                   <button
-                    onClick={() => handleRemoveWaypoint(wp.id)}
+                    onClick={() => handleRemoveWaypoint(wp.Id)}
                     className="text-red-400 font-bold px-1"
                   >
                     ✕
@@ -298,29 +303,29 @@ const MapPage = () => {
 
               {displayStations.map((s) => (
                 <div
-                  key={s.id}
+                  key={s.Id}
                   className="p-3 mb-2 bg-slate-700 rounded-lg border border-slate-600 hover:border-lime-500/50 transition-colors "
                 >
-                  <p className="font-bold text-lime-400 text-xl">{s.brand}</p>
-                  <p className="text-[10px] text-slate-400">{s.address}</p>
+                  <p className="font-bold text-lime-400 text-xl">{s.Name}</p>
+                  <p className="text-[10px] text-slate-400">{s.Address}</p>
 
                   <div className="flex flex-col gap-2 py-2">
                     <div className="flex flex-row justify-between items-center">
                       <p className="font-bold text-slate-400">Benzinas:</p>
                       <p className="font-bold text-lime-400 text-sm">
-                        {s.gasoline} €
+                        {s.PetrolPrice} €
                       </p>
                     </div>
                     <div className="flex flex-row justify-between items-center">
                       <p className="font-bold text-slate-400">Dyzelinas:</p>
                       <p className="font-bold text-lime-400 text-sm">
-                        {s.diesel} €
+                        {s.DieselPrice} €
                       </p>
                     </div>
                     <div className="flex flex-row justify-between items-center">
                       <p className="font-bold text-slate-400">Dujos:</p>
                       <p className="font-bold text-lime-400 text-sm">
-                        {s.gas} €
+                        {s.LpgPrice} €
                       </p>
                     </div>
                   </div>
