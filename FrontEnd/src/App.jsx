@@ -42,7 +42,7 @@ const App = () => {
       }}
     >
       <div style={bgImageStyle} className="relative">
-        <Navbar handleLoginPopup={handleLoginPopup} />
+        <Navbar handleLoginPopup={handleLoginPopup} user={user} setUser={setUser} />
 
         <Routes>
           {/* Pagrindinis puslapis */}
@@ -55,9 +55,9 @@ const App = () => {
           <Route 
             path="/MapPage" 
             element={
-              // <ProtectedRoute user={user}>
+              <ProtectedRoute user={user}>
                 <MapPage />
-              // </ProtectedRoute>
+              </ProtectedRoute>
             } 
           />
 
@@ -72,14 +72,13 @@ const App = () => {
             <Footer />
 
         {/* Login Popup */}
-        <LoginPopup 
+       <LoginPopup 
           show={loginPopup} 
           onClose={handleLoginPopup} 
-          setUser={setUser} 
-
-         
-            
-
+          onLoginSuccess={(userData) => {
+            console.log("Vartotojas sėkmingai išsaugotas App state:", userData);
+            setUser(userData); 
+          }} 
         />
       </div>
     </Router>
