@@ -9,6 +9,7 @@ namespace KuroOpti.API.Controllers
 {
     [ApiController]
     [Route("api/user")]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService userService;
@@ -26,23 +27,51 @@ namespace KuroOpti.API.Controllers
             this.userRouteStationService = userRouteStationService;
         }
 
-        [HttpGet("me")]
-        [Authorize]
-        public async Task<IActionResult> GetMe()
+        private int GetUserId()
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-                return Unauthorized("Missing user ID claim");
+            var idClaim =
+                User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("id")?.Value;
 
-            var userId = int.TryParse(userIdClaim.Value, out int id);
+            return int.Parse(idClaim!);
+        }
 
-            var user = await userService.GetUserById(id);
-            if (user == null)
-                return NotFound("User not found");
+        public class ModifyStationRequest
+        {
+            public int RouteId { get; set; }
+            public int StationId { get; set; }
+        }
 
-            var response = mapper.Map<UserDto>(user);
+        [HttpPost("route/stations/add")]
+        public async Task<IActionResult> AddStation([FromBody] ModifyStationRequest request)
+        {
+            var userId = GetUserId();
+            await userRouteStationService.AddStationToRouteAsync(
+                userId,
+                request.RouteId,
+                request.StationId
+            );
+            return NoContent();
+        }
 
-            return Ok(response);
+        [HttpPost("route/stations/remove")]
+        public async Task<IActionResult> RemoveStation([FromBody] ModifyStationRequest request)
+        {
+            var userId = GetUserId();
+            await userRouteStationService.RemoveStationFromRouteAsync(
+                userId,
+                request.RouteId,
+                request.StationId
+            );
+            return NoContent();
+        }
+
+        [HttpGet("route/{routeId}/stations")]
+        public async Task<IActionResult> GetSelectedStations(int routeId)
+        {
+            var userId = GetUserId();
+            var stations = await userRouteStationService.GetSelectedStationsAsync(userId, routeId);
+            var dto = mapper.Map<List<FuelStationDto>>(stations);
+            return Ok(dto);
         }
     }
 }

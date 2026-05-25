@@ -1,47 +1,71 @@
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
+using KuroOpti.Services.Interfaces.KuroOpti.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 
 namespace KuroOpti.API
 {
-    public class TokenService
+    public class TokenService : ITokenService
     {
-        private readonly IConfiguration _config;
+        private readonly IConfiguration configuration;
+        private readonly JwtSecurityTokenHandler tokenHandler = new();
 
-        public TokenService(IConfiguration config)
+        private readonly string issuer;
+        private readonly string audience;
+        private readonly string secretKey;
+        private readonly int accessTokenLifetimeMinutes;
+        private readonly int refreshTokenLifetimeDays;
+
+        public TokenService(IConfiguration configuration)
         {
-            _config = config;
+            this.configuration = configuration;
+
+            issuer = configuration["Jwt:Issuer"]!;
+            audience = configuration["Jwt:Audience"]!;
+            secretKey = configuration["Jwt:SecretKey"]!;
+            accessTokenLifetimeMinutes = int.Parse(
+                configuration["Jwt:AccessTokenLifetimeMinutes"]!
+            );
+            refreshTokenLifetimeDays = int.Parse(configuration["Jwt:RefreshTokenLifetimeDays"]!);
         }
 
         public string GenerateAccessToken(IEnumerable<Claim> claims)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.UtcNow.AddMinutes(15);
+
+            var expires = DateTime.UtcNow.AddMinutes(accessTokenLifetimeMinutes);
 
             var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
+                issuer: issuer,
+                audience: audience,
                 claims: claims,
+                notBefore: DateTime.UtcNow,
                 expires: expires,
                 signingCredentials: creds
             );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return tokenHandler.WriteToken(token);
         }
 
         public string GenerateRefreshToken()
         {
-            var randomNumber = new byte[32];
+            var randomNumber = new byte[64];
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(randomNumber);
             return Convert.ToBase64String(randomNumber);
+        }
+
+        public DateTime GetAccessTokenExpiry()
+        {
+            return DateTime.UtcNow.AddMinutes(accessTokenLifetimeMinutes);
+        }
+
+        public DateTime GetRefreshTokenExpiry()
+        {
+            return DateTime.UtcNow.AddDays(refreshTokenLifetimeDays);
         }
     }
 }

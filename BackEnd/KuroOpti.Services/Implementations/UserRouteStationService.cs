@@ -1,54 +1,55 @@
 using KuroOpti.Entities;
 using KuroOpti.Repositories.Interfaces;
+using KuroOpti.Services.Interfaces;
 
 namespace KuroOpti.Services.Implementations
 {
     public class UserRouteStationService : IUserRouteStationService
     {
-        private readonly IUserRouteStationRepository _routeRepository;
-        private readonly IUserRouteStationRepository _userRouteStationRepository;
+        private readonly IUserRouteStationRepository userRouteStationRepository;
+        private readonly IRouteRepository routeRepository;
 
         public UserRouteStationService(
             IRouteRepository routeRepository,
             IUserRouteStationRepository userRouteStationRepository
         )
         {
-            _routeRepository = routeRepository;
-            _userRouteStationRepository = userRouteStationRepository;
+            this.routeRepository = routeRepository;
+            this.userRouteStationRepository = userRouteStationRepository;
         }
 
         public async Task AddStationToRouteAsync(int userId, int routeId, int stationId)
         {
-            var route = await _routeRepository.GetByIdAsync(routeId);
+            var route = await routeRepository.GetByIdAsync(routeId);
             if (route == null || route.UserId != userId)
                 throw new UnauthorizedAccessException("Route does not belong to this user.");
 
-            if (await _userRouteStationRepository.ExistsAsync(routeId, stationId))
+            if (await userRouteStationRepository.ExistsAsync(routeId, stationId))
                 return;
 
             var entity = new UserRouteStation { RouteId = routeId, FuelStationId = stationId };
 
-            await _userRouteStationRepository.AddAsync(entity);
-            await _userRouteStationRepository.SaveChangesAsync();
+            await userRouteStationRepository.AddAsync(entity);
+            await userRouteStationRepository.SaveChangesAsync();
         }
 
         public async Task RemoveStationFromRouteAsync(int userId, int routeId, int stationId)
         {
-            var route = await _routeRepository.GetByIdAsync(routeId);
+            var route = await routeRepository.GetByIdAsync(routeId);
             if (route == null || route.UserId != userId)
                 throw new UnauthorizedAccessException("Route does not belong to this user.");
 
-            await _userRouteStationRepository.RemoveAsync(routeId, stationId);
-            await _userRouteStationRepository.SaveChangesAsync();
+            await userRouteStationRepository.RemoveAsync(routeId, stationId);
+            await userRouteStationRepository.SaveChangesAsync();
         }
 
         public async Task<List<FuelStation>> GetSelectedStationsAsync(int userId, int routeId)
         {
-            var route = await _routeRepository.GetByIdAsync(routeId);
+            var route = await routeRepository.GetByIdAsync(routeId);
             if (route == null || route.UserId != userId)
                 throw new UnauthorizedAccessException("Route does not belong to this user.");
 
-            var links = await _userRouteStationRepository.GetByRouteAsync(routeId);
+            var links = await userRouteStationRepository.GetRouteByIdAsync(routeId);
             return links.Select(x => x.FuelStation).ToList();
         }
     }

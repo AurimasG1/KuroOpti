@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using KuroOpti.Entities;
 using KuroOpti.Services.Interfaces;
-using KuroOpti.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace KuroOpti.API.Controllers
 {

@@ -6,7 +6,7 @@ namespace KuroOpti.Repositories.Interfaces
     {
         Task AddAsync(UserRouteStation entity);
         Task RemoveAsync(int routeId, int stationId);
-        Task<List<UserRouteStation>> GetByRouteAsync(int routeId);
+        Task<List<UserRouteStation>> GetRouteByIdAsync(int routeId);
         Task<bool> ExistsAsync(int routeId, int stationId);
         Task SaveChangesAsync();
     }

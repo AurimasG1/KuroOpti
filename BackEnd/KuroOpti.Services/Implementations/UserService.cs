@@ -21,7 +21,7 @@ namespace KuroOpti.Services.Implementations
             return await userRepository.GetByEmailAsync(email);
         }
 
-        public async Task<User?> GetUserById(int id)
+        public async Task<User?> GetUserByIdAsync(int id)
         {
             return await userRepository.GetByIdAsync(id);
         }

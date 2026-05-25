@@ -6,6 +6,7 @@ using KuroOpti.Repositories.Implementations;
 using KuroOpti.Repositories.Interfaces;
 using KuroOpti.Services.Implementations;
 using KuroOpti.Services.Interfaces;
+using KuroOpti.Services.Interfaces.KuroOpti.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -28,6 +29,8 @@ builder.Services.AddCors(options =>
         }
     );
 });
+var jwtSection = builder.Configuration.GetSection("Jwt");
+var secretKey = jwtSection["SecretKey"];
 
 builder
     .Services.AddAuthentication(options =>
@@ -37,17 +40,22 @@ builder
     })
     .AddJwtBearer(options =>
     {
+        options.RequireHttpsMetadata = true;
+        options.SaveToken = true;
+
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
+            ValidIssuer = jwtSection["Issuer"],
+
             ValidateAudience = true,
-            ValidateLifetime = true,
+            ValidAudience = jwtSection["Audience"],
+
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
-            ),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!)),
+
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.FromMinutes(1),
         };
     });
 builder.Services.AddAuthorization();
@@ -59,11 +67,15 @@ builder.Services.AddDbContext<KuroOptiDbContext>(options =>
     )
 );
 
-builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+
 builder.Services.AddScoped<IUserRouteStationRepository, UserRouteStationRepository>();
 builder.Services.AddScoped<IUserRouteStationService, UserRouteStationService>();
+
+builder.Services.AddScoped<IRouteRepository, RouteRepository>();
+builder.Services.AddScoped<IRouteService, RouteService>();
 
 builder.Services.AddScoped<IFuelStationRepository, FuelStationRepository>();
 builder.Services.AddScoped<IFuelStationService, FuelStationService>();

@@ -29,7 +29,7 @@ namespace KuroOpti.Repositories.Implementations
                 _db.UserRouteStations.Remove(existing);
         }
 
-        public Task<List<UserRouteStation>> GetByRouteAsync(int routeId)
+        public Task<List<UserRouteStation>> GetRouteByIdAsync(int routeId)
         {
             return _db
                 .UserRouteStations.AsNoTracking()
