@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaEye, FaEyeSlash, FaFacebook, FaLinkedinIn } from "react-icons/fa";
-import { login } from "../../services/authService.js"
-
+import { login } from "../../services/authService.js";
 
 const Login = ({ handleSignIn, onLoginSuccess }) => {
   const [showPassword, setShowPassword] = useState(false);
+  // Pakeičiame username į email, kad sutaptų su backendu
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -14,14 +14,18 @@ const Login = ({ handleSignIn, onLoginSuccess }) => {
 
     try {
       console.log("Siunčiame duomenis:", { email, password });
-      const data = await login(email, password);
 
-      localStorage.setItem("token", data.accessToken);
+      const data = await login(email, password);
 
       console.log("Atsakymas iš BackEnd:", data);
 
-      onLoginSuccess({ email: data.user?.email, token: data.accessToken, });
+      if (data && data.user) {
+        onLoginSuccess({ userName: data.user.email });
+      } else {
+        onLoginSuccess({ userName: email });
+      }
 
+      alert("Prisijungta sėkmingai!");
     } catch (error) {
       alert("Klaida: " + error.message);
     }
@@ -34,14 +38,25 @@ const Login = ({ handleSignIn, onLoginSuccess }) => {
           Login
         </h1>
         <form className="flex flex-col gap-3 " onSubmit={handleSubmit}>
+
+          {/* Email */}
           <div>
-            <label for="email" className="input-label">
-              email
+            <label htmlFor="email" className="input-label">
+              Email
             </label>
-            <input id="email" type="text" className="input" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <input
+              id="email"
+              type="email"
+              className="input"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
           </div>
+
+          {/* Password */}
           <div>
-            <label for="password" className="input-label">
+            <label htmlFor="password" className="input-label">
               Password
             </label>
             <div className="relative">
@@ -70,18 +85,6 @@ const Login = ({ handleSignIn, onLoginSuccess }) => {
           <button className="primary-btn cursor-pointer">Submit</button>
         </form>
 
-        {/* <p className="text-center text-white text-sm my-3">or login with</p>
-        <div className="flex gap-6 justify-center ">
-          <div className="bg-white w-9 h-9 rounded-full flex items-center justify-center shadow-custom-inset hover:scale-110 transition-all duration-300 ">
-            <FcGoogle className="text-3xl cursor-pointer" />
-          </div>
-          <div className="bg-blue-600 w-9 h-9 rounded-full flex items-center justify-center shadow-custom-inset hover:scale-110 transition-all duration-300">
-            <FaLinkedinIn className="text-2xl text-white cursor-pointer" />
-          </div>
-          <div className="bg-blue-600 w-9 h-9 rounded-full flex items-center justify-center shadow-custom-inset hover:scale-110 transition-all duration-300">
-            <FaFacebook className="text-2xl text-white items-center cursor-pointer" />
-          </div>
-        </div> */}
         <p
           className="text-center text-white text-sm my-3 hover:text-lime-100 cursor-pointer text-shadow"
           onClick={handleSignIn}

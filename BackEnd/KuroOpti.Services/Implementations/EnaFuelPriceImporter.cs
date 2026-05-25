@@ -12,15 +12,18 @@ namespace KuroOpti.Services.Implementations
         private const string EnaPageUrl = "https://www.ena.lt/degalu-kainos-degalinese/";
 
         private readonly IFuelStationRepository _repository;
+        private readonly IGeocodingService _geocodingService;
         private readonly ILogger<EnaFuelPriceImporter> _logger;
         private readonly HttpClient _httpClient;
 
         public EnaFuelPriceImporter(
             IFuelStationRepository repository,
+            IGeocodingService geocodingService,
             ILogger<EnaFuelPriceImporter> logger,
             HttpClient httpClient)
         {
             _repository = repository;
+            _geocodingService = geocodingService;
             _logger = logger;
             _httpClient = httpClient;
         }
@@ -38,6 +41,30 @@ namespace KuroOpti.Services.Implementations
             await _repository.UpsertAllAsync(stations);
 
             _logger.LogInformation("Import complete — {Count} stations saved", stations.Count);
+
+            await GeocodeStationsAsync();
+        }
+
+        private async Task GeocodeStationsAsync()
+        {
+            List<FuelStation> ungeocoded = await _repository.GetUngeocodedAsync();
+
+            _logger.LogInformation("Geocoding {Count} ungeocoded stations", ungeocoded.Count);
+
+            foreach (FuelStation station in ungeocoded)
+            {
+                (decimal lat, decimal lng) = await _geocodingService.GeocodeAsync(station.Address, station.Municipality);
+
+                if (lat != 0 || lng != 0)
+                {
+                    await _repository.UpdateCoordinatesAsync(station.Id, lat, lng);
+                    _logger.LogInformation("Geocoded: {Name} → {Lat}, {Lng}", station.Name, lat, lng);
+                }
+
+                await Task.Delay(1100); // Nominatim rate limit: 1 request/second
+            }
+
+            _logger.LogInformation("Geocoding complete");
         }
 
         private async Task<string> ScrapeExcelUrlAsync()

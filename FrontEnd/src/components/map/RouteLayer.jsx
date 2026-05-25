@@ -9,58 +9,74 @@ const RouteLayer = ({ start, end, addedWaypoints = [], onRouteFound }) => {
 
   useEffect(() => {
     if (!map || !start || !end) return;
-
-     
-    if (routingControlRef.current) {
-      map.removeControl(routingControlRef.current);
-    }
-
-     
+ 
     const points = [
       L.latLng(start[0], start[1]),
-      ...addedWaypoints.map(wp => L.latLng(wp.lat, wp.lng)),
+      ...addedWaypoints
+        .map(wp => {
+          const lat = parseFloat(wp.Latitude || wp.latitude);
+          const lng = parseFloat(wp.Longitude || wp.longitude);
+          return (!isNaN(lat) && !isNaN(lng)) ? L.latLng(lat, lng) : null;
+        })
+        .filter(wp => wp !== null),
       L.latLng(end[0], end[1])
     ];
+ 
+    if (routingControlRef.current) {
+      try {
+        map.removeControl(routingControlRef.current);
+      } catch (e) { 
+      }
+    }
 
-    const routingControl = L.Routing.control({
+    // 3. Sukuriame naują kontrolerį
+    const control = L.Routing.control({
       waypoints: points,
       lineOptions: {
-        styles: [{ color: "#6366f1", weight: 6, opacity: 0.8 }],
-        extendToWaypoints: true,
-        missingRouteTolerance: 0
+        styles: [{ color: "#5c6bc0", weight: 6 }]
       },
       addWaypoints: false,
-      draggableWaypoints: false,
-      fitSelectedRoutes: true,
-      show: false,
-      
-      createMarker: (i, waypoint, n) => {
-        if (i === 0 || i === n - 1) {
-          return L.marker(waypoint.latLng);  
-        }
-        return null;  
+      routeWhileDragging: false,
+      show: false  
+    });
+ 
+    control.on("routesfound", (e) => {
+      const routes = e.routes;
+      if (routes && routes[0] && onRouteFound) {
+        onRouteFound(routes[0].coordinates);
       }
-    }).addTo(map);
-
-    routingControl.on('routesfound', (e) => {
-      const coords = e.routes[0].coordinates;
-      if (onRouteFound) onRouteFound(coords);
     });
 
-    routingControlRef.current = routingControl;
-return () => {
-        if (map && routingControlRef.current) {
-            try {
-                map.removeControl(routingControlRef.current);
-                routingControlRef.current = null; 
-            } catch (error) {
-                console.warn("Leaflet išsivalymo įspėjimas (galite ignoruoti):", error.message);
-            }
-        } 
-    }; 
-  }, [map, start, end, addedWaypoints]);  
+    routingControlRef.current = control;
+ 
+    const timer = setTimeout(() => {
+      if (map && routingControlRef.current) {
+        try {
+          routingControlRef.current.addTo(map);
+        } catch (err) {
+          console.warn("Nepavyko pridėti maršruto kontrolerio:", err.message);
+        }
+      }
+    }, 50);
+ 
+    return () => {
+      clearTimeout(timer);
+      
+      if (routingControlRef.current) {
+        try {
+          routingControlRef.current.setWaypoints([]);
+          if (map && map._container) {
+            map.removeControl(routingControlRef.current);
+          }
+        } catch (error) {
+        } finally {
+          routingControlRef.current = null;
+        }
+      }
+    };
+  }, [map, start, end, addedWaypoints, onRouteFound]);
 
   return null;
-};
+}; 
 
 export default RouteLayer;

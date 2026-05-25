@@ -41,6 +41,7 @@ namespace KuroOpti.Console
                         config.SetBasePath(basePath);
                         config.AddJsonFile("appsettings.json", optional: false);
                         config.AddJsonFile($"appsettings.{env}.json", optional: true);
+                        config.AddEnvironmentVariables();
                     }
                 )
                 .ConfigureServices(
@@ -65,6 +66,8 @@ namespace KuroOpti.Console
 
                         services.AddScoped<IFuelStationRepository, FuelStationRepository>();
                         services.AddHttpClient<EnaFuelPriceImporter>();
+                        services.AddHttpClient<GoogleGeocodingService>();
+                        services.AddScoped<IGeocodingService, GoogleGeocodingService>();
                         services.AddScoped<IFuelPriceImporter, EnaFuelPriceImporter>();
                     }
                 );
