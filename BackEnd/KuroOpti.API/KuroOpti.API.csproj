@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\KuroOpti.Common\KuroOpti.Common.csproj" />
     <ProjectReference Include="..\KuroOpti.Services\KuroOpti.Services.csproj" />
   </ItemGroup>
 </Project>

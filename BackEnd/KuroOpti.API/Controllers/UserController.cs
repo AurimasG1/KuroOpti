@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using AutoMapper;
-using KuroOpti.API.Responses;
+using KuroOpti.Common.DTO;
+using KuroOpti.Common.Responses;
 using KuroOpti.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

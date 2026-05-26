@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using AutoMapper;
-using KuroOpti.API.Responses;
+using KuroOpti.Common.DTO;
+using KuroOpti.Common.Responses;
 using KuroOpti.Entities;
 using KuroOpti.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -27,23 +28,43 @@ namespace KuroOpti.API.Controllers
             return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         }
 
+        // POST: api/routes
         [HttpPost]
         public async Task<IActionResult> CreateRoute([FromBody] RouteDto dto)
         {
+            if (dto == null)
+                return BadRequest("Route data is required");
+
             var userId = GetUserId();
+
             var route = mapper.Map<Entities.Route>(dto);
 
             var created = await routeService.CreateRouteAsync(userId, route);
-            return Ok(mapper.Map<RouteDto>(created));
+            return Ok(created);
         }
 
+        // GET: api/routes/my
         [HttpGet("my")]
         public async Task<IActionResult> GetRoutes()
         {
             var userId = GetUserId();
             var routes = await routeService.GetUserRoutesAsync(userId);
 
-            return Ok(mapper.Map<List<RouteDto>>(routes));
+            return Ok(routes);
+        }
+
+        // GET: api/routes/{routeId}
+        [HttpGet("{routeId}")]
+        public async Task<IActionResult> GetRoute(int routeId)
+        {
+            var userId = GetUserId();
+
+            var route = await routeService.GetRouteAsync(userId, routeId);
+
+            if (route == null)
+                return NotFound("Route not found");
+
+            return Ok(route);
         }
 
         [HttpDelete("{routeId}")]

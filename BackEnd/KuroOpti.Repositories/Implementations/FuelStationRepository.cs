@@ -6,48 +6,56 @@ namespace KuroOpti.Repositories
 {
     public class FuelStationRepository : IFuelStationRepository
     {
-        private readonly KuroOptiDbContext _db;
+        private readonly KuroOptiDbContext db;
 
         public FuelStationRepository(KuroOptiDbContext db)
         {
-            _db = db;
+            this.db = db;
         }
 
         public async Task<List<FuelStation>> GetAllAsync()
         {
-            return await _db.FuelStations.AsNoTracking().ToListAsync();
+            return await db.FuelStations.AsNoTracking().ToListAsync();
         }
 
         public async Task<FuelStation?> GetByIdAsync(int id)
         {
-            return await _db.FuelStations.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            return await db.FuelStations.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<List<FuelStation>> GetByIdsAsync(List<int> ids)
+        {
+            return await db
+                .FuelStations.AsNoTracking()
+                .Where(x => ids.Contains(x.Id))
+                .ToListAsync();
         }
 
         public async Task AddAsync(FuelStation station)
         {
-            _db.FuelStations.Add(station);
-            await _db.SaveChangesAsync();
+            db.FuelStations.Add(station);
+            await db.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(FuelStation station)
         {
-            _db.FuelStations.Update(station);
-            await _db.SaveChangesAsync();
+            db.FuelStations.Update(station);
+            await db.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
-            var station = await _db.FuelStations.FindAsync(id);
+            var station = await db.FuelStations.FindAsync(id);
             if (station != null)
             {
-                _db.FuelStations.Remove(station);
-                await _db.SaveChangesAsync();
+                db.FuelStations.Remove(station);
+                await db.SaveChangesAsync();
             }
         }
 
         public async Task UpsertAllAsync(List<FuelStation> stations)
         {
-            Dictionary<string, FuelStation> existing = await _db.FuelStations.ToDictionaryAsync(s =>
+            Dictionary<string, FuelStation> existing = await db.FuelStations.ToDictionaryAsync(s =>
                 s.Name + "|" + s.Address
             );
 
@@ -68,35 +76,35 @@ namespace KuroOpti.Repositories
                 }
                 else
                 {
-                    _db.FuelStations.Add(incoming);
+                    db.FuelStations.Add(incoming);
                 }
             }
 
             foreach (KeyValuePair<string, FuelStation> kvp in existing)
             {
                 if (incomingKeys.Contains(kvp.Key) == false)
-                    _db.FuelStations.Remove(kvp.Value);
+                    db.FuelStations.Remove(kvp.Value);
             }
 
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
         }
 
         public async Task<List<FuelStation>> GetUngeocodedAsync()
         {
-            return await _db.FuelStations
-                .Where(s => s.Latitude == 0 && s.Longitude == 0)
+            return await db
+                .FuelStations.Where(s => s.Latitude == 0 && s.Longitude == 0)
                 .ToListAsync();
         }
 
         public async Task UpdateCoordinatesAsync(int id, decimal latitude, decimal longitude)
         {
-            FuelStation? station = await _db.FuelStations.FindAsync(id);
+            FuelStation? station = await db.FuelStations.FindAsync(id);
             if (station == null)
                 return;
 
             station.Latitude = latitude;
             station.Longitude = longitude;
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
         }
     }
 }

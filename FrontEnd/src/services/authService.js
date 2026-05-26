@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-
->>>>>>> main
 const API_URL = 'http://localhost:5211/api/auth';
 
 export const login = async (email, password) => {

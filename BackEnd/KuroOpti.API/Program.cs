@@ -1,12 +1,11 @@
 using System.Text;
-using KuroOpti.API;
+using KuroOpti.API.Mapping;
 using KuroOpti.Data;
 using KuroOpti.Repositories;
 using KuroOpti.Repositories.Implementations;
 using KuroOpti.Repositories.Interfaces;
 using KuroOpti.Services.Implementations;
 using KuroOpti.Services.Interfaces;
-using KuroOpti.Services.Interfaces.KuroOpti.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -15,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddSwaggerGen();
 
@@ -68,6 +67,9 @@ builder.Services.AddDbContext<KuroOptiDbContext>(options =>
 );
 
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 

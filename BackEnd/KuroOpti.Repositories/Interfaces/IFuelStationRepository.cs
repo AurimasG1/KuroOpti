@@ -6,6 +6,7 @@ namespace KuroOpti.Repositories
     {
         Task<List<FuelStation>> GetAllAsync();
         Task<FuelStation?> GetByIdAsync(int id);
+        Task<List<FuelStation>> GetByIdsAsync(List<int> ids);
         Task AddAsync(FuelStation station);
         Task UpdateAsync(FuelStation station);
         Task DeleteAsync(int id);

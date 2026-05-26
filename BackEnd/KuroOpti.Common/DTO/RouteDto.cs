@@ -1,4 +1,4 @@
-namespace KuroOpti.API.Responses
+namespace KuroOpti.Common.DTO
 {
     public class RouteDto
     {

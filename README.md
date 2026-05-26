@@ -10,13 +10,29 @@ Reikalingas BackEnd projektams.
 
 https://dotnet.microsoft.com/en-us/download
 
-## 2. Node.js
+## 2. EF Core CLI Tool
+
+Reikalingas DB migracijoms.
+
+```bash
+dotnet tool install --global dotnet-ef --version 9.*
+```
+
+Patikrinimas:
+
+```
+dotnet ef
+```
+
+---
+
+## 3. Node.js
 
 Reikalingas React FrontEnd projektui.
 
 https://nodejs.org/
 
-## 3. Docker Desktop
+## 4. Docker Desktop
 
 Reikalingas MySQL konteinerio paleidimui.
 
@@ -31,57 +47,54 @@ npm install --legacy-peer-deps
 
 ```
 
-## Projekto paleidimas eilės tvarka 1-5
+# Projekto paleidimas eilės tvarka 1-5
 
-#### 1. Docker konteinerio sukūrimo komanda
+### 1. Docker konteinerio sukūrimo komanda
 
-\*leidžiama iš KuroOpti direktorijos
+Reikia tik pirmą kartą.
+
+\*leidžiama iš KuroOpti/ direktorijos
 
 ```
 docker compose up -d
 
 ```
 
-#### 2. BackEnd DB migration
+### 2. BackEnd DB migration
 
-\*leidžiama iš KuroOpti/BackEnd/ direktorijos
+Sukuria lenteles lokalioje duomenų bazėje.
 
-```
-dotnet ef database update -p KuroOpti.Data -s KuroOpti.Console
-```
-
-#### 3. Console projekto paleidimas
-
-paima kuro kainų duomenis iš interneto
-importuoja juos į MySQL duombazę
-
-\*leidžiama iš KuroOpti/BackEnd/ direktorijos
+\*leidžiama iš KuroOpti/ direktorijos
 
 ```
-dotnet run --project KuroOpti.Console
+dotnet ef database update -p BackEnd/KuroOpti.Data -s BackEnd/KuroOpti.Console
 ```
 
-\*arba iš KuroOpti/BackEnd/KuroOpti.Console direktorijos
+### 3. Console projekto paleidimas
+
+paima kuro kainų duomenis iš interneto ir importuoja juos į MySQL duombazę.
+Pirmą kartą labai ilgai dėlios koordinates.
+Jeigu liks tas pats Docker Image, tai antrą kartą labai greitai atsinaujins tik kuro kainos ir atnaujinimo laikas.
+
+\*leidžiama iš KuroOpti/ direktorijos
 
 ```
-dotnet run
+dotnet run --project BackEnd/KuroOpti.Console
 ```
 
-#### 4. API projekto paleidimas
+### 4. API projekto paleidimas
 
-\*atskiras bash, leidžiama iš KuroOpti/BackEnd/ direktorijos
+BackEnd serverio paleidimas.
 
-```
-dotnet run --project KuroOpti.API
-```
-
-\*atskiras bash, arba iš KuroOpti/BackEnd/KuroOpti.API direktorijos
+\*atskiras bash, leidžiama iš KuroOpti/ direktorijos
 
 ```
-dotnet run
+dotnet run --project BackEnd/KuroOpti.API
 ```
 
-#### 5. React projekto paleidimas
+### 5. React projekto paleidimas
+
+FrontEnd serverio paleidimas.
 
 \* atskiras bash, leidžiama iš KuroOpti/FrontEnd/ direktorijos
 

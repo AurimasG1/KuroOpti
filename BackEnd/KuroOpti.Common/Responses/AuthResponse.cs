@@ -1,4 +1,6 @@
-namespace KuroOpti.API.Responses
+using KuroOpti.Common.DTO;
+
+namespace KuroOpti.Common.Responses
 {
     public class AuthResponse
     {

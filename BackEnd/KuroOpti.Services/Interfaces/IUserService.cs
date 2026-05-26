@@ -8,8 +8,9 @@ namespace KuroOpti.Services.Interfaces
         Task<User?> ValidateUserAsync(string email, string password);
         Task<User?> GetUserByEmailAsync(string email);
         Task<User?> GetUserByIdAsync(int id);
-        // Task<List<User>> GetAllUsersAsync(int page, int itemsPerPage);
-        // Task UpdateUser(User user);
-        // Task DeleteUser(int id);
+        Task<List<User>> GetAllUsersAsync(int page, int itemsPerPage);
+        Task<bool> ChangeEmailAsync(int userId, string newEmail);
+        Task<bool> ChangePasswordAsync(int userId, string oldPassword, string newPassword);
+        Task DeleteUserAsync(int id);
     }
 }

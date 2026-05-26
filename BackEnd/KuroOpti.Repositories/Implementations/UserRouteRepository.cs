@@ -7,31 +7,31 @@ namespace KuroOpti.Repositories.Implementations
 {
     public class UserRouteStationRepository : IUserRouteStationRepository
     {
-        private readonly KuroOptiDbContext _db;
+        private readonly KuroOptiDbContext db;
 
         public UserRouteStationRepository(KuroOptiDbContext db)
         {
-            _db = db;
+            this.db = db;
         }
 
         public async Task AddAsync(UserRouteStation userRouteStation)
         {
-            await _db.UserRouteStations.AddAsync(userRouteStation);
+            await db.UserRouteStations.AddAsync(userRouteStation);
         }
 
         public async Task RemoveAsync(int routeId, int stationId)
         {
-            var existing = await _db.UserRouteStations.FirstOrDefaultAsync(x =>
+            var existing = await db.UserRouteStations.FirstOrDefaultAsync(x =>
                 x.RouteId == routeId && x.FuelStationId == stationId
             );
 
             if (existing != null)
-                _db.UserRouteStations.Remove(existing);
+                db.UserRouteStations.Remove(existing);
         }
 
         public Task<List<UserRouteStation>> GetRouteByIdAsync(int routeId)
         {
-            return _db
+            return db
                 .UserRouteStations.AsNoTracking()
                 .Include(x => x.FuelStation)
                 .Where(x => x.RouteId == routeId)
@@ -40,11 +40,11 @@ namespace KuroOpti.Repositories.Implementations
 
         public Task<bool> ExistsAsync(int routeId, int stationId)
         {
-            return _db.UserRouteStations.AnyAsync(x =>
+            return db.UserRouteStations.AnyAsync(x =>
                 x.RouteId == routeId && x.FuelStationId == stationId
             );
         }
 
-        public Task SaveChangesAsync() => _db.SaveChangesAsync();
+        public Task SaveChangesAsync() => db.SaveChangesAsync();
     }
 }

@@ -13,6 +13,7 @@ namespace KuroOpti.Data
         public DbSet<Route> Routes { get; set; }
         public DbSet<SearchLog> SearchLogs { get; set; }
         public DbSet<UserRouteStation> UserRouteStations { get; set; } = default!;
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
