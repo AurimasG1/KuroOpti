@@ -217,9 +217,9 @@ const handleRouteFound = useCallback(
                 onChange={(e) => setFuelType(e.target.value)}
               >
                 <option value="all">Visi degalai</option>
-                <option value="gasoline">Benzinas</option>
-                <option value="diesel">Dyzelinas</option>
-                <option value="gas">Dujos</option>
+                <option value="PetrolPrice">Benzinas</option>
+                <option value="DieselPrice">Dyzelinas</option>
+                <option value="LpgPrice">Dujos</option>
               </select>
 
               <label className="text-xs text-slate-400 uppercase font-bold mt-2">
