@@ -11,7 +11,7 @@ const Login = ({ handleSignIn, onLoginSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       console.log("Siunčiame duomenis:", { email, password });
 
@@ -24,7 +24,7 @@ const Login = ({ handleSignIn, onLoginSuccess }) => {
       } else {
         onLoginSuccess({ userName: email });
       }
-      
+
       alert("Prisijungta sėkmingai!");
     } catch (error) {
       alert("Klaida: " + error.message);
@@ -38,19 +38,19 @@ const Login = ({ handleSignIn, onLoginSuccess }) => {
           Login
         </h1>
         <form className="flex flex-col gap-3 " onSubmit={handleSubmit}>
-          
+
           {/* Email */}
           <div>
             <label htmlFor="email" className="input-label">
               Email
             </label>
-            <input 
-              id="email" 
-              type="email" 
-              className="input" 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
-              required 
+            <input
+              id="email"
+              type="email"
+              className="input"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
 
@@ -84,7 +84,7 @@ const Login = ({ handleSignIn, onLoginSuccess }) => {
           </div>
           <button className="primary-btn cursor-pointer">Submit</button>
         </form>
-        
+
         <p
           className="text-center text-white text-sm my-3 hover:text-lime-100 cursor-pointer text-shadow"
           onClick={handleSignIn}

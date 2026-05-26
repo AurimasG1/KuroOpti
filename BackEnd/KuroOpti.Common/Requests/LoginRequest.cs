@@ -1,4 +1,4 @@
-namespace KuroOpti.API.Requests
+namespace KuroOpti.Common.Requests
 {
     public class LoginRequest
     {

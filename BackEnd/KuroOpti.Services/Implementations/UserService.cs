@@ -8,22 +8,11 @@ namespace KuroOpti.Services.Implementations
     public class UserService : IUserService
     {
         private readonly IUserRepository userRepository;
-        private readonly PasswordHasher<User> passwordHasher;
+        private readonly PasswordHasher<User> hasher = new();
 
         public UserService(IUserRepository userRepository)
         {
             this.userRepository = userRepository;
-            this.passwordHasher = new PasswordHasher<User>();
-        }
-
-        public async Task<User?> GetUserByEmailAsync(string email)
-        {
-            return await userRepository.GetByEmailAsync(email);
-        }
-
-        public async Task<User?> GetUserById(int id)
-        {
-            return await userRepository.GetByIdAsync(id);
         }
 
         public async Task<User?> RegisterAsync(string email, string password)
@@ -33,7 +22,7 @@ namespace KuroOpti.Services.Implementations
                 return null;
 
             var user = new User { Email = email.ToLowerInvariant().Trim(), Role = "user" };
-            user.PasswordHash = passwordHasher.HashPassword(user, password);
+            user.PasswordHash = hasher.HashPassword(user, password);
 
             await userRepository.CreateAsync(user);
             return user;
@@ -45,12 +34,62 @@ namespace KuroOpti.Services.Implementations
             if (user == null)
                 return null;
 
-            var result = passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
+            var result = hasher.VerifyHashedPassword(user, user.PasswordHash, password);
 
             if (result == PasswordVerificationResult.Failed)
                 return null;
 
             return user;
+        }
+
+        public async Task<User?> GetUserByEmailAsync(string email)
+        {
+            return await userRepository.GetByEmailAsync(email);
+        }
+
+        public async Task<User?> GetUserByIdAsync(int id)
+        {
+            return await userRepository.GetByIdAsync(id);
+        }
+
+        public async Task<List<User>> GetAllUsersAsync(int page, int itemsPerPage)
+        {
+            return await userRepository.GetAllAsync(page, itemsPerPage);
+        }
+
+        public async Task<bool> ChangeEmailAsync(int userId, string newEmail)
+        {
+            var existing = await userRepository.GetByEmailAsync(newEmail);
+            if (existing != null)
+                return false; // email already used
+
+            await userRepository.UpdateEmailAsync(userId, newEmail.ToLower().Trim());
+            return true;
+        }
+
+        public async Task<bool> ChangePasswordAsync(
+            int userId,
+            string oldPassword,
+            string newPassword
+        )
+        {
+            var user = await userRepository.GetByIdAsync(userId);
+            if (user == null)
+                return false;
+
+            var result = hasher.VerifyHashedPassword(user, user.PasswordHash, oldPassword);
+            if (result == PasswordVerificationResult.Failed)
+                return false;
+
+            string newHash = hasher.HashPassword(user, newPassword);
+            await userRepository.UpdatePasswordHashAsync(userId, newHash);
+
+            return true;
+        }
+
+        public async Task DeleteUserAsync(int id)
+        {
+            await userRepository.DeleteAsync(id);
         }
     }
 }

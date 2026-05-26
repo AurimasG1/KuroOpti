@@ -18,8 +18,8 @@ const ProtectedRoute = ({ children, user }) => {
 
 const App = () => {
   const [loginPopup, setLoginPopup] = useState(false);
-  
-  const [user, setUser] = useState(null); 
+
+  const [user, setUser] = useState(null);
 
   const handleLoginPopup = () => {
     setLoginPopup(!loginPopup);
@@ -52,36 +52,36 @@ const App = () => {
           />
 
           {/* Žemėlapio puslapis */}
-          <Route 
-            path="/MapPage" 
+          <Route
+            path="/MapPage"
             element={
               <ProtectedRoute user={user}>
                 <MapPage />
               </ProtectedRoute>
-            } 
+            }
           />
 
           {/* Kontaktų puslapis */}
           <Route path="/ContactPage" element={<ContactPage />} />
         </Routes>
 
-            {/* ChatBot */}
-            {/* <ChatBotPage /> */}
-        
-           {/* Footer */}
-            <Footer />
+        {/* ChatBot */}
+        {/* <ChatBotPage /> */}
+
+        {/* Footer */}
+        <Footer />
 
         {/* Login Popup */}
-       <LoginPopup 
-          show={loginPopup} 
-          onClose={handleLoginPopup} 
+        <LoginPopup
+          show={loginPopup}
+          onClose={handleLoginPopup}
           onLoginSuccess={(userData) => {
             console.log("Vartotojas sėkmingai išsaugotas App state:", userData);
-            setUser(userData); 
-          }} 
+            setUser(userData);
+          }}
         />
-      </div>
-    </Router>
+      </div >
+    </Router >
   );
 };
 
