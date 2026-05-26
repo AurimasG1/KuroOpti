@@ -1,7 +1,6 @@
 using System.Security.Claims;
 using AutoMapper;
 using KuroOpti.Common.DTO;
-using KuroOpti.Common.Responses;
 using KuroOpti.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -42,36 +41,16 @@ namespace KuroOpti.API.Controllers
             public int StationId { get; set; }
         }
 
-        [HttpPost("route/stations/add")]
-        public async Task<IActionResult> AddStation([FromBody] ModifyStationRequest request)
+        [HttpGet("me")]
+        public async Task<IActionResult> GetMe()
         {
             var userId = GetUserId();
-            await userRouteStationService.AddStationToRouteAsync(
-                userId,
-                request.RouteId,
-                request.StationId
-            );
-            return NoContent();
-        }
+            var user = await userService.GetUserByIdAsync(userId);
 
-        [HttpPost("route/stations/remove")]
-        public async Task<IActionResult> RemoveStation([FromBody] ModifyStationRequest request)
-        {
-            var userId = GetUserId();
-            await userRouteStationService.RemoveStationFromRouteAsync(
-                userId,
-                request.RouteId,
-                request.StationId
-            );
-            return NoContent();
-        }
+            if (user == null)
+                return NotFound();
 
-        [HttpGet("route/{routeId}/stations")]
-        public async Task<IActionResult> GetSelectedStations(int routeId)
-        {
-            var userId = GetUserId();
-            var stations = await userRouteStationService.GetSelectedStationsAsync(userId, routeId);
-            var dto = mapper.Map<List<FuelStationDto>>(stations);
+            var dto = mapper.Map<UserDto>(user);
             return Ok(dto);
         }
     }

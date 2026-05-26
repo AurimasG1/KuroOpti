@@ -37,10 +37,12 @@ namespace KuroOpti.API.Controllers
 
             var userId = GetUserId();
 
-            var route = mapper.Map<Entities.Route>(dto);
+            var entity = mapper.Map<Entities.Route>(dto);
+            var created = await routeService.CreateRouteAsync(userId, entity);
 
-            var created = await routeService.CreateRouteAsync(userId, route);
-            return Ok(created);
+            var createdDto = mapper.Map<RouteDto>(created);
+
+            return Ok(createdDto);
         }
 
         // GET: api/routes/my
@@ -50,7 +52,9 @@ namespace KuroOpti.API.Controllers
             var userId = GetUserId();
             var routes = await routeService.GetUserRoutesAsync(userId);
 
-            return Ok(routes);
+            var dto = mapper.Map<List<RouteDto>>(routes);
+
+            return Ok(dto);
         }
 
         // GET: api/routes/{routeId}
@@ -64,13 +68,17 @@ namespace KuroOpti.API.Controllers
             if (route == null)
                 return NotFound("Route not found");
 
-            return Ok(route);
+            var dto = mapper.Map<RouteDto>(route);
+
+            return Ok(dto);
         }
 
+        // Delete: api/routes/{routeId}
         [HttpDelete("{routeId}")]
         public async Task<IActionResult> DeleteRoute(int routeId)
         {
             var userId = GetUserId();
+
             await routeService.DeleteRouteAsync(userId, routeId);
 
             return NoContent();

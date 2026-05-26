@@ -9,38 +9,35 @@ namespace KuroOpti.Services.Implementations
     public class FuelStationService : IFuelStationService
     {
         private readonly IFuelStationRepository repository;
-        private readonly IMapper mapper;
 
-        public FuelStationService(IFuelStationRepository repository, IMapper mapper)
+        public FuelStationService(IFuelStationRepository repository)
         {
             this.repository = repository;
-            this.mapper = mapper;
         }
 
-        public async Task<List<FuelStationDto>> GetAllFuelStations()
+        public async Task<List<FuelStation>> GetAllFuelStations()
         {
-            var stations = await repository.GetAllAsync();
-            return mapper.Map<List<FuelStationDto>>(stations);
+            return await repository.GetAllAsync();
         }
 
-        public async Task<FuelStationDto> GetFuelStationById(int id)
+        public async Task<FuelStation> GetFuelStationById(int id)
         {
             var station = await repository.GetByIdAsync(id);
 
             if (station == null)
-                throw new Exception("Fuel station not found");
+                throw new KeyNotFoundException("Fuel station not found");
 
-            return mapper.Map<FuelStationDto>(station);
+            return station;
         }
 
-        public async Task<FuelStationDto> CreateFuelStation(FuelStation fuelStation)
+        public async Task<FuelStation> CreateFuelStation(FuelStation fuelStation)
         {
             await repository.AddAsync(fuelStation);
 
-            return mapper.Map<FuelStationDto>(fuelStation);
+            return fuelStation;
         }
 
-        public async Task<FuelStationDto> UpdateFuelStation(int id, FuelStation fuelStation)
+        public async Task<FuelStation> UpdateFuelStation(int id, FuelStation fuelStation)
         {
             var existing = await repository.GetByIdAsync(id);
 
@@ -58,7 +55,7 @@ namespace KuroOpti.Services.Implementations
 
             await repository.UpdateAsync(existing);
 
-            return mapper.Map<FuelStationDto>(existing);
+            return existing;
         }
 
         public async Task<bool> DeleteFuelStation(int id)
