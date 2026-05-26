@@ -72,7 +72,3 @@ jobs:
             echo "✔ No pending migrations."
             rm -f "$FILE"
           fi
-
-            --project BackEnd/KuroOpti.Data \
-            --startup-project BackEnd/KuroOpti.Console \
-            --connection "Server=127.0.0.1;Port=3306;Database=testdb;User=root;Password=root"
