@@ -14,27 +14,28 @@ namespace KuroOpti.Repositories.Implementations
             this.db = db;
         }
 
-        public async Task AddAsync(UserRouteStation userRouteStation)
+        public async Task AddAsync(UserRouteStation entity)
         {
-            await db.UserRouteStations.AddAsync(userRouteStation);
+            await db.UserRouteStations.AddAsync(entity);
         }
 
         public async Task RemoveAsync(int routeId, int stationId)
         {
-            var existing = await db.UserRouteStations.FirstOrDefaultAsync(x =>
-                x.RouteId == routeId && x.FuelStationId == stationId
-            );
+            var existing = await db
+                .UserRouteStations.Where(x => x.RouteId == routeId && x.FuelStationId == stationId)
+                .FirstOrDefaultAsync();
 
             if (existing != null)
                 db.UserRouteStations.Remove(existing);
         }
 
-        public Task<List<UserRouteStation>> GetRouteByIdAsync(int routeId)
+        public async Task<List<UserRouteStation>> GetRouteByIdAsync(int routeId)
         {
-            return db
+            return await db
                 .UserRouteStations.AsNoTracking()
                 .Include(x => x.FuelStation)
                 .Where(x => x.RouteId == routeId)
+                .OrderBy(x => x.AddedAt)
                 .ToListAsync();
         }
 
@@ -43,6 +44,14 @@ namespace KuroOpti.Repositories.Implementations
             return db.UserRouteStations.AnyAsync(x =>
                 x.RouteId == routeId && x.FuelStationId == stationId
             );
+        }
+
+        public async Task ClearStationsForRouteAsync(int routeId)
+        {
+            var items = await db.UserRouteStations.Where(x => x.RouteId == routeId).ToListAsync();
+
+            if (items.Count > 0)
+                db.UserRouteStations.RemoveRange(items);
         }
 
         public Task SaveChangesAsync() => db.SaveChangesAsync();

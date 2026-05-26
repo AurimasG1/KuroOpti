@@ -1,4 +1,4 @@
-using KuroOpti.Common.DTO;
+using KuroOpti.Entities;
 
 namespace KuroOpti.Services.Interfaces
 {
@@ -6,6 +6,7 @@ namespace KuroOpti.Services.Interfaces
     {
         Task AddStationToRouteAsync(int userId, int routeId, int stationId);
         Task RemoveStationFromRouteAsync(int userId, int routeId, int stationId);
-        Task<List<FuelStationDto>> GetSelectedStationsAsync(int userId, int routeId);
+        Task<List<FuelStation>> GetSelectedStationsAsync(int userId, int routeId);
+        Task ClearStationsForRouteAsync(int userId, int routeId);
     }
 }

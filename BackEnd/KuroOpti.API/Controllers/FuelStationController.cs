@@ -24,8 +24,9 @@ namespace KuroOpti.API.Controllers
         public async Task<IActionResult> GetAllFuelStations()
         {
             var stations = await fuelStationService.GetAllFuelStations();
+            var dto = mapper.Map<List<FuelStationDto>>(stations);
 
-            return Ok(stations);
+            return Ok(dto);
         }
 
         [HttpGet("{id}")]
@@ -34,10 +35,11 @@ namespace KuroOpti.API.Controllers
             try
             {
                 var station = await fuelStationService.GetFuelStationById(id);
+                var dto = mapper.Map<FuelStationDto>(station);
 
-                return Ok(station);
+                return Ok(dto);
             }
-            catch (Exception ex)
+            catch (KeyNotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
@@ -52,7 +54,9 @@ namespace KuroOpti.API.Controllers
             var entity = mapper.Map<FuelStation>(dto);
             var created = await fuelStationService.CreateFuelStation(entity);
 
-            return CreatedAtAction(nameof(GetFuelStationById), new { id = created.Id }, created);
+            var createdDto = mapper.Map<FuelStationDto>(created);
+
+            return CreatedAtAction(nameof(GetFuelStationById), new { id = created.Id }, createdDto);
         }
 
         [HttpPut("{id}")]
@@ -66,9 +70,11 @@ namespace KuroOpti.API.Controllers
                 var entity = mapper.Map<FuelStation>(dto);
                 var updated = await fuelStationService.UpdateFuelStation(id, entity);
 
-                return Ok(updated);
+                var updatedDto = mapper.Map<FuelStationDto>(updated);
+
+                return Ok(updatedDto);
             }
-            catch (Exception ex)
+            catch (KeyNotFoundException ex)
             {
                 return NotFound(ex.Message);
             }

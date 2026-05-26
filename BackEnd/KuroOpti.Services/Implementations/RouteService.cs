@@ -9,38 +9,36 @@ namespace KuroOpti.Services.Implementations
     public class RouteService : IRouteService
     {
         private readonly IRouteRepository routeRepository;
-        private readonly IMapper mapper;
 
-        public RouteService(IRouteRepository routeRepository, IMapper mapper)
+        public RouteService(IRouteRepository routeRepository)
         {
             this.routeRepository = routeRepository;
-            this.mapper = mapper;
         }
 
-        public async Task<RouteDto> CreateRouteAsync(int userId, Route route)
+        public async Task<Route> CreateRouteAsync(int userId, Route route)
         {
             route.UserId = userId;
 
             await routeRepository.AddAsync(route);
             await routeRepository.SaveChangesAsync();
 
-            return mapper.Map<RouteDto>(route);
+            return route;
         }
 
-        public async Task<List<RouteDto>> GetUserRoutesAsync(int userId)
+        public async Task<List<Route>> GetUserRoutesAsync(int userId)
         {
             var routes = await routeRepository.GetByUserIdAsync(userId);
-            return mapper.Map<List<RouteDto>>(routes);
+            return routes;
         }
 
-        public async Task<RouteDto?> GetRouteAsync(int userId, int routeId)
+        public async Task<Route?> GetRouteAsync(int userId, int routeId)
         {
             var route = await routeRepository.GetByIdAsync(routeId);
 
             if (route == null || route.UserId != userId)
-                return null;
+                throw new UnauthorizedAccessException("Route does not belong to user");
 
-            return mapper.Map<RouteDto>(route);
+            return route;
         }
 
         public async Task DeleteRouteAsync(int userId, int routeId)
