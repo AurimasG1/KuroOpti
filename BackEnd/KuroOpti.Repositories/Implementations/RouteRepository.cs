@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KuroOpti.Repositories.Implementations
 {
-    public class RouteRepository : IRouteRepository //need route interface
+    public class RouteRepository : IRouteRepository
     {
         private readonly KuroOptiDbContext _context;
 
