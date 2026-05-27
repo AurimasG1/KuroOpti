@@ -42,15 +42,15 @@ const Signup = ({ handleSignIn }) => {
   return (
     <>
       <div className={"p-6"}>
-        <h1 className="text-3xl text-shadow text-white font-bold text-center mb-4">
-          Create Your Account
+        <h1 className="text-3xl text-shadow text-white font-bold text-center mb-4 ">
+          Registracija
         </h1>
         <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
 
           {/* Email */}
           <div>
             <label htmlFor="email" className="input-label">
-              Email
+              Elektroninis paštas
             </label>
             <input 
               id="email"
@@ -65,7 +65,7 @@ const Signup = ({ handleSignIn }) => {
           {/* Password */}
           <div>
             <label htmlFor="password" className="input-label">
-              Password
+              Slaptažodis
             </label>
             <div className="relative">
               <input
@@ -99,7 +99,7 @@ const Signup = ({ handleSignIn }) => {
           className="text-center text-white text-sm my-3 hover:text-lime-100 cursor-pointer text-shadow"
           onClick={handleSignIn}
         >
-          Already have an Account? Log in
+          Jau turi paskyrą? Prisijunk!
         </p>
       </div>
     </>

@@ -1,27 +1,17 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import LoginPopup from "./LoginPopup";
-import engineStartSound from "../assets/animations/engineStart.mp3";
 import routeScreen from "../assets/images/route.png";
 import { login } from "../services/authService.js";
 
-const HomePage = () => {
+const HomePage = ({ user: propsUser }) => {
   const [isStarted, setIsStarted] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
 
-  const handleIgnition = () => {
-    if (isStarted) return;
+  const user = propsUser;
 
-    const audio = new Audio(engineStartSound);
-    audio.play().catch((err) => console.error("Audio play error:", err));
-
-    setIsStarted(true);
-
-    setTimeout(() => {
-      setShowLogin(true);
-    }, 1500);
-  };
+  console.log("DABARTINIS USER STATE HOMEPAGE KOMPONENTE:", user);
 
   const textVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -42,39 +32,9 @@ const HomePage = () => {
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center text-white overflow-hidden p-6">
-      <div className="home__data ">
-        <div className="flex flex-col items-center justify-center p-6">
-          <h1 className="flex items-center justify-center py-4 px-2 font-bold text-4xl">
-            {user ? `Labas, ${user.userName}! ` : "Labas, Nepažįstamasis! "}
-          </h1>
-          <p className="font-bold text-2xl p-2">ką galėsi daryti prisiregistravęs:</p>
-          {["Suplanuoti maršrutą", "Įterpti degalinę pakeliui", "Nusisiųsti maršrutą į Google Maps"].map(
-            (text, e) => (
-              <motion.p
-                key={e}
-                custom={e}
-                variants={ulVariants}
-                initial="hidden"
-                animate="visible"
-                className="text-2xl font-semibold"
-              >
-                {text}
-              </motion.p>
-            ),
-          )}
-          <div className="flex p-4">
-            <img
-              src={routeScreen}
-              alt=""
-              className="w-80 h-60 md:w-180 md:h-160 rounded-2xl hover:shadow-2xl hover:scale-110 transition-all duration-700"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Introduction */}
-      <div className="text-center mb-16">
+    <main className="min-h-screen flex flex-col items-center justify-center text-white overflow-hidden p-4">
+       {/* Introduction */}
+      <div className="text-center mb-6">
         {["CTRL ALT DELETE", "Pristato projektą"].map((text, i) => (
           <motion.h2
             key={i}
@@ -88,55 +48,56 @@ const HomePage = () => {
           </motion.h2>
         ))}
       </div>
-
-      {/* start/Stop button */}
-      <div className="flex items-center justify-center">
-        <motion.button
-          onMouseDown={handleIgnition}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className={`
-            relative w-40 h-40 md:w-56 md:h-56 rounded-full border-8 
-            flex flex-col items-center justify-center transition-all duration-700
-            ${
-              isStarted
-                ? "bg-green-600 border-green-400 shadow-[0_0_50px_rgba(34,197,94,0.8)]"
-                : "bg-red-700 border-red-900 shadow-[0_0_30px_rgba(185,28,28,0.4)] hover:shadow-[0_0_50px_rgba(185,28,28,0.6)]"
-            }
-          `}
-        >
-          {/* Button */}
-          <span className="text-xs md:text-sm font-bold tracking-tighter opacity-70 mb-1">
-            Start
-          </span>
-          <span className="text-2xl md:text-4xl font-black tracking-tight">
-            YOUR
-          </span>
-          <span className="text-xs md:text-sm font-bold tracking-tighter opacity-70 mt-1 uppercase">
-            trip
-          </span>
-
-          {/* animation */}
-          {!isStarted && (
-            <motion.div
-              animate={{ opacity: [0.3, 0.6, 0.3] }}
-              transition={{ repeat: Infinity, duration: 2 }}
-              className="absolute inset-0 rounded-full border-2 border-white/20"
+        {/* What's done */}
+      <div className="home__data ">
+        <div className="flex flex-col items-center justify-center p-4">
+          <h1 className="flex items-center justify-center py-4 px-2 font-bold text-4xl text-lime-800">
+            {user && user.userName ? `Labas, ${user.userName.split('@')[0]}! ` : "Labas, Nepažįstamasis! "}
+          </h1>
+          <p className="font-bold text-2xl p-2">
+            ką galėsi daryti prisiregistravęs:
+          </p>
+          {[
+            "Suplanuoti maršrutą",
+            "Įterpti degalinę pakeliui",
+            "Nusisiųsti maršrutą į Google Maps",
+          ].map((text, e) => (
+            <motion.p
+              key={e}
+              custom={e}
+              variants={ulVariants}
+              initial="hidden"
+              animate="visible"
+              className="text-2xl font-semibold"
+            >
+              {text}
+            </motion.p>
+          ))}
+          <div className="flex p-4">
+            <img
+              src={routeScreen}
+              alt=""
+              className="w-80 h-60 md:w-180 md:h-160 rounded-2xl hover:shadow-2xl hover:scale-110 transition-all duration-700"
             />
-          )}
-        </motion.button>
+          </div>
+        </div>
       </div>
+
+     
 
       {/* login Popup */}
       <AnimatePresence>
         {showLogin && (
           <LoginPopup
-            show={showLogin}
-            onClose={() => {
-              setShowLogin(false);
-              setIsStarted(false);
+            show={loginPopup}
+            onClose={handleLoginPopup}
+            onLoginSuccess={(userData) => {
+              console.log(
+                "Vartotojas sėkmingai išsaugotas App state:",
+                userData,
+              );
+              onLoginSuccess(userData);
             }}
-            onLoginSuccess={(userData) => setUser(userData)}
           />
         )}
       </AnimatePresence>
