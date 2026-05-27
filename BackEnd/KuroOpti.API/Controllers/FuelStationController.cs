@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using KuroOpti.Services.Interfaces;
+﻿using AutoMapper;
+using KuroOpti.Common.DTO;
 using KuroOpti.Entities;
+using KuroOpti.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace KuroOpti.API.Controllers
 {
@@ -8,54 +10,71 @@ namespace KuroOpti.API.Controllers
     [Route("api/[controller]")]
     public class FuelStationController : ControllerBase
     {
-        private readonly IFuelStationService _fuelStationService;
+        private readonly IFuelStationService fuelStationService;
 
-        public FuelStationController(IFuelStationService fuelStationService)
+        private readonly IMapper mapper;
+
+        public FuelStationController(IFuelStationService fuelStationService, IMapper mapper)
         {
-            _fuelStationService = fuelStationService;
+            this.fuelStationService = fuelStationService;
+            this.mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllFuelStations()
         {
-            var stations = await _fuelStationService.GetAllFuelStations();
+            var stations = await fuelStationService.GetAllFuelStations();
+            var dto = mapper.Map<List<FuelStationDto>>(stations);
 
-            return Ok(stations);
+            return Ok(dto);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetFuelStationsById(int id)
+        public async Task<IActionResult> GetFuelStationById(int id)
         {
             try
             {
-                var station = await _fuelStationService.GetFuelStationById(id);
+                var station = await fuelStationService.GetFuelStationById(id);
+                var dto = mapper.Map<FuelStationDto>(station);
 
-                return Ok(station);
+                return Ok(dto);
             }
-            catch (Exception ex)
+            catch (KeyNotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateFuelStation(FuelStation fuelStation)
+        public async Task<IActionResult> CreateFuelStation([FromBody] FuelStationDto dto)
         {
-            var createdStation = await _fuelStationService.CreateFuelStation(fuelStation);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            return Ok(createdStation);
+            var entity = mapper.Map<FuelStation>(dto);
+            var created = await fuelStationService.CreateFuelStation(entity);
+
+            var createdDto = mapper.Map<FuelStationDto>(created);
+
+            return CreatedAtAction(nameof(GetFuelStationById), new { id = created.Id }, createdDto);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateFuelStation(int id, FuelStation fuelStation)
+        public async Task<IActionResult> UpdateFuelStation(int id, [FromBody] FuelStationDto dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             try
             {
-                var updateStation = await _fuelStationService.UpdateFuelStation(id, fuelStation);
+                var entity = mapper.Map<FuelStation>(dto);
+                var updated = await fuelStationService.UpdateFuelStation(id, entity);
 
-                return Ok(updateStation);
+                var updatedDto = mapper.Map<FuelStationDto>(updated);
+
+                return Ok(updatedDto);
             }
-            catch (Exception ex)
+            catch (KeyNotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
@@ -64,7 +83,7 @@ namespace KuroOpti.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFuelStation(int id)
         {
-            var deleted = await _fuelStationService.DeleteFuelStation(id);
+            var deleted = await fuelStationService.DeleteFuelStation(id);
 
             if (!deleted)
             {

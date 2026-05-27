@@ -1,9 +1,9 @@
+using ClosedXML.Excel;
+using HtmlAgilityPack;
+using KuroOpti.Entities;
 using KuroOpti.Repositories;
 using KuroOpti.Services.Interfaces;
-using KuroOpti.Entities;
 using Microsoft.Extensions.Logging;
-using HtmlAgilityPack;
-using ClosedXML.Excel;
 
 namespace KuroOpti.Services.Implementations
 {
@@ -20,7 +20,8 @@ namespace KuroOpti.Services.Implementations
             IFuelStationRepository repository,
             IGeocodingService geocodingService,
             ILogger<EnaFuelPriceImporter> logger,
-            HttpClient httpClient)
+            HttpClient httpClient
+        )
         {
             _repository = repository;
             _geocodingService = geocodingService;
@@ -53,12 +54,20 @@ namespace KuroOpti.Services.Implementations
 
             foreach (FuelStation station in ungeocoded)
             {
-                (decimal lat, decimal lng) = await _geocodingService.GeocodeAsync(station.Address, station.Municipality);
+                (decimal lat, decimal lng) = await _geocodingService.GeocodeAsync(
+                    station.Address,
+                    station.Municipality
+                );
 
                 if (lat != 0 || lng != 0)
                 {
                     await _repository.UpdateCoordinatesAsync(station.Id, lat, lng);
-                    _logger.LogInformation("Geocoded: {Name} → {Lat}, {Lng}", station.Name, lat, lng);
+                    _logger.LogInformation(
+                        "Geocoded: {Name} → {Lat}, {Lng}",
+                        station.Name,
+                        lat,
+                        lng
+                    );
                 }
 
                 await Task.Delay(1100); // Nominatim rate limit: 1 request/second
@@ -74,11 +83,14 @@ namespace KuroOpti.Services.Implementations
             HtmlDocument doc = new();
             doc.LoadHtml(html);
 
-            HtmlNode? link = doc.DocumentNode
-                .SelectSingleNode("//a[contains(@href, 'sharepoint.com') and contains(@href, ':x:')]");
+            HtmlNode? link = doc.DocumentNode.SelectSingleNode(
+                "//a[contains(@href, 'sharepoint.com') and contains(@href, ':x:')]"
+            );
 
             if (link == null)
-                throw new InvalidOperationException("Could not find Excel download link on ENA page — page structure may have changed");
+                throw new InvalidOperationException(
+                    "Could not find Excel download link on ENA page — page structure may have changed"
+                );
 
             string href = link.GetAttributeValue("href", string.Empty);
 
@@ -96,7 +108,11 @@ namespace KuroOpti.Services.Implementations
             byte[] data = await response.Content.ReadAsByteArrayAsync();
 
             string contentType = response.Content.Headers.ContentType?.MediaType ?? "unknown";
-            _logger.LogInformation("Downloaded {Bytes} bytes, Content-Type: {ContentType}", data.Length, contentType);
+            _logger.LogInformation(
+                "Downloaded {Bytes} bytes, Content-Type: {ContentType}",
+                data.Length,
+                contentType
+            );
 
             string tempPath = Path.Combine(Path.GetTempPath(), "ena_debug.xlsx");
             await File.WriteAllBytesAsync(tempPath, data);
@@ -114,7 +130,11 @@ namespace KuroOpti.Services.Implementations
             using XLWorkbook workbook = new(stream);
 
             IXLWorksheet sheet = workbook.Worksheets.First();
-            _logger.LogInformation("Using sheet: {Sheet}, rows used: {Rows}", sheet.Name, sheet.RowsUsed().Count());
+            _logger.LogInformation(
+                "Using sheet: {Sheet}, rows used: {Rows}",
+                sheet.Name,
+                sheet.RowsUsed().Count()
+            );
 
             int headerRowNumber = FindHeaderRow(sheet);
             if (headerRowNumber < 0)
@@ -124,7 +144,10 @@ namespace KuroOpti.Services.Implementations
             foreach (IXLCell cell in sheet.Row(headerRowNumber).CellsUsed())
                 columns[cell.GetString().Trim()] = cell.Address.ColumnNumber;
 
-            _logger.LogInformation("Excel columns found: {Columns}", string.Join(", ", columns.Select(kv => $"[{kv.Value}] {kv.Key}")));
+            _logger.LogInformation(
+                "Excel columns found: {Columns}",
+                string.Join(", ", columns.Select(kv => $"[{kv.Value}] {kv.Key}"))
+            );
 
             int colName = FindColumn(columns, "Įmonė (Degalinių tinklas)", "Įmonė");
             int colMunicip = FindColumn(columns, "Degalinės vieta (Savivaldybė)", "Savivaldybė");
@@ -134,7 +157,9 @@ namespace KuroOpti.Services.Implementations
             int colLpg = FindColumn(columns, "SND");
 
             if (colName < 0)
-                throw new InvalidOperationException("Could not find station name column — check actual Excel column headers in the log above");
+                throw new InvalidOperationException(
+                    "Could not find station name column — check actual Excel column headers in the log above"
+                );
 
             foreach (IXLRow row in sheet.RowsUsed().Skip(headerRowNumber))
             {
@@ -184,16 +209,27 @@ namespace KuroOpti.Services.Implementations
 
         private static string GetString(IXLRow row, int col)
         {
-            if (col < 0) return string.Empty;
+            if (col < 0)
+                return string.Empty;
             return row.Cell(col).GetString().Trim();
         }
 
         private static decimal GetDecimal(IXLRow row, int col)
         {
-            if (col < 0) return 0;
+            if (col < 0)
+                return 0;
             IXLCell cell = row.Cell(col);
-            if (cell.TryGetValue(out decimal value)) return value;
-            if (decimal.TryParse(cell.GetString().Trim().Replace(',', '.').Replace(" ", ""), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal parsed)) return parsed;
+            if (cell.TryGetValue(out decimal value))
+                return value;
+            if (
+                decimal.TryParse(
+                    cell.GetString().Trim().Replace(',', '.').Replace(" ", ""),
+                    System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    out decimal parsed
+                )
+            )
+                return parsed;
             return 0;
         }
     }

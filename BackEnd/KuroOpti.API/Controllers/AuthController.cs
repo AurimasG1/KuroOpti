@@ -1,9 +1,11 @@
 using System.Security.Claims;
 using AutoMapper;
-using KuroOpti.API.Requests;
-using KuroOpti.API.Responses;
+using KuroOpti.Common.DTO;
+using KuroOpti.Common.Requests;
+using KuroOpti.Common.Responses;
 using KuroOpti.Entities;
 using KuroOpti.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KuroOpti.API.Controllers
@@ -12,17 +14,48 @@ namespace KuroOpti.API.Controllers
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
-        private readonly TokenService tokenService;
+        private readonly ITokenService tokenService;
         private readonly IUserService userService;
         private readonly IMapper mapper;
+        private readonly IRefreshTokenService refreshTokenService;
 
-        public AuthController(TokenService tokenService, IUserService userService, IMapper mapper)
+        public AuthController(
+            ITokenService tokenService,
+            IUserService userService,
+            IMapper mapper,
+            IRefreshTokenService refreshTokenService
+        )
         {
             this.tokenService = tokenService;
             this.userService = userService;
             this.mapper = mapper;
+            this.refreshTokenService = refreshTokenService;
         }
 
+        private List<Claim> BuildClaims(User user)
+        {
+            return new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role),
+            };
+        }
+
+        private async Task<AuthResponse> BuildAuthResponse(User user)
+        {
+            var claims = BuildClaims(user);
+
+            return new AuthResponse
+            {
+                AccessToken = tokenService.GenerateAccessToken(claims),
+                RefreshToken = await refreshTokenService.CreateRefreshTokenAsync(user.Id),
+                User = mapper.Map<UserDto>(user),
+            };
+        }
+
+        // POST: api/auth/register
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> RegisterAsync([FromBody] RegistrationRequest request)
         {
@@ -31,22 +64,11 @@ namespace KuroOpti.API.Controllers
             if (user == null)
                 return BadRequest("User already exists");
 
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role),
-            };
-            var response = new
-            {
-                AccessToken = tokenService.GenerateAccessToken(claims),
-                RefreshToken = tokenService.GenerateRefreshToken(),
-                User = mapper.Map<UserDto>(user),
-            };
-
-            return Ok(response);
+            return Ok(await BuildAuthResponse(user));
         }
 
+        // POST: api/auth/login
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request)
         {
@@ -55,21 +77,85 @@ namespace KuroOpti.API.Controllers
             if (user == null)
                 return Unauthorized("Invalid credentials");
 
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role),
-            };
+            return Ok(await BuildAuthResponse(user));
+        }
 
-            var response = new
-            {
-                AccessToken = tokenService.GenerateAccessToken(claims),
-                RefreshToken = tokenService.GenerateRefreshToken(),
-                User = mapper.Map<UserDto>(user),
-            };
+        // GET: api/auth/me
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> Me()
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var user = await userService.GetUserByIdAsync(userId);
 
-            return Ok(response);
+            if (user == null)
+                return NotFound();
+
+            return Ok(mapper.Map<UserDto>(user));
+        }
+
+        // PUT: api/auth/change-email
+        [Authorize]
+        [HttpPut("change-email")]
+        public async Task<IActionResult> ChangeEmail([FromBody] ChangeEmailRequestDto dto)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            bool success = await userService.ChangeEmailAsync(userId, dto.NewEmail);
+
+            if (!success)
+                return BadRequest("Email already in use");
+
+            return Ok("Email updated");
+        }
+
+        // PUT: api/auth/change-password
+        [Authorize]
+        [HttpPut("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequestDto dto)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            bool success = await userService.ChangePasswordAsync(
+                userId,
+                dto.OldPassword,
+                dto.NewPassword
+            );
+
+            if (!success)
+                return BadRequest("Old password is incorrect");
+
+            return Ok("Password updated");
+        }
+
+        // DELETE: api/auth/delete
+        [Authorize]
+        [HttpDelete("delete")]
+        public async Task<IActionResult> DeleteAccount()
+        {
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            await userService.DeleteUserAsync(userId);
+
+            return NoContent();
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh([FromBody] RefreshRequestDto dto)
+        {
+            var user = await refreshTokenService.ValidateRefreshTokenAsync(dto.RefreshToken);
+
+            if (user == null)
+                return Unauthorized("Invalid refresh token");
+
+            var claims = BuildClaims(user);
+
+            var newAccessToken = tokenService.GenerateAccessToken(claims);
+            var newRefreshToken = await refreshTokenService.CreateRefreshTokenAsync(user.Id);
+
+            return Ok(
+                new AuthResponse { AccessToken = newAccessToken, RefreshToken = newRefreshToken }
+            );
         }
     }
 }

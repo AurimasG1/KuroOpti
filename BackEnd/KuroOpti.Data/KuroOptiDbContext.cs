@@ -12,6 +12,8 @@ namespace KuroOpti.Data
         public DbSet<FuelStation> FuelStations { get; set; }
         public DbSet<Route> Routes { get; set; }
         public DbSet<SearchLog> SearchLogs { get; set; }
+        public DbSet<UserRouteStation> UserRouteStations { get; set; } = default!;
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -71,6 +73,24 @@ namespace KuroOpti.Data
                     .WithMany(r => r.SearchLogs)
                     .HasForeignKey(x => x.RouteId)
                     .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            // USER ROUTE STATION
+            modelBuilder.Entity<UserRouteStation>(entity =>
+            {
+                entity.HasKey(x => x.Id);
+
+                entity
+                    .HasOne(x => x.Route)
+                    .WithMany(r => r.SelectedStations)
+                    .HasForeignKey(x => x.RouteId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity
+                    .HasOne(x => x.FuelStation)
+                    .WithMany() // jei nereikia navigacijos iš FuelStation
+                    .HasForeignKey(x => x.FuelStationId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
         }
     }

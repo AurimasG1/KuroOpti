@@ -17,5 +17,7 @@ namespace KuroOpti.Entities
         public string Polyline { get; set; } = default!;
 
         public ICollection<SearchLog> SearchLogs { get; set; } = new List<SearchLog>();
+        public ICollection<UserRouteStation> SelectedStations { get; set; } =
+            new List<UserRouteStation>();
     }
 }

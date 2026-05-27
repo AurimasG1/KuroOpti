@@ -1,4 +1,6 @@
+using KuroOpti.Common.DTO;
 using KuroOpti.Entities;
+
 namespace KuroOpti.Services.Interfaces
 {
     public interface IFuelStationService
