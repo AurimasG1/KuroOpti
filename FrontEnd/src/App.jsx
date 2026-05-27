@@ -66,7 +66,7 @@ const App = () => {
         </Routes>
 
             {/* ChatBot */}
-            {/* <ChatBotPage /> */}
+            <ChatBotPage />
         
            {/* Footer */}
             <Footer />
