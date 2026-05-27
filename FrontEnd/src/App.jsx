@@ -65,8 +65,11 @@ const App = () => {
           <Route path="/ContactPage" element={<ContactPage />} />
         </Routes>
 
-        {/* ChatBot */}
-        {/* <ChatBotPage /> */}
+            {/* ChatBot */}
+            <ChatBotPage />
+        
+           {/* Footer */}
+            <Footer />
 
         {/* Footer */}
         <Footer />
