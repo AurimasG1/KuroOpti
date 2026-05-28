@@ -17,14 +17,20 @@ const ProtectedRoute = ({ children, user }) => {
 };
 
 const App = () => {
-  const [loginPopup, setLoginPopup] = useState(false);
-
-  const [user, setUser] = useState(null);
+ const [loginPopup, setLoginPopup] = useState(false);
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem("app_user");
+    try {
+      return savedUser ? JSON.parse(savedUser) : null;
+    } catch (error) {
+      console.error("Nepavyko nuskaityti vartotojo iš localStorage:", error);
+      return null;
+    }
+  }); 
 
   const handleLoginPopup = () => {
     setLoginPopup(!loginPopup);
   };
-
   const bgImageStyle = {
     width: "100%",
     minHeight: "100vh",
@@ -35,42 +41,34 @@ const App = () => {
   };
 
   return (
-    <Router
-      future={{
-        v7_startTransition: true,
-        v7_relativeSplatPath: true,
-      }}
-    >
+    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <div style={bgImageStyle} className="relative">
         <Navbar handleLoginPopup={handleLoginPopup} user={user} setUser={setUser} />
-
+      
         <Routes>
-          {/* Pagrindinis puslapis */}
+          {/* Home Page */}
           <Route
             path="/"
-            element={<HomePage handleLoginPopup={handleLoginPopup} />}
+            element={<HomePage handleLoginPopup={handleLoginPopup} user={user}/>}
           />
 
-          {/* Žemėlapio puslapis */}
-          <Route
-            path="/MapPage"
-            element={
+          {/* Map Page */}
+          <Route 
+            path="/MapPage" 
+            element={ 
               <ProtectedRoute user={user}>
                 <MapPage />
               </ProtectedRoute>
-            }
+            } 
           />
 
-          {/* Kontaktų puslapis */}
+          {/* Contact Page */}
           <Route path="/ContactPage" element={<ContactPage />} />
         </Routes>
 
-            {/* ChatBot */}
-            <ChatBotPage />
+        {/* ChatBot */}
+        <ChatBotPage />
         
-           {/* Footer */}
-            <Footer />
-
         {/* Footer */}
         <Footer />
 
@@ -79,12 +77,14 @@ const App = () => {
           show={loginPopup}
           onClose={handleLoginPopup}
           onLoginSuccess={(userData) => {
-            console.log("Vartotojas sėkmingai išsaugotas App state:", userData);
+            console.log("Vartotojas sėkmingai išsaugotas App state:", userData); 
+            localStorage.setItem("app_user", JSON.stringify(userData));
+            
             setUser(userData);
           }}
         />
-      </div >
-    </Router >
+      </div>
+    </Router>
   );
 };
 

@@ -43,15 +43,15 @@ const Footer = () => {
           <ul className="flex space-x-4 text-white">
             <li>
               <FaFacebookF className="text-blue-500" />
-              <a href="https://www.facebook.com/">Facebook</a>
+              <a href="https://www.facebook.com/" target="_blank">Facebook</a>
             </li>
             <li>
               <FaLinkedin className="text-sky-700" />
-              <a href="https://www.linkedin.com/">LinkedIn</a>
+              <a href="https://www.linkedin.com/" target="_blank">LinkedIn</a>
             </li>
             <li>
               <FaInstagram className="text-orange-500" />
-              <a href="https://www.instagram.com/">Instagram</a>
+              <a href="https://www.instagram.com/" target="_blank">Instagram</a>
             </li>
           </ul>
         </div>

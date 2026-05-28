@@ -7,6 +7,7 @@ const Navbar = ({ handleLoginPopup, user, setUser }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    localStorage.removeItem("app_user");
     setUser(null);
     navigate("/");
   };

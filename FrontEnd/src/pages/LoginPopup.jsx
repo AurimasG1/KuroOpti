@@ -3,7 +3,6 @@ import Signin from "../components/auth/SignupForm.jsx";
 import Login from "../components/auth/LoginForm.jsx";
 import { motion } from "framer-motion";
 
-
 const LoginPopup = ({ show, onClose, onLoginSuccess }) => {
   const [showSignIn, setShowSignIn] = useState(false);
   const loginPopupRef = useRef();
@@ -12,7 +11,6 @@ const LoginPopup = ({ show, onClose, onLoginSuccess }) => {
     setShowSignIn(!showSignIn);
   };
 
-  
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (loginPopupRef.current && e.target === loginPopupRef.current) {
@@ -42,18 +40,18 @@ const LoginPopup = ({ show, onClose, onLoginSuccess }) => {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
           className="relative rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl p-4 sm:w-150 md:w-95"
-
         >
           {showSignIn ? (
             <Signin handleSignIn={handleSignIn} />
-          ) : (
-            <Login handleSignIn={handleSignIn} 
-            onLoginSuccess = {(userData) => {
-              onLoginSuccess(userData);
-              onClose();
-            }}/>
+          ) : ( 
+            <Login 
+              handleSignIn={handleSignIn} 
+              onLoginSuccess={(userData) => {
+                onLoginSuccess(userData);
+                onClose();
+              }}
+            />
           )}
-          
           
           <button 
             onClick={onClose}
@@ -62,7 +60,7 @@ const LoginPopup = ({ show, onClose, onLoginSuccess }) => {
             ✕
           </button>
         </motion.div>
-      </div>
+      </div> 
     </div>
   );
 };
