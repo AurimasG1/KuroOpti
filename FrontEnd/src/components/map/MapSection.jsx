@@ -9,11 +9,10 @@ import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import RouteLayer from "./RouteLayer";
 import StationMarker from "./StationMarker";
 
-
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png', // <-- PATAISYTA
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
@@ -23,6 +22,7 @@ const MapSection = ({
   addedWaypoints = [],
   onRouteFound,
   onAddToRoute,
+  onToggleRoute, 
 }) => {
   const defaultCenter = [54.8985, 23.9036];
 
@@ -50,7 +50,6 @@ const MapSection = ({
         )}
 
         <MarkerClusterGroup
-        
           key={`cluster-stations-${stations.length}`}
           chunkedLoading
           maxClusterRadius={50}
@@ -59,7 +58,8 @@ const MapSection = ({
             <StationMarker 
               key={station.Id} 
               station={station} 
-              onAddToRoute={onAddToRoute} 
+              addedWaypoints={addedWaypoints}
+              onToggleRoute={onToggleRoute} 
             />
           ))}
         </MarkerClusterGroup>

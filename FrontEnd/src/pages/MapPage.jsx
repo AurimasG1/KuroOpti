@@ -15,26 +15,25 @@ const MapPage = () => {
   const [isRouteActive, setIsRouteActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-
   const savedUser = JSON.parse(localStorage.getItem("user"));
-  const defaultFuel = savedUser?.fuel || "all"
+  const defaultFuel = savedUser?.fuel || "all";
   const [fuelType, setFuelType] = useState(defaultFuel);
 
-    const getFormattedDate =() => {
-      return new Date().toLocaleString("lt-LT", {
+  const getFormattedDate = () => {
+    return new Date().toLocaleString("lt-LT", {
       month: "long",
       day: "2-digit",
     });
-  }
-    const [updatedDate, setUpdatedDate] =useState(getFormattedDate);
+  };
+  const [updatedDate, setUpdatedDate] = useState(getFormattedDate);
 
-    const updateDateOnClick = () =>{
-      setUpdatedDate(getFormattedDate());
-    }
+  const updateDateOnClick = () => {
+    setUpdatedDate(getFormattedDate());
+  };
 
   const displayStations = React.useMemo(() => {
     return filteredStations.filter((s) => {
-      // A. Tekstinis filtras (pavadinimas, adresas arba miestas)
+      // A. Text filter
 
       const simplify = (text) =>
         text
@@ -50,7 +49,7 @@ const MapPage = () => {
         simplify(s.Address).includes(normalizedQuery) ||
         simplify(s.Municipality).includes(normalizedQuery);
 
-      // B. Kuro tipo filtras
+      // B. Fuel filter
       let matchesFuel = true;
       if (fuelType !== "all") {
         const kaina = parseFloat(s[fuelType]);
@@ -60,21 +59,20 @@ const MapPage = () => {
       return matchesText && matchesFuel;
     });
   }, [filteredStations, searchQuery, fuelType]);
-  
-  useEffect(() => {
-  const loadStations = async () => {
-    try {
-      const data = await getStations();
-      setAllStations(data);
-      setFilteredStations(data);
-    } catch (error) {
-      console.error("Nepavyko užkrauti degalinių iš BackEnd:", error);
-     
-    }
-  };
 
-  loadStations();
-}, []);
+  useEffect(() => {
+    const loadStations = async () => {
+      try {
+        const data = await getStations();
+        setAllStations(data);
+        setFilteredStations(data);
+      } catch (error) {
+        console.error("Nepavyko užkrauti degalinių iš BackEnd:", error);
+      }
+    };
+
+    loadStations();
+  }, []);
 
   const handleAddToRoute = (station) => {
     setSelectedWaypoints((prev) => {
@@ -110,36 +108,41 @@ const MapPage = () => {
     setSelectedWaypoints((prev) => prev.filter((p) => p.Id !== id));
   };
 
-const handleRouteFound = useCallback(
-  (coordinates) => {
-    if (!coordinates || coordinates.length === 0 || allStations.length === 0)
-      return;
+  const handleRouteFound = useCallback(
+    (coordinates) => {
+      if (!coordinates || coordinates.length === 0 || allStations.length === 0)
+        return;
 
-    try {
-      const turfCoords = coordinates.map((c) => [c.lng || c.Longitude, c.lat || c.Latitude]);
-      
-      const line = turf.lineString(turfCoords);
-      const buffer = turf.buffer(line, 10, { units: "kilometers" });
+      try {
+        const turfCoords = coordinates.map((c) => [
+          c.lng || c.Longitude,
+          c.lat || c.Latitude,
+        ]);
 
-      const found = allStations.filter((station) => {
-        
-        const sLng = Number(station.Longitude || station.longitude || station.lng);
-        const sLat = Number(station.Latitude || station.latitude || station.lat);
+        const line = turf.lineString(turfCoords);
+        const buffer = turf.buffer(line, 10, { units: "kilometers" });
 
-        if (isNaN(sLng) || isNaN(sLat)) return false;
+        const found = allStations.filter((station) => {
+          const sLng = Number(
+            station.Longitude || station.longitude || station.lng,
+          );
+          const sLat = Number(
+            station.Latitude || station.latitude || station.lat,
+          );
 
-        const stationPt = turf.point([sLng, sLat]); 
-        return turf.booleanPointInPolygon(stationPt, buffer);
-      });
+          if (isNaN(sLng) || isNaN(sLat)) return false;
 
+          const stationPt = turf.point([sLng, sLat]);
+          return turf.booleanPointInPolygon(stationPt, buffer);
+        });
 
-      setFilteredStations(found);
-    } catch (err) {
-      console.error("Filtravimo klaida:", err);
-    }
-  },
-  [allStations],
-);
+        setFilteredStations(found);
+      } catch (err) {
+        console.error("Filtravimo klaida:", err);
+      }
+    },
+    [allStations],
+  );
 
   const handleRouteSearch = async (e) => {
     e.preventDefault();
@@ -202,12 +205,47 @@ const handleRouteFound = useCallback(
     }
   };
 
+  const handleToggleRoute = (station) => {
+    setSelectedWaypoints((prev) => {
+      const exists = prev.some(
+        (p) => (p.Id || p.id) === (station.Id || station.id),
+      );
+
+      if (exists) {
+        return prev.filter((p) => p.Id !== station.Id && p.Id !== station.id);
+      } else {
+        const newWaypoint = {
+          Id: station.Id || station.id,
+          Latitude: station.Latitude,
+          Longitude: station.Longitude,
+          Name: station.Name,
+        };
+
+        const updated = [...prev, newWaypoint];
+        if (routePoints && routePoints.start) {
+          updated.sort((a, b) => {
+            const distA = Math.sqrt(
+              Math.pow(a.Latitude - routePoints.start[0], 2) +
+                Math.pow(a.Longitude - routePoints.start[1], 2),
+            );
+            const distB = Math.sqrt(
+              Math.pow(b.Latitude - routePoints.start[0], 2) +
+                Math.pow(b.Longitude - routePoints.start[1], 2),
+            );
+            return distA - distB;
+          });
+        }
+        return updated;
+      }
+    });
+  };
+
   return (
     <div className="flex flex-col h-screen bg-slate-900 text-white sm:flex-row">
       <main className="flex flex-col-reverse md:flex-row flex-1 p-4 gap-4 overflow-hidden">
         <div className="w-full md:w-1/4 bg-slate-800 p-4 rounded-xl shadow-xl flex flex-col overflow-y-auto max-h-[40vh] md:max-h-full">
           <div className="flex flex-col gap-2 mb-4">
-            {/* 1. FILTRAI */}
+            {/* 1. Filters */}
             <div className="flex flex-col gap-2 bg-slate-700/50 p-2 rounded-lg">
               <label className="text-xs text-slate-400 uppercase font-bold">
                 Kuro tipas:
@@ -242,7 +280,10 @@ const handleRouteFound = useCallback(
                   Atnaujinti kainas
                 </span>
 
-                <LuRefreshCcw onClick={updateDateOnClick} className="bg-lime-600 m-2 p-2 rounded-lg text-4xl text-white transition-colors group-hover:bg-lime-500" />
+                <LuRefreshCcw
+                  onClick={updateDateOnClick}
+                  className="bg-lime-600 m-2 p-2 rounded-lg text-4xl text-white transition-colors group-hover:bg-lime-500"
+                />
               </div>
             </div>
           </div>
@@ -271,7 +312,7 @@ const handleRouteFound = useCallback(
             </button>
           </form>
 
-          {/* SUSTOJIMAI */}
+          {/* Waypoint stops */}
           {selectedWaypoints.length > 0 && (
             <div className="mb-6 p-3 bg-indigo-900/30 border border-indigo-500/50 rounded-lg">
               <h3 className="text-xs font-bold text-indigo-400 uppercase mb-2">
@@ -294,7 +335,7 @@ const handleRouteFound = useCallback(
             </div>
           )}
 
-          {/* 2. SĄRAŠAS */}
+          {/* 2. List */}
           <div className="flex-1">
             <div className="h-160 overflow-y-scroll">
               <h3 className="text-sm font-semibold mb-2 text-slate-400 italic">
@@ -353,7 +394,7 @@ const handleRouteFound = useCallback(
           <div className="flex flex-row items-center justify-center gap-2 text-nowrap">
             <p>Atnaujinta: </p>
 
-             <div>{updatedDate}</div>
+            <div>{updatedDate}</div>
           </div>
 
           <div className="flex flex-row items-center justify-center gap-2">
@@ -368,7 +409,7 @@ const handleRouteFound = useCallback(
           </div>
         </div>
 
-        {/* 3. ŽEMĖLAPIS  */}
+        {/* 3. Map  */}
         <div className="flex-1 relative rounded-xl overflow-hidden border border-slate-700 bg-slate-800">
           <MapSection
             stations={displayStations}
@@ -376,6 +417,7 @@ const handleRouteFound = useCallback(
             addedWaypoints={selectedWaypoints}
             onRouteFound={handleRouteFound}
             onAddToRoute={handleAddToRoute}
+            onToggleRoute={handleToggleRoute}
           />
         </div>
       </main>
