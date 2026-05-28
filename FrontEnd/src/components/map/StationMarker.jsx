@@ -1,22 +1,25 @@
 import React from "react";
 import { Marker, Popup } from "react-leaflet";
 
-const StationMarker = ({ station, onAddToRoute }) => { 
-  // Saugiai ištraukiame platumą ir ilgumą iš bet kokio varianto
+
+
+const StationMarker = ({ station, addedWaypoints = [], onToggleRoute }) => {  
   const lat = parseFloat(station.Latitude || station.latitude || station.lat);
   const lng = parseFloat(station.Longitude || station.longitude || station.lng);
-
-  // Jei koordinatės sugadintos, markerio išvis nepiešiame, kad negadintų žemėlapio
+ 
   if (isNaN(lat) || isNaN(lng)) {
     return null;
   }
 
+  const isInRoute = addedWaypoints.some(
+    (wp) => (wp.Id || wp.id) === (station.Id || station.id)
+  );
+
   return (
     <Marker
-      position={[lat, lng]} // Naudojame saugiai ištrauktus skaičius
+      position={[lat, lng]} 
       eventHandlers={{
         add: (e) => {
-          // Naudojame requestAnimationFrame, kad išvengtume lenktynių sąlygų (race conditions)
           requestAnimationFrame(() => {
             if (e.target && e.target._icon) {
               e.target._icon.style.filter = "hue-rotate(-120deg)";
@@ -43,13 +46,15 @@ const StationMarker = ({ station, onAddToRoute }) => {
               <span>Dujos:</span> <span className="font-bold">{station.LpgPrice} €</span>
             </div>
           </div>
-
+ 
           <button
             type="button"
-            onClick={() => onAddToRoute && onAddToRoute(station)}
-            className="mt-3 w-full text-[10px] bg-lime-600 hover:bg-lime-500 text-white p-2 rounded transition-colors uppercase font-bold"
+            onClick={() => onToggleRoute && onToggleRoute(station)}
+            className={`mt-3 w-full text-[10px] p-2 rounded transition-colors uppercase font-bold text-white ${
+              isInRoute ? 'bg-red-600 hover:bg-red-500' : 'bg-lime-600 hover:bg-lime-500'
+            }`}
           >
-            Pridėti į maršrutą
+            {isInRoute ? 'Nuimti iš maršruto' : 'Pridėti į maršrutą'}
           </button>
         </div>
       </Popup>
