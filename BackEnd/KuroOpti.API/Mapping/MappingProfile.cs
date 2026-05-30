@@ -1,3 +1,4 @@
+using System.Text.Json;
 using AutoMapper;
 using KuroOpti.Common.DTO;
 using KuroOpti.Common.Requests;
@@ -42,6 +43,16 @@ namespace KuroOpti.API.Mapping
                     Latitude = src.FuelStation.Latitude,
                     Longitude = src.FuelStation.Longitude,
                 });
+            CreateMap<RoutePlanningHistory, RoutePlanningHistoryDto>()
+                .ForMember(
+                    dest => dest.SelectedStations,
+                    opt =>
+                        opt.MapFrom(src =>
+                            JsonSerializer.Deserialize<List<int>>(src.SelectedStationsJson)!
+                        )
+                );
+            CreateMap<RoutePlanningHistory, RoutePlanningHistoryWithStationsDto>()
+                .ForMember(dest => dest.Stations, opt => opt.MapFrom(src => src.Stations));
         }
     }
 }

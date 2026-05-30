@@ -14,6 +14,7 @@ namespace KuroOpti.Data
         public DbSet<SearchLog> SearchLogs { get; set; }
         public DbSet<UserRouteStation> UserRouteStations { get; set; } = default!;
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<RoutePlanningHistory> RoutePlanningHistories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
