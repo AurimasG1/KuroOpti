@@ -1,42 +1,55 @@
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaEye, FaEyeSlash, FaFacebook, FaLinkedinIn } from "react-icons/fa";
-import { login, forgotPassword } from "../../services/authService.js"; 
+import { login, forgotPassword } from "../../services/authService.js";
+import { useNavigate } from "react-router-dom";
 
 const Login = ({ handleSignIn, onLoginSuccess }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
+
   const [isForgotPassword, setIsForgotPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); 
+  const navigate = useNavigate();
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    console.log("1. Mygtukas paspaustas, siunčiam...");
-    const data = await login(email, password);
-    console.log("2. Atsakymas iš BackEnd:", data);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      console.log("1. Mygtukas paspaustas, siunčiam...");
+      const data = await login(email, password);
+      console.log("2. Atsakymas iš BackEnd:", data);
 
-    const userData = data && data.user && data.user.email 
-      ? { userName: data.user.email } 
-      : { userName: email };
-      
-    console.log("3. Paruoštas userData objektas:", userData);
-    console.log("4. Ar onLoginSuccess yra funkcija?", typeof onLoginSuccess);
+      const backendRole = data?.user?.role || data?.user?.Role || "user;";
 
-    if (typeof onLoginSuccess === "function") {
-      console.log("5. Iškviečiame onLoginSuccess iš LoginForm!");
-      onLoginSuccess(userData);
-      alert("Prisijungta sėkmingai!");
-    } else {
-      console.error("KLAIDA: onLoginSuccess nėra funkcija LoginForm komponente!");
+      const userData =
+        data && data.user && data.user.email
+          ? { username: data.user.email, role: backendRole } 
+          : { userName: email, role: backendRole }; 
+
+      console.log("3. Paruoštas userData objektas:", userData);
+      console.log("4. Ar onLoginSuccess yra funkcija?", typeof onLoginSuccess);
+
+      if (typeof onLoginSuccess === "function") {
+        console.log("5. Iškviečiame onLoginSuccess iš LoginForm!");
+        onLoginSuccess(userData);
+        alert("Prisijungta sėkmingai!");
+
+        if (userData.role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/MapPage");
+        }
+      } else {
+        console.error(
+          "KLAIDA: onLoginSuccess nėra funkcija LoginForm komponente!",
+        );
+      }
+    } catch (error) {
+      console.error("Klaida try/catch bloke:", error);
+      alert("Klaida: " + error.message);
     }
-  } catch (error) {
-    console.error("Klaida try/catch bloke:", error);
-    alert("Klaida: " + error.message);
-  }
-};
+  };
 
   const handleForgotPasswordSubmit = async (e) => {
     e.preventDefault();
@@ -44,7 +57,7 @@ const Login = ({ handleSignIn, onLoginSuccess }) => {
     try {
       await forgotPassword(email);
       alert(`Instrukcijos išsiųstos į el. paštą: ${email}`);
-      setIsForgotPassword(false); 
+      setIsForgotPassword(false);
     } catch (error) {
       alert("Klaida: " + error.message);
     } finally {
@@ -58,7 +71,10 @@ const Login = ({ handleSignIn, onLoginSuccess }) => {
         <h1 className="text-2xl text-white font-bold text-center mb-4 text-shadow">
           Atkurti slaptažodį
         </h1>
-        <form className="flex flex-col gap-3" onSubmit={handleForgotPasswordSubmit}>
+        <form
+          className="flex flex-col gap-3"
+          onSubmit={handleForgotPasswordSubmit}
+        >
           <div>
             <label htmlFor="resetEmail" className="input-label">
               Įveskite savo el. paštą
@@ -73,7 +89,11 @@ const Login = ({ handleSignIn, onLoginSuccess }) => {
               placeholder="pavyzdys@gmail.com"
             />
           </div>
-          <button type="submit" disabled={loading} className="primary-btn cursor-pointer mt-2">
+          <button
+            type="submit"
+            disabled={loading}
+            className="primary-btn cursor-pointer mt-2"
+          >
             {loading ? "Siunčiama..." : "Siųsti nuorodą"}
           </button>
         </form>
@@ -95,7 +115,6 @@ const Login = ({ handleSignIn, onLoginSuccess }) => {
           Login
         </h1>
         <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
-
           {/* Email */}
           <div>
             <label htmlFor="email" className="input-label">
@@ -139,7 +158,7 @@ const Login = ({ handleSignIn, onLoginSuccess }) => {
               )}
             </div>
           </div>
-              {/* Forgot Password */}
+          {/* Forgot Password */}
           <div className="text-right">
             <span
               onClick={() => setIsForgotPassword(true)}
