@@ -4,7 +4,7 @@ namespace KuroOpti.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<User?> RegisterAsync(string email, string password);
+        Task<User?> RegisterAsync(string email, string password, string? adminCode); // mano adminCode
         Task<User?> ValidateUserAsync(string email, string password);
         Task<User?> GetUserByEmailAsync(string email);
         Task<User?> GetUserByIdAsync(int id);
@@ -12,5 +12,6 @@ namespace KuroOpti.Services.Interfaces
         Task<bool> ChangeEmailAsync(int userId, string newEmail);
         Task<bool> ChangePasswordAsync(int userId, string oldPassword, string newPassword);
         Task DeleteUserAsync(int id);
+        Task<int> GetTotalUsersAsync();
     }
 }

@@ -1,16 +1,30 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate
+} from "react-router-dom";
 import Navbar from "./components/common/Navbar.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import LoginPopup from "./pages/LoginPopup.jsx";
 import MapPage from "./pages/MapPage.jsx";
 import ContactPage from "./pages/ContactPage.jsx";
-import Footer from "./components/common/Footer.jsx"
+import Footer from "./components/common/Footer.jsx";
 import BgImage from "./assets/images/sunrise.jpg";
 import ChatBotPage from "./pages/ChatBotPage.jsx";
+import AdminPage from "./pages/AdminPage.jsx";
 
 const ProtectedRoute = ({ children, user }) => {
   if (!user) {
+    return <Navigate to="/" replace />;
+  }
+  return children;
+};
+
+const AdminProtectedRoute = ({ children, user }) => {
+  if (!user || user.role !== "admin") {
     return <Navigate to="/" replace />;
   }
   return children;
@@ -28,6 +42,8 @@ const App = () => {
     }
   }); 
 
+  const navigate = useNavigate();
+
   const handleLoginPopup = () => {
     setLoginPopup(!loginPopup);
   };
@@ -41,10 +57,19 @@ const App = () => {
   };
 
   return (
-    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    // <Router
+    //   future={{
+    //     v7_startTransition: true,
+    //     v7_relativeSplatPath: true,
+    //   }}
+    // >
       <div style={bgImageStyle} className="relative">
-        <Navbar handleLoginPopup={handleLoginPopup} user={user} setUser={setUser} />
-      
+        <Navbar
+          handleLoginPopup={handleLoginPopup}
+          user={user}
+          setUser={setUser}
+        />
+
         <Routes>
           {/* Home Page */}
           <Route
@@ -52,10 +77,11 @@ const App = () => {
             element={<HomePage handleLoginPopup={handleLoginPopup} user={user}/>}
           />
 
-          {/* Map Page */}
-          <Route 
-            path="/MapPage" 
-            element={ 
+
+          {/* Žemėlapio puslapis */}
+          <Route
+            path="/MapPage"
+            element={
               <ProtectedRoute user={user}>
                 <MapPage />
               </ProtectedRoute>
@@ -64,6 +90,16 @@ const App = () => {
 
           {/* Contact Page */}
           <Route path="/ContactPage" element={<ContactPage />} />
+
+          {/*mano ProtectedAdminRoute kodas*/}
+          <Route path="/admin"
+            element=
+            {
+              <AdminProtectedRoute user={user}>
+                <AdminPage />
+              </AdminProtectedRoute>
+            }
+          />
         </Routes>
 
         {/* ChatBot */}
@@ -81,10 +117,16 @@ const App = () => {
             localStorage.setItem("app_user", JSON.stringify(userData));
             
             setUser(userData);
+
+            if (userData && userData.role === "admin"){
+              setTimeout(() => {
+              navigate("/admin");
+              }, 50);
+            }
           }}
         />
       </div>
-    </Router>
+    // </Router>
   );
 };
 

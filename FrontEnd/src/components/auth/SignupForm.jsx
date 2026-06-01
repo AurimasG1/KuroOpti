@@ -6,10 +6,12 @@ import { signUp } from "../../services/authService.js";
 const Signup = ({ handleSignIn }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showAdminCode, setShowAdminCode] = useState(false);
 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    adminCode: "",
   });
 
   const handleChange = (e) => {
@@ -24,12 +26,13 @@ const Signup = ({ handleSignIn }) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const cleanData = { 
-        email: formData.email,
-        password: formData.password
+      const cleanData = {
+        Email: formData.email,
+        Password: formData.password,
+        AdminCode: formData.adminCode || "",
       };
-      
-      const response = await signUp(cleanData);
+
+      await signUp(cleanData);
       alert("Paskyra sėkmingai sukurta! Dabar galite prisijungti.");
       handleSignIn();
     } catch (error) {
@@ -46,19 +49,18 @@ const Signup = ({ handleSignIn }) => {
           Registracija
         </h1>
         <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
-
           {/* Email */}
           <div>
             <label htmlFor="email" className="input-label">
               Elektroninis paštas
             </label>
-            <input 
+            <input
               id="email"
               type="email"
               className="input"
               value={formData.email}
               onChange={handleChange}
-              required 
+              required
             />
           </div>
 
@@ -76,7 +78,7 @@ const Signup = ({ handleSignIn }) => {
                 onChange={handleChange}
                 required
               />
-              {showPassword ? (
+              {/* {showPassword ? (
                 <FaEye
                   className="text-white absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
                   onClick={() => setShowPassword(!showPassword)}
@@ -86,8 +88,37 @@ const Signup = ({ handleSignIn }) => {
                   className="text-white absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
                   onClick={() => setShowPassword(!showPassword)}
                 />
-              )}
+              )} */}
+              <div
+                className="text-white absolute top-1/2 right-3 -translate-y-1/2 cursor-ponter"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEye /> : <FaEyeSlash />}
+              </div>
             </div>
+          </div>
+
+          {/*Admincode*/}
+          <div>
+            <label htmlFor="adminCode" className="input-label">
+              Admino Kodas (pildo tik Admin)
+            </label>
+            <div className="relative">
+            <input
+              id="adminCode"
+              type={showAdminCode ? "text" : "password"}
+              placeholder="Admino kodas"
+              className="input pr-8"
+              value={formData.adminCode}
+              onChange={handleChange}
+            />
+            <div
+              className="text-white absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
+              onClick={() => setShowAdminCode(!showAdminCode)}
+            >
+              {showAdminCode ? <FaEye /> : <FaEyeSlash />}
+            </div>
+          </div>
           </div>
 
           <button className="primary-btn cursor-pointer" disabled={isLoading}>

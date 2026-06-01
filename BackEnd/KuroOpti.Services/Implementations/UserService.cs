@@ -2,6 +2,7 @@ using KuroOpti.Entities;
 using KuroOpti.Repositories.Interfaces;
 using KuroOpti.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 
 namespace KuroOpti.Services.Implementations
 {
@@ -9,19 +10,33 @@ namespace KuroOpti.Services.Implementations
     {
         private readonly IUserRepository userRepository;
         private readonly PasswordHasher<User> hasher = new();
+        private readonly IConfiguration configuration;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IConfiguration configuration)
         {
             this.userRepository = userRepository;
+            this.configuration = configuration; 
         }
 
-        public async Task<User?> RegisterAsync(string email, string password)
+        public async Task<User?> RegisterAsync(string email, string password, string? adminCode) // mano adminCode
         {
             var existing = await userRepository.GetByEmailAsync(email);
             if (existing != null)
                 return null;
 
-            var user = new User { Email = email.ToLowerInvariant().Trim(), Role = "user" };
+            // idetas roles nustatymas pagal adminCode vietoje default user
+            string role = "user";
+
+            string configuredAdminCode = configuration["AdminSettings:AdminCode"];
+
+            if (!string.IsNullOrWhiteSpace(adminCode) && adminCode == configuredAdminCode)
+            {
+                role = "admin";
+            }
+
+            var user = new User { Email = email.ToLowerInvariant().Trim(), Role = role };
+            
+            // var user = new User { Email = email.ToLowerInvariant().Trim(), Role = "user" };
             user.PasswordHash = hasher.HashPassword(user, password);
 
             await userRepository.CreateAsync(user);
@@ -90,6 +105,11 @@ namespace KuroOpti.Services.Implementations
         public async Task DeleteUserAsync(int id)
         {
             await userRepository.DeleteAsync(id);
+        }
+
+        public async Task<int> GetTotalUsersAsync()
+        {
+            return await userRepository.CountAsync();
         }
     }
 }

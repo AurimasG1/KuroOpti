@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using KuroOpti.API.Mapping;
 using KuroOpti.Data;
@@ -55,6 +56,8 @@ builder
 
             ValidateLifetime = true,
             ClockSkew = TimeSpan.FromMinutes(1),
+
+            RoleClaimType = ClaimTypes.Role    
         };
     });
 builder.Services.AddAuthorization();
@@ -81,6 +84,8 @@ builder.Services.AddScoped<IRouteService, RouteService>();
 
 builder.Services.AddScoped<IFuelStationRepository, FuelStationRepository>();
 builder.Services.AddScoped<IFuelStationService, FuelStationService>();
+
+builder.Services.AddScoped<IAdminService, AdminService>();
 
 var app = builder.Build();
 

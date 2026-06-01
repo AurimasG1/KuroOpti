@@ -1,14 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
-import Signin from "../components/auth/SignupForm.jsx";
+import Signup from "../components/auth/SignupForm.jsx";
 import Login from "../components/auth/LoginForm.jsx";
 import { motion } from "framer-motion";
 
 const LoginPopup = ({ show, onClose, onLoginSuccess }) => {
-  const [showSignIn, setShowSignIn] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
   const loginPopupRef = useRef();
 
   const handleSignIn = () => {
-    setShowSignIn(!showSignIn);
+    setShowSignup(!showSignup);
   };
 
   useEffect(() => {
@@ -41,8 +41,8 @@ const LoginPopup = ({ show, onClose, onLoginSuccess }) => {
           exit={{ opacity: 0, scale: 0.8 }}
           className="relative rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl p-4 sm:w-150 md:w-95"
         >
-          {showSignIn ? (
-            <Signin handleSignIn={handleSignIn} />
+          {showSignup ? (
+            <Signup handleSignIn={handleSignIn} />
           ) : ( 
             <Login 
               handleSignIn={handleSignIn} 
