@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
+import {Logo} from "./Logo.jsx";
 
 const Navbar = ({ handleLoginPopup, user, setUser }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -22,7 +23,7 @@ const Navbar = ({ handleLoginPopup, user, setUser }) => {
           state={{ fromNavigation: true }} 
           className="text-gray-800 text-2xl sm:text-3xl font-bold min-w-max"
         >
-          Logo
+          <Logo />
         </Link>
 
         {/* --- DESKTOP MENIU  --- */}
