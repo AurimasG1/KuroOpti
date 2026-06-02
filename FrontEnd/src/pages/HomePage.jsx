@@ -52,7 +52,7 @@ const HomePage = ({ user: propsUser }) => {
       <div className="home__data ">
         <div className="flex flex-col items-center justify-center p-4">
           <h1 className="flex items-center justify-center py-4 px-2 font-bold text-4xl text-lime-800">
-            {user && user.userName ? `Labas, ${user.userName.split('@')[0]}! ` : "Labas, Nepažįstamasis! "}
+            {user && user.username ? `Labas, ${user.username.split('@')[0]}! ` : "Labas, Nepažįstamasis! "}
           </h1>
           <p className="font-bold text-2xl p-2">
             ką galėsi daryti prisiregistravęs:
