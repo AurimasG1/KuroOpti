@@ -63,7 +63,7 @@ const Navbar = ({ handleLoginPopup, user, setUser }) => {
               {user ? (
                 <div className="flex items-center gap-2 bg-white/50 px-3 py-1.5 rounded-2xl border border-white/30 max-w-xs shadow-sm">
                   <span className="text-gray-800 font-bold text-xs lg:text-sm truncate max-w-37.5 lg:max-w-50">
-                    {user.userName}
+                    {user.username.split('@')[0]}
                   </span>
                   <button
                     onClick={handleLogout}

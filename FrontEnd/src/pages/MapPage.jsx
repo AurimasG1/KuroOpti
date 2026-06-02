@@ -18,6 +18,11 @@ const MapPage = () => {
   const savedUser = JSON.parse(localStorage.getItem("user"));
   const defaultFuel = savedUser?.fuel || "all";
   const [fuelType, setFuelType] = useState(defaultFuel);
+  const [distance, setDistance] = useState(15);
+
+  const handleSliderChange = (e) => {
+    setDistance(e.target.value);
+  };
 
   const getFormattedDate = () => {
     return new Date().toLocaleString("lt-LT", {
@@ -120,7 +125,7 @@ const MapPage = () => {
         ]);
 
         const line = turf.lineString(turfCoords);
-        const buffer = turf.buffer(line, 10, { units: "kilometers" });
+        const buffer = turf.buffer(line, distance, { units: "kilometers" });
 
         const found = allStations.filter((station) => {
           const sLng = Number(
@@ -261,7 +266,7 @@ const MapPage = () => {
               </select>
 
               <label className="text-xs text-slate-400 uppercase font-bold mt-2">
-                Paieška:
+                Degalinės paieška:
               </label>
               <input
                 type="text"
@@ -269,6 +274,24 @@ const MapPage = () => {
                 className="p-2 bg-slate-700 rounded text-sm outline-none border border-slate-600 focus:border-lime-500"
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
+              <div>
+                <label className="text-xs text-slate-400 uppercase font-bold mt-2">
+                  Degalinių atstumas nuo maršruto:
+                </label>
+                <div className="p-2 bg-slate-700 rounded text-sm outline-none border border-slate-600">
+                  <input
+                    type="range"
+                    min="1"
+                    max="30"
+                    value={distance}
+                    onChange={handleSliderChange}
+                    className="w-full accent-lime-600"
+                  />
+                  <div className="text-xs text-slate-400 uppercase font-bold my-2">
+                  <span>{distance} km</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="flex flex-row items-center justify-between mt-2">
