@@ -10,5 +10,6 @@ namespace KuroOpti.Services.Interfaces
         Task<FuelStation> CreateFuelStation(FuelStation fuelStation);
         Task<FuelStation> UpdateFuelStation(int id, FuelStation fuelStation);
         Task<bool> DeleteFuelStation(int id);
+        Task<List<FuelStation>> GetStationsAlongRouteAsync(string polyline, string fuelType, decimal maxDistanceKm);
     }
 }
