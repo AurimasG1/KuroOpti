@@ -13,5 +13,7 @@ namespace KuroOpti.Repositories.Interfaces
 		Task DeleteAsync(int id);
 		Task<int> CountAsync();
 		Task<List<User>> GetAllAsync();
+		Task<bool> UpdateAsync(User user);
+		Task<bool> DeleteAsync(User user);
 	}
 }

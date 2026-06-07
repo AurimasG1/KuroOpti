@@ -20,7 +20,16 @@ const Login = ({ handleSignIn, onLoginSuccess }) => {
       const data = await login(email, password);
       console.log("2. Atsakymas iš BackEnd:", data);
 
-      const backendRole = data?.user?.role || data?.user?.Role || "user;";
+      // Tokeno issaugojimas localStorage
+      const jwtToken = data?.AccessToken || data?.accessToken || data?.token || data?.user?.token;
+      if (jwtToken) {
+        localStorage.setItem("token", jwtToken);
+        console.log("JWT tokenas išsaugotas localStorage:", jwtToken);
+      } else {
+        console.warn("Įspėjimas: JWT tokenas nerastas!");
+      }
+
+      const backendRole = data?.user?.role || data?.user?.Role || "user";
 
       const userData =
         data && data.user && data.user.email

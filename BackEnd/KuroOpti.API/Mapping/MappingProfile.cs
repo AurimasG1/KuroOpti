@@ -11,7 +11,10 @@ namespace KuroOpti.API.Mapping
         public MappingProfile()
         {
             // User
-            CreateMap<User, UserDto>();
+            CreateMap<User, UserDto>().ReverseMap()
+            .ForMember(dest => dest.PasswordHash, opt => opt.Ignore())
+             .ForMember(dest => dest.Routes, opt => opt.Ignore())
+             .ForMember(dest => dest.SearchLogs, opt => opt.Ignore());
             CreateMap<RegistrationRequest, User>()
                 .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
 

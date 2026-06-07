@@ -6,5 +6,7 @@ namespace KuroOpti.Services.Interfaces
 	{
 		Task<int> GetTotalUsersAsync();
 		Task<List<UserDto>> GetAllUsersAsync();
+		Task<bool> UpdateUserAsync(int id, UserDto userDto);
+		Task<bool> DeleteUserAsync(int id);
 	}
 }
