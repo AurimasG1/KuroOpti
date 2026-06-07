@@ -28,5 +28,26 @@ namespace KuroOpti.Services.Implementations
 		{
 			return await userRepository.CountAsync();
 		}
+
+		public async Task<bool> UpdateUserAsync(int id, UserDto userDto)
+		{
+			var user = await userRepository.GetByIdAsync(id);
+			if (user == null) return false;
+
+			// mapper.Map(userDto, user);
+			user.Email = userDto.Email;
+			user.Role = userDto.Role;
+			user.Id = id; 
+
+			return await userRepository.UpdateAsync(user);
+		}
+
+		public async Task<bool> DeleteUserAsync(int id)
+		{
+			var user = await userRepository.GetByIdAsync(id);
+			if (user == null) return false;
+
+			return await userRepository.DeleteAsync(user);
+		}
 	}
 }

@@ -61,7 +61,7 @@ namespace KuroOpti.Repositories.Implementations
 		{
 			return await db.Users.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToListAsync();
 		}
-		
+
 		public async Task<int> CountAsync()
 		{
 			return await db.Users.CountAsync();
@@ -70,6 +70,30 @@ namespace KuroOpti.Repositories.Implementations
 		public async Task<List<User>> GetAllAsync()
 		{
 			return await db.Users.ToListAsync();
+		}
+
+		public async Task<bool> UpdateAsync(User user)
+		{
+			var existingUser = await db.Users.FindAsync(user.Id);
+			if (existingUser == null)
+				return false;
+
+			existingUser.Email = user.Email;
+			existingUser.PasswordHash = user.PasswordHash;
+
+			await db.SaveChangesAsync();
+			return true;
+		}
+
+		public async Task<bool> DeleteAsync(User user)
+		{
+			var existingUser = await db.Users.FindAsync(user.Id);
+			if (existingUser == null)
+				return false;
+
+			db.Users.Remove(existingUser);
+			await db.SaveChangesAsync();
+			return true;
 		}
 	}
 }

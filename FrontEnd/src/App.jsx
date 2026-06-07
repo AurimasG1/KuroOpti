@@ -4,7 +4,7 @@ import {
   Routes,
   Route,
   Navigate,
-  useNavigate
+  useNavigate,
 } from "react-router-dom";
 import Navbar from "./components/common/Navbar.jsx";
 import HomePage from "./pages/HomePage.jsx";
@@ -31,7 +31,7 @@ const AdminProtectedRoute = ({ children, user }) => {
 };
 
 const App = () => {
- const [loginPopup, setLoginPopup] = useState(false);
+  const [loginPopup, setLoginPopup] = useState(false);
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("app_user");
     try {
@@ -40,10 +40,10 @@ const App = () => {
       console.error("Nepavyko nuskaityti vartotojo iš localStorage:", error);
       return null;
     }
-  }); 
+  });
 
   const navigate = useNavigate();
-
+  
   const handleLoginPopup = () => {
     setLoginPopup(!loginPopup);
   };
@@ -63,69 +63,68 @@ const App = () => {
     //     v7_relativeSplatPath: true,
     //   }}
     // >
-      <div style={bgImageStyle} className="relative">
-        <Navbar
-          handleLoginPopup={handleLoginPopup}
-          user={user}
-          setUser={setUser}
+    <div style={bgImageStyle} className="relative">    
+      <Navbar
+        handleLoginPopup={handleLoginPopup}
+        user={user}
+        setUser={setUser}
+      />      
+
+      <Routes>
+        {/* Home Page */}
+        <Route
+          path="/"
+          element={<HomePage handleLoginPopup={handleLoginPopup} user={user} />}
         />
 
-        <Routes>
-          {/* Home Page */}
-          <Route
-            path="/"
-            element={<HomePage handleLoginPopup={handleLoginPopup} user={user}/>}
-          />
+        {/* Žemėlapio puslapis */}
+        <Route
+          path="/MapPage"
+          element={
+            <ProtectedRoute user={user}>
+              <MapPage />
+            </ProtectedRoute>
+          }
+        />
 
+        {/* Contact Page */}
+        <Route path="/ContactPage" element={<ContactPage />} />
 
-          {/* Žemėlapio puslapis */}
-          <Route
-            path="/MapPage"
-            element={
-              <ProtectedRoute user={user}>
-                <MapPage />
-              </ProtectedRoute>
-            } 
-          />
+        {/*mano ProtectedAdminRoute kodas*/}
+        <Route
+          path="/admin"
+          element={
+            <AdminProtectedRoute user={user}>
+              <AdminPage />
+            </AdminProtectedRoute>
+          }
+        />
+      </Routes>
 
-          {/* Contact Page */}
-          <Route path="/ContactPage" element={<ContactPage />} />
+      {/* ChatBot */}
+      <ChatBotPage />
 
-          {/*mano ProtectedAdminRoute kodas*/}
-          <Route path="/admin"
-            element=
-            {
-              <AdminProtectedRoute user={user}>
-                <AdminPage />
-              </AdminProtectedRoute>
-            }
-          />
-        </Routes>
+      {/* Footer */}
+      <Footer />
 
-        {/* ChatBot */}
-        <ChatBotPage />
-        
-        {/* Footer */}
-        <Footer />
+      {/* Login Popup */}
+      <LoginPopup
+        show={loginPopup}
+        onClose={handleLoginPopup}
+        onLoginSuccess={(userData) => {
+          console.log("Vartotojas sėkmingai išsaugotas App state:", userData);
+          localStorage.setItem("app_user", JSON.stringify(userData));
 
-        {/* Login Popup */}
-        <LoginPopup
-          show={loginPopup}
-          onClose={handleLoginPopup}
-          onLoginSuccess={(userData) => {
-            console.log("Vartotojas sėkmingai išsaugotas App state:", userData); 
-            localStorage.setItem("app_user", JSON.stringify(userData));
-            
-            setUser(userData);
+          setUser(userData);
 
-            if (userData && userData.role === "admin"){
-              setTimeout(() => {
+          if (userData && userData.role === "admin") {
+            setTimeout(() => {
               navigate("/admin");
-              }, 50);
-            }
-          }}
-        />
-      </div>
+            }, 50);
+          }
+        }}
+      />
+    </div>
     // </Router>
   );
 };
