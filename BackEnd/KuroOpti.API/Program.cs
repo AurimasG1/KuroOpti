@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using System.Text;
 using KuroOpti.API.Mapping;
+using KuroOpti.Common.Config;
 using KuroOpti.Data;
 using KuroOpti.Repositories;
 using KuroOpti.Repositories.Implementations;
@@ -68,6 +69,9 @@ builder.Services.AddDbContext<KuroOptiDbContext>(options =>
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
     )
 );
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();

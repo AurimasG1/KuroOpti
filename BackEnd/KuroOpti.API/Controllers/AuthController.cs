@@ -169,13 +169,11 @@ namespace KuroOpti.API.Controllers
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
-            // FE gali perduoti bazinį URL, arba gali būti iš config
-            var baseResetUrl = "https://kuroopti.lt/reset-password";
+            var baseUrl = "https://localhost:5173/reset-password"; // arba FE URL
 
-            await passwordResetService.RequestPasswordResetAsync(request.Email, baseResetUrl);
+            await passwordResetService.RequestPasswordResetAsync(request.Email, baseUrl);
 
-            // Visada grąžinam tą patį – nesakome, ar email egzistuoja
-            return Ok(new { message = "If this email exists, a reset link was sent." });
+            return Ok("If this email exists, a reset link was sent.");
         }
 
         [HttpPost("reset-password")]
@@ -187,9 +185,9 @@ namespace KuroOpti.API.Controllers
             );
 
             if (!success)
-                return BadRequest(new { message = "Invalid or expired token." });
+                return BadRequest("Invalid or expired token");
 
-            return Ok(new { message = "Password updated successfully." });
+            return Ok("Password updated successfully");
         }
     }
 }

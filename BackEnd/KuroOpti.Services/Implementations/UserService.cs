@@ -11,11 +11,17 @@ namespace KuroOpti.Services.Implementations
         private readonly IUserRepository userRepository;
         private readonly PasswordHasher<User> hasher = new();
         private readonly IConfiguration configuration;
+        private readonly ITokenService tokenService;
 
-        public UserService(IUserRepository userRepository, IConfiguration configuration)
+        public UserService(
+            IUserRepository userRepository,
+            IConfiguration configuration,
+            ITokenService tokenService
+        )
         {
             this.userRepository = userRepository;
-            this.configuration = configuration; 
+            this.configuration = configuration;
+            this.tokenService = tokenService;
         }
 
         public async Task<User?> RegisterAsync(string email, string password, string? adminCode) // mano adminCode
@@ -35,7 +41,7 @@ namespace KuroOpti.Services.Implementations
             }
 
             var user = new User { Email = email.ToLowerInvariant().Trim(), Role = role };
-            
+
             // var user = new User { Email = email.ToLowerInvariant().Trim(), Role = "user" };
             user.PasswordHash = hasher.HashPassword(user, password);
 

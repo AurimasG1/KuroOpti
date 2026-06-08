@@ -8,7 +8,6 @@ namespace KuroOpti.Entities
         public string Token { get; set; } = default!;
         public DateTime ExpiresAt { get; set; }
         public bool Used { get; set; } = false;
-
         public User User { get; set; } = default!;
     }
 }

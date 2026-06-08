@@ -11,6 +11,8 @@ namespace KuroOpti.Entities
 
         public int RouteId { get; set; }
         public Route Route { get; set; } = default!;
+        public string StartAddress { get; set; } = default!;
+        public string EndAddress { get; set; } = default!;
 
         public DateTime PlannedAt { get; set; } = DateTime.UtcNow;
 

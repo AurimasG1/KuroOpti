@@ -6,7 +6,6 @@ namespace KuroOpti.Entities
         public string Email { get; set; } = default!;
         public string PasswordHash { get; set; } = default!;
         public string Role { get; set; } = "user";
-
         public ICollection<Route> Routes { get; set; } = new List<Route>();
         public ICollection<SearchLog> SearchLogs { get; set; } = new List<SearchLog>();
     }

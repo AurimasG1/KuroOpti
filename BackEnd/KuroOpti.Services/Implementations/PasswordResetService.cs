@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using KuroOpti.Entities;
 using KuroOpti.Repositories.Interfaces;
 using KuroOpti.Services.Interfaces;
@@ -22,30 +23,34 @@ namespace KuroOpti.Services.Implementations
             this.emailService = emailService;
         }
 
+        // STEP 1: REQUEST PASSWORD RESET
         public async Task RequestPasswordResetAsync(string email, string baseResetUrl)
         {
             var user = await userRepo.GetByEmailAsync(email);
-            if (user == null)
-            {
-                // Saugumo sumetimais nieko nesakome – visada grąžinam OK
-                return;
-            }
 
-            var token = Guid.NewGuid().ToString("N");
+            // Saugumo sumetimais visada grąžinam OK
+            if (user == null)
+                return;
+
+            // Saugus 64 baitų tokenas
+            var token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 
             var reset = new PasswordResetToken
             {
                 UserId = user.Id,
                 Token = token,
                 ExpiresAt = DateTime.UtcNow.AddMinutes(15),
+                Used = false,
             };
 
             await resetRepo.AddAsync(reset);
 
-            var link = $"{baseResetUrl}?token={token}";
+            var link = $"{baseResetUrl}?token={Uri.EscapeDataString(token)}";
+
             await emailService.SendPasswordResetEmailAsync(user.Email, link);
         }
 
+        // STEP 2: RESET PASSWORD
         public async Task<bool> ResetPasswordAsync(string token, string newPassword)
         {
             var reset = await resetRepo.GetValidTokenAsync(token);
@@ -59,7 +64,7 @@ namespace KuroOpti.Services.Implementations
             var hasher = new PasswordHasher<User>();
             user.PasswordHash = hasher.HashPassword(user, newPassword);
 
-            await userRepo.SaveChangesAsync();
+            await userRepo.UpdatePasswordHashAsync(user.Id, user.PasswordHash);
             await resetRepo.MarkAsUsedAsync(reset);
 
             return true;
