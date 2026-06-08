@@ -29,7 +29,6 @@ const RouteLayer = ({ start, end, addedWaypoints = [], onRouteFound }) => {
       }
     }
 
-    // 3. Sukuriame naują kontrolerį
     const control = L.Routing.control({
       waypoints: points,
       lineOptions: {
@@ -57,14 +56,13 @@ const RouteLayer = ({ start, end, addedWaypoints = [], onRouteFound }) => {
           console.warn("Nepavyko pridėti maršruto kontrolerio:", err.message);
         }
       }
-    }, 50);
+    }, 100);
  
     return () => {
       clearTimeout(timer);
       
       if (routingControlRef.current) {
         try {
-          routingControlRef.current.setWaypoints([]);
           if (map && map._container) {
             map.removeControl(routingControlRef.current);
           }

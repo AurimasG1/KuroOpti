@@ -15,6 +15,7 @@ import Footer from "./components/common/Footer.jsx";
 import BgImage from "./assets/images/sunrise.jpg";
 import ChatBotPage from "./pages/ChatBotPage.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
+import SavedRoutesPage from './pages/SavedRoutesPage.jsx'
 
 const ProtectedRoute = ({ children, user }) => {
   if (!user) {
@@ -77,20 +78,29 @@ const App = () => {
           element={<HomePage handleLoginPopup={handleLoginPopup} user={user} />}
         />
 
-        {/* Žemėlapio puslapis */}
-        <Route
-          path="/MapPage"
-          element={
-            <ProtectedRoute user={user}>
-              <MapPage />
-            </ProtectedRoute>
-          }
-        />
+   
+          {/* Map page */}
+          <Route
+            path="/MapPage"
+            element={
+              <ProtectedRoute user={user}>
+                <MapPage />
+              </ProtectedRoute>
+            } 
+          />
 
-        {/* Contact Page */}
-        <Route path="/ContactPage" element={<ContactPage />} />
+          <Route 
+            path="/SavedRoutesPage"
+            element={
+              <ProtectedRoute user={user}>
+                <SavedRoutesPage />
+              </ProtectedRoute>
+            }/>
 
-        {/*mano ProtectedAdminRoute kodas*/}
+          {/* Contact Page */}
+          <Route path="/ContactPage" element={<ContactPage />} />
+
+                  {/*mano ProtectedAdminRoute kodas*/}
         <Route
           path="/admin"
           element={
@@ -101,11 +111,11 @@ const App = () => {
         />
       </Routes>
 
-      {/* ChatBot */}
-      <ChatBotPage />
-
       {/* Footer */}
       <Footer />
+
+         {/* ChatBot */}
+      <ChatBotPage />
 
       {/* Login Popup */}
       <LoginPopup
