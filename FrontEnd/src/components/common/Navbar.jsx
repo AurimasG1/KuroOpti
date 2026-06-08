@@ -50,6 +50,17 @@ const Navbar = ({ handleLoginPopup, user, setUser }) => {
               </li>
             )}
 
+            {user && (
+              <li>
+                <Link 
+                  to="/SavedRoutesPage" 
+                  className="text-gray-700 hover:text-gray-900 hover:bg-lime-400 hover:rounded-2xl hover:transition-colors px-3 py-2 select-none block whitespace-nowrap"
+                >
+                  Maršrutų istorija
+                </Link>
+              </li>
+            )}
+
             <li>
               <Link 
                 to="/ContactPage" 
@@ -97,8 +108,26 @@ const Navbar = ({ handleLoginPopup, user, setUser }) => {
           <Link to="/" className="w-full text-center p-3 hover:bg-lime-400 hover:text-white transition-all" onClick={() => setIsMenuOpen(false)}>Į pradžią</Link>
           
           {user && (
-            <Link to="/MapPage" className="w-full text-center p-3 hover:bg-lime-400 hover:text-white transition-all" onClick={() => setIsMenuOpen(false)}>Žemėlapis</Link>
-          )}
+              
+                <Link 
+                  to="/MapPage" 
+                  className="text-gray-700 hover:text-gray-900 hover:bg-lime-400 hover:rounded-2xl hover:transition-colors px-3 py-2 select-none block whitespace-nowrap"
+                >
+                  Žemėlapis
+                </Link>
+              
+            )}
+
+            {user && (
+              
+                <Link 
+                  to="/SavedRoutesPage" 
+                  className="text-gray-700 hover:text-gray-900 hover:bg-lime-400 hover:rounded-2xl hover:transition-colors px-3 py-2 select-none block whitespace-nowrap"
+                >
+                  Maršrutų istorija
+                </Link>
+             
+            )}
 
           <Link to="/ContactPage" className="w-full text-center p-3 hover:bg-lime-400 hover:text-white transition-all" onClick={() => setIsMenuOpen(false)}>Kontaktai</Link>
         </div>

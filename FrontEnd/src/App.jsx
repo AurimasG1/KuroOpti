@@ -15,6 +15,7 @@ import Footer from "./components/common/Footer.jsx";
 import BgImage from "./assets/images/sunrise.jpg";
 import ChatBotPage from "./pages/ChatBotPage.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
+import SavedRoutesPage from './pages/SavedRoutesPage.jsx'
 
 const ProtectedRoute = ({ children, user }) => {
   if (!user) {
@@ -90,6 +91,7 @@ const App = () => {
         {/* Contact Page */}
         <Route path="/ContactPage" element={<ContactPage />} />
 
+<<<<<<< Updated upstream
         {/*mano ProtectedAdminRoute kodas*/}
         <Route
           path="/admin"
@@ -103,6 +105,28 @@ const App = () => {
 
       {/* ChatBot */}
       <ChatBotPage />
+=======
+          {/* Map page */}
+          <Route
+            path="/MapPage"
+            element={
+              <ProtectedRoute user={user}>
+                <MapPage />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/SavedRoutesPage"
+            element={
+              <ProtectedRoute user={user}>
+                <SavedRoutesPage />
+              </ProtectedRoute>
+            }/>
+
+          {/* Contact Page */}
+          <Route path="/ContactPage" element={<ContactPage />} />
+>>>>>>> Stashed changes
 
       {/* Footer */}
       <Footer />
