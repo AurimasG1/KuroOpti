@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using KuroOpti.Common.DTO;
+using KuroOpti.Common.Requests;
 using KuroOpti.Entities;
 using KuroOpti.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -91,6 +92,24 @@ namespace KuroOpti.API.Controllers
             }
 
             return Ok("Fuel station deleted");
+        }
+
+        // POST: api/fuelstation/along-route
+        [HttpPost("along-route")]
+        public async Task<IActionResult> GetStationsAlongRoute([FromBody] StationsAlongRouteRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var stations = await fuelStationService.GetStationsAlongRouteAsync(
+                request.Polyline,
+                request.FuelType,
+                request.MaxDistanceKm
+            );
+
+            var dto = mapper.Map<List<FuelStationDto>>(stations);
+
+            return Ok(dto);
         }
     }
 }

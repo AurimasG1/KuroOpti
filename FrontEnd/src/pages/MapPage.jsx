@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import MapSection from "../components/map/MapSection.jsx";
 import * as turf from "@turf/turf";
 import { LuRefreshCcw } from "react-icons/lu";
-import { getStations } from "../services/api.js";
+import { getStations, fetchGeocode, saveRouteHistory as sendRouteToBackend } from "../services/api.js";
+import { useLocation } from "react-router-dom";
 
 const MapPage = () => {
   const [allStations, setAllStations] = useState([]);
@@ -18,6 +19,92 @@ const MapPage = () => {
   const savedUser = JSON.parse(localStorage.getItem("user"));
   const defaultFuel = savedUser?.fuel || "all";
   const [fuelType, setFuelType] = useState(defaultFuel);
+  const [distance, setDistance] = useState(15);
+
+  const [wayFrom, setWayFrom] = useState("");
+  const [wayTo, setWayTo] = useState("");
+
+  const token = localStorage.getItem("accessToken");
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (
+      location.state &&
+      location.state.reloadedStations &&
+      location.state.reloadedStart !== undefined &&
+      location.state.reloadedEnd !== undefined
+    ) {
+      console.log("[KuroOpti] Gauti duomenys iš istorijos:", location.state);
+
+      // Naudojame atstatymo funkciją
+      handleReloadFromHistory(
+        location.state.reloadedStations,
+        location.state.reloadedStart,
+        location.state.reloadedEnd,
+      );
+    }
+  }, [location.state, allStations]); 
+
+  const handleReloadFromHistory = async (stations, startText, endText) => {
+    if (!stations || stations.length === 0) return;
+    
+    setLoading(true);
+    setIsRouteActive(true);
+
+    try {
+      console.log("[KuroOpti] Atstatomi stotelių ID iš istorijos:", stations);
+
+      const surastosDegalines = stations.map(id => {
+        return allStations.find(s => String(s.Id || s.id) === String(id));
+      }).filter(Boolean);
+
+      const paruostosStoteles = surastosDegalines.map((st) => ({
+        Id: st.Id || st.id,
+        id: st.Id || st.id,
+        Name: st.Name || st.name,
+        name: st.Name || st.name,
+        Latitude: Number(st.Latitude || st.latitude),
+        latitude: Number(st.Latitude || st.latitude),
+        Longitude: Number(st.Longitude || st.longitude),
+        longitude: Number(st.Longitude || st.longitude)
+      }));
+
+      setSelectedWaypoints(paruostosStoteles);
+
+      let finalStartText = startText;
+      let finalEndText = endText;
+
+      if (!finalStartText && surastosDegalines.length > 0) {
+        finalStartText = surastosDegalines[0].Address || surastosDegalines[0].Name;
+      }
+      if (!finalEndText && surastosDegalines.length > 0) {
+        finalEndText = surastosDegalines[surastosDegalines.length - 1].Address || surastosDegalines[surastosDegalines.length - 1].Name;
+      }
+
+      setStartAddr(finalStartText || "Pradžia");
+      setEndAddr(finalEndText || "Pabaiga");
+
+      const startCoord = await fetchGeocode(finalStartText);
+      const endCoord = await fetchGeocode(finalEndText);
+
+      if (startCoord && endCoord) {
+        setRoutePoints({ start: startCoord, end: endCoord });
+        console.log("[KuroOpti] Maršrutas sėkmingai atkurtas aplink išsaugotas degalines!");
+      } else {
+        console.warn("[KuroOpti] Nepavyko gauti koordinačių pagal degalinių adresus.");
+      }
+
+    } catch (err) {
+      console.error("Klaida handleReloadFromHistory:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSliderChange = (e) => {
+    setDistance(e.target.value);
+  };
 
   const getFormattedDate = () => {
     return new Date().toLocaleString("lt-LT", {
@@ -32,9 +119,8 @@ const MapPage = () => {
   };
 
   const displayStations = React.useMemo(() => {
-    return filteredStations.filter((s) => {
-      // A. Text filter
-
+  
+      const filtered = filteredStations.filter((s) => {
       const simplify = (text) =>
         text
           ?.toString()
@@ -49,7 +135,6 @@ const MapPage = () => {
         simplify(s.Address).includes(normalizedQuery) ||
         simplify(s.Municipality).includes(normalizedQuery);
 
-      // B. Fuel filter
       let matchesFuel = true;
       if (fuelType !== "all") {
         const kaina = parseFloat(s[fuelType]);
@@ -58,6 +143,17 @@ const MapPage = () => {
 
       return matchesText && matchesFuel;
     });
+
+   
+    if (fuelType !== "all") {
+      return [...filtered].sort((a, b) => {
+        const priceA = parseFloat(a[fuelType]) || 0;
+        const priceB = parseFloat(b[fuelType]) || 0;
+        return priceA - priceB; 
+      });
+    }
+
+    return filtered;
   }, [filteredStations, searchQuery, fuelType]);
 
   useEffect(() => {
@@ -120,7 +216,7 @@ const MapPage = () => {
         ]);
 
         const line = turf.lineString(turfCoords);
-        const buffer = turf.buffer(line, 10, { units: "kilometers" });
+        const buffer = turf.buffer(line, distance, { units: "kilometers" });
 
         const found = allStations.filter((station) => {
           const sLng = Number(
@@ -141,7 +237,7 @@ const MapPage = () => {
         console.error("Filtravimo klaida:", err);
       }
     },
-    [allStations],
+    [allStations, distance],
   );
 
   const handleRouteSearch = async (e) => {
@@ -153,18 +249,10 @@ const MapPage = () => {
     setFilteredStations([]);
 
     try {
-      const fetchGeocode = async (addr) => {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addr + ", Lietuva")}`,
-        );
-        const data = await res.json();
-        return data.length > 0
-          ? [parseFloat(data[0].lat), parseFloat(data[0].lon)]
-          : null;
-      };
-
-      const start = await fetchGeocode(startAddr);
-      const end = await fetchGeocode(endAddr);
+      const [start, end] = await Promise.all([
+        fetchGeocode(startAddr),
+        fetchGeocode(endAddr)
+      ]);
 
       if (start && end) {
         setRoutePoints({ start, end });
@@ -178,31 +266,38 @@ const MapPage = () => {
     }
   };
 
-  const handleStartRoute = () => {
-    if (!routePoints || !routePoints.start || !routePoints.end) {
-      alert("Pirmiausia įveskite maršrutą 'Iš kur' ir 'Į kur'!");
+  const handleStartRoute = async () => {
+    if (!routePoints?.start || !routePoints?.end) {
+      alert("Pirmiausia įveskite maršrutą!");
       return;
     }
 
     try {
-      const startLat = routePoints.start[0];
-      const startLng = routePoints.start[1];
-      const endLat = routePoints.end[0];
-      const endLng = routePoints.end[1];
+      const currentToken = localStorage.getItem("accessToken");
+      const tikriStoteliuId = selectedWaypoints
+        .map((wp) => wp.Id || wp.id)
+        .filter((id) => id !== undefined && !String(id).startsWith("hist-"));
 
-      const origin = `${startLat},${startLng}`;
-      const destination = `${endLat},${endLng}`;
+      await sendRouteToBackend({ 
+        routeId: 0, 
+        startAddress: startAddr,
+        endAddress: endAddr,    
+        selectedStationIds: tikriStoteliuId 
+      }, currentToken);
 
-      const waypointString = selectedWaypoints
-        .map((wp) => `${wp.Latitude},${wp.Longitude}`)
-        .join("|");
-
-      const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}${waypointString ? `&waypoints=${waypointString}` : ""}&travelmode=driving`;
-
-      window.open(googleMapsUrl, "_blank");
-    } catch (error) {
-      alert("Nepavyko sugeneruoti nuorodos. Patikrinkite konsolę.");
+      console.log("Istorija išsaugota sėkmingai!");
+    } catch (dbErr) {
+      console.error("Nepavyko išsaugoti istorijos:", dbErr);
     }
+
+    const origin = `${routePoints.start[0]},${routePoints.start[1]}`;
+    const destination = `${routePoints.end[0]},${routePoints.end[1]}`;
+    const waypointString = selectedWaypoints
+      .map((wp) => `${wp.Latitude},${wp.Longitude}`)
+      .join("|");
+      
+    const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}${waypointString ? `&waypoints=${waypointString}` : ""}&travelmode=driving`;
+    window.open(googleMapsUrl, "_blank");
   };
 
   const handleToggleRoute = (station) => {
@@ -253,6 +348,7 @@ const MapPage = () => {
               <select
                 className="p-2 bg-slate-700 rounded text-sm outline-none border border-slate-600 focus:border-lime-500"
                 onChange={(e) => setFuelType(e.target.value)}
+                value={fuelType}
               >
                 <option value="all">Visi degalai</option>
                 <option value="PetrolPrice">Benzinas</option>
@@ -261,7 +357,7 @@ const MapPage = () => {
               </select>
 
               <label className="text-xs text-slate-400 uppercase font-bold mt-2">
-                Paieška:
+                Degalinės paieška:
               </label>
               <input
                 type="text"
@@ -269,6 +365,24 @@ const MapPage = () => {
                 className="p-2 bg-slate-700 rounded text-sm outline-none border border-slate-600 focus:border-lime-500"
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
+              <div>
+                <label className="text-xs text-slate-400 uppercase font-bold mt-2">
+                  Degalinių atstumas nuo maršruto:
+                </label>
+                <div className="p-2 bg-slate-700 rounded text-sm outline-none border border-slate-600">
+                  <input
+                    type="range"
+                    min="1"
+                    max="30"
+                    value={distance}
+                    onChange={handleSliderChange}
+                    className="w-full accent-lime-600"
+                  />
+                  <div className="text-xs text-slate-400 uppercase font-bold my-2">
+                    <span>{distance} km</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="flex flex-row items-center justify-between mt-2">
@@ -318,15 +432,16 @@ const MapPage = () => {
               <h3 className="text-xs font-bold text-indigo-400 uppercase mb-2">
                 Sustojimai ({selectedWaypoints.length})
               </h3>
-              {selectedWaypoints.map((wp) => (
+              {selectedWaypoints.map((wp, idx) => (
                 <div
-                  key={wp.Id}
+                  key={wp.Id || wp.id || idx}
                   className="flex justify-between items-center text-xs mb-1 bg-slate-700 p-2 rounded"
                 >
-                  <span>{wp.Name}</span>
+                  <span>{wp.Name || wp.name || wp.address || "Degalinė"}</span>
+
                   <button
-                    onClick={() => handleRemoveWaypoint(wp.Id)}
-                    className="text-red-400 font-bold px-1"
+                    onClick={() => handleRemoveWaypoint(wp.Id || wp.id)}
+                    className="text-red-400 font-bold px-1 hover:text-red-300 transition-colors"
                   >
                     ✕
                   </button>
@@ -387,22 +502,21 @@ const MapPage = () => {
                 onClick={handleStartRoute}
                 className="w-full bg-lime-600 text-white p-3 rounded font-bold hover:bg-lime-500 mt-4 shadow-lg"
               >
-                Pradėti maršrutą
+                Pridėti maršrutą ir išsaugoti
               </button>
             )}
           </div>
           <div className="flex flex-row items-center justify-center gap-2 text-nowrap">
             <p>Atnaujinta: </p>
-
             <div>{updatedDate}</div>
           </div>
 
           <div className="flex flex-row items-center justify-center gap-2">
             <p>Šaltinis: </p>
-
             <a
               href="https://www.ena.lt/degalu-kainos-degalinese/"
               target="_blank"
+              rel="noreferrer"
             >
               LEA
             </a>

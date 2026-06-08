@@ -1,0 +1,364 @@
+import React, { useState, useEffect, useRef } from "react";
+
+export default function GasStationsManagement() {
+  const [gasStations, setGasStations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const initialFormState = {
+    name: "",
+    municipality: "",
+    address: "",
+    latitude: 54.687,
+    longitude: 25.279,
+  };
+
+  const [formData, setFormData] = useState(initialFormState);
+  const [editingGasStationId, setEditingGasStationId] = useState(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
+  const [currentPrices, setCurrentPrices] = useState({
+    diesel: 0,
+    petrol: 0,
+    lpg: 0,
+  });
+
+  const baseUrl = (
+    import.meta.env.VITE_API_URL || "http://localhost:5211"
+  ).trim();
+
+  const cleanBaseUrl = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
+  const apiUrl = `${cleanBaseUrl}/api/FuelStation`;
+
+  console.log("Mano siunčiamas užklausos adresas:", apiUrl);
+
+  const formRef = useRef(null);
+
+  const scrollToForm = () => {
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
+
+  const fetchGasStations = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(apiUrl);
+      if (!response.ok) throw new Error("Nepavyko užkrauti degalinių");
+      const data = await response.json();
+      setGasStations(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchGasStations();
+  }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    const isCoordinate = ["latitude", "longitude"].includes(name);
+    setFormData({
+      ...formData,
+      [name]: isCoordinate ? parseFloat(value) || 0 : value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const method = editingGasStationId ? "PUT" : "POST";
+      const url = editingGasStationId
+        ? `${apiUrl}/${editingGasStationId}`
+        : apiUrl;
+
+      const payload = {
+        id: editingGasStationId || 0,
+        name: formData.name,
+        municipality: formData.municipality,
+        address: formData.address,
+        latitude: formData.latitude,
+        longitude: formData.longitude,
+        dieselPrice: currentPrices.diesel,
+        petrolPrice: currentPrices.petrol,
+        lpgPrice: currentPrices.lpg,
+      };
+
+      const response = await fetch(url, {
+        method: method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) throw new Error("Nepavyko išsaugoti degalinės");
+
+      alert(
+        editingGasStationId
+          ? "Degalinės informacija atnaujinta sėkmingai!"
+          : "Degalinė pridėta sėkmingai!",
+      );
+      handleFormClose();
+      fetchGasStations();
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const handleDelete = async (id, name) => {
+    if (!window.confirm(`Ar tikrai norite ištrinti degalinę "${name}"?`))
+      return;
+    try {
+      const response = await fetch(`${apiUrl}/${id}`, { method: "DELETE" });
+      if (!response.ok) throw new Error("Nepavyko ištrinti degalinės");
+      alert("Degalinė ištrinta sėkmingai!");
+      fetchGasStations();
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const handleEdit = (gasStation) => {
+    setEditingGasStationId(gasStation.id);
+    setFormData({
+      name: gasStation.name || "",
+      municipality: gasStation.municipality || "",
+      address: gasStation.address || "",
+      latitude: gasStation.latitude || 0,
+      longitude: gasStation.longitude || 0,
+    });
+    setCurrentPrices({
+      diesel: gasStation.dieselPrice || 0,
+      petrol: gasStation.petrolPrice || 0,
+      lpg: gasStation.lpgPrice || 0,
+    });
+    setIsFormOpen(true);
+    scrollToForm();
+  };
+
+  const handleFormClose = () => {
+    setEditingGasStationId(null);
+    setFormData(initialFormState);
+    setCurrentPrices({ diesel: 0, petrol: 0, lpg: 0 });
+    setIsFormOpen(false);
+  };
+
+  return (
+    <div className="bg-transparent w-full">
+      <div className="flex justify-between items-center mb-4 gap-4 flex-wrap sm:flex-nowrap">
+        {!isFormOpen && (
+          <button
+            onClick={() => {
+              setIsFormOpen(true);
+              scrollToForm();
+            }}
+            className="bg-lime-800 hover:bg-lime-700 text-white border-lime-400 border-x px-4 py-2 rounded text-sm font-medium transition cursor-pointer shadow-sm whitespace-nowrap"
+          >
+            Pridėti degalinę
+          </button>
+        )}
+      </div>
+
+      {isFormOpen && (
+        <form
+          ref={formRef}
+          onSubmit={handleSubmit}
+          className="bg-white/80 backdrop-blur-sm border border-gray-200 p-5 rounded-xl space-y-4 shadow-md mb-6"
+        >
+          <h3 className="text-md font-bold text-gray-700">
+            {editingGasStationId
+              ? `Redaguoti informaciją: ${formData.name}`
+              : "Pridėti naują degalinę"}
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1">
+                Degalinės pavadinimas
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+                className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-lime-600"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1">
+                Savivaldybė/Miestas
+              </label>
+              <input
+                type="text"
+                name="municipality"
+                value={formData.municipality}
+                onChange={handleInputChange}
+                required
+                className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-lime-600"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1">
+                Adresas
+              </label>
+              <input
+                type="text"
+                name="address"
+                value={formData.address}
+                onChange={handleInputChange}
+                required
+                className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-lime-600"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-gray-200">
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1">
+                Platuma (X koordinatė)
+              </label>
+              <input
+                type="number"
+                step="0.000001"
+                name="latitude"
+                value={formData.latitude}
+                onChange={handleInputChange}
+                required
+                className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-lime-600"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1">
+                Ilguma (Y koordinatė)
+              </label>
+              <input
+                type="number"
+                step="0.000001"
+                name="longitude"
+                value={formData.longitude}
+                onChange={handleInputChange}
+                required
+                className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-lime-600"
+              />
+            </div>
+          </div>
+
+          <div className="flex gap-2 justify-end pt-2">
+            <button
+              type="button"
+              onClick={handleFormClose}
+              className="bg-yellow-500 hover:bg-yellow-400 text-gray-700 px-4 py-1.5 rounded text-sm font-semibold transition cursor-pointer"
+            >
+              Atšaukti
+            </button>
+            <button
+              type="submit"
+              className="bg-lime-800 hover:bg-lime-700 text-white px-4 py-1.5 rounded text-sm font-semibold transition cursor-pointer"
+            >
+              {editingGasStationId ? "Saugoti pakeitimus" : "Sukurti Degalinę"}
+            </button>
+          </div>
+        </form>
+      )}
+
+      <div className="overflow-x-auto w-full rounded-xl border border-gray-200/60 shadow-sm bg-white/60 backdrop-blur-sm">
+        <table className="min-w-full divide-y divide-gray-200/60 text-sm">
+          <thead className="bg-gray-100/50 text-gray-700 font-semibold text-left">
+            <tr>
+              <th className="px-4 py-3 w-40">Pavadinimas</th>
+              <th className="px-4 py-3">Miestas / Adresas</th>
+              <th className="px-4 py-3 text-gray-500 font-medium text-xs">
+                Platuma
+              </th>
+              <th className="px-4 py-3 text-gray-500 font-medium text-xs">
+                Ilguma
+              </th>
+              <th className="px-4 py-3 text-center w-36">Veiksmai</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200/40 text-gray-600">
+            {loading && gasStations.length === 0 ? (
+              <tr>
+                <td
+                  colSpan="5"
+                  className="text-center py-10 font-medium text-lime-800"
+                >
+                  Užkraunamos degalinės...
+                </td>
+              </tr>
+            ) : error ? (
+              <tr>
+                <td
+                  colSpan="5"
+                  className="text-center py-10 font-medium text-red-500"
+                >
+                  Klaida: {error}
+                </td>
+              </tr>
+            ) : gasStations.length === 0 ? (
+              <tr>
+                <td
+                  colSpan="5"
+                  className="text-center py-10 text-gray-400 italic"
+                >
+                  Nėra užregistruotų degalinių.
+                </td>
+              </tr>
+            ) : (
+              gasStations.map((gasStation) => (
+                <tr
+                  key={gasStation.id}
+                  className="hover:bg-white/40 transition-colors"
+                >
+                  <td
+                    className="px-4 py-3 font-bold text-gray-800 max-w-[160px] truncate"
+                    title={gasStation.name}
+                  >
+                    {gasStation.name}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="font-medium text-gray-700">
+                      {gasStation.municipality}
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      {gasStation.address}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 font-mono text-xs text-gray-500">
+                    {gasStation.latitude ? gasStation.latitude.toFixed(5) : "—"}
+                  </td>
+                  <td className="px-4 py-3 font-mono text-xs text-gray-500">
+                    {gasStation.longitude
+                      ? gasStation.longitude.toFixed(5)
+                      : "—"}
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    <div className="flex gap-2 justify-center">
+                      <button
+                        onClick={() => handleEdit(gasStation)}
+                        className="text-blue-600 hover:text-blue-800 text-xs font-semibold px-2 py-1 hover:bg-blue-50/50 rounded transition cursor-pointer"
+                      >
+                        Redaguoti
+                      </button>
+                      <button
+                        onClick={() =>
+                          handleDelete(gasStation.id, gasStation.name)
+                        }
+                        className="text-red-600 hover:text-red-800 text-xs font-semibold px-2 py-1 hover:bg-red-50/50 rounded transition cursor-pointer"
+                      >
+                        Ištrinti
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}

@@ -1,13 +1,95 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import UsersManagement from "./UsersManagement";
+import GasStationsManagement from "./GasStationsManagement";
 
-const AdminPage = () => {
+const baseUrl = (import.meta.env.VITE_API_URL || "http://localhost:5211").trim();
+
+const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+const API_BASE_URL = `${cleanBaseUrl}/api/admin`;
+
+export default function AdminPage() {
+  const [activeTab, setActiveTab] = useState("users");
+  const [showScrollButton, setShowScrollButton] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrolled = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+      if (scrolled > 100) {
+        setShowScrollButton(true);
+      }
+      else {
+        setShowScrollButton(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, true);
+    return () => window.removeEventListener("scroll", handleScroll, true);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <div>
-      <h1 className="text-xl text-gray-600">Administratoriaus puslapis</h1>
-      <h3>Puslapis kuriamas...</h3>
-     {/* Under construction*/ }
+    <div className="p-6 max-w-5xl mx-auto bg-transparent min-h-screen">
+      <h1 className="text-3xl font-bold text-lime-100 mb-8 text-center uppercase tracking-widest underline">
+        Administratoriaus Zona
+      </h1>
+
+      <div className="flex gap-6 justify-center items-center mb-10 min-h-[80px]">
+        <button
+          type="button"
+          onClick={() => setActiveTab("users")}
+          className={`transition-all duration-500 ease-in-out cursor-pointer text-center rounded-xl font-bold tracking-wide ${
+            activeTab === "users"
+              ? "text-4xl md:text-6xl text-white bg-transparent px-2 py-1"
+              : "text-sm bg-gray-100/70 backdrop-blur-sm text-gray-500 hover:bg-gray-200/80 px-4 py-2 opacity-60 hover:opacity-100 shadow-sm"
+          }`}
+        >
+          Vartotojų Valdymas
+        </button>
+
+        <span className="text-gray-300 text-xl font-light">/</span>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab("gasStations")}
+          className={`transition-all duration-500 ease-in-out cursor-pointer text-center rounded-xl font-bold tracking-wide ${
+            activeTab === "gasStations"
+              ? "text-4xl md:text-6xl text-white bg-transparent px-2 py-1"
+              : "text-sm bg-gray-100/70 backdrop-blur-sm text-gray-500 hover:bg-gray-200/80 px-4 py-2 opacity-60 hover:opacity-100 shadow-sm"
+          }`}
+        >
+          Degalinių Valdymas
+        </button>
+      </div>
+
+      {/* Lentelių atvaizdavimas */}
+      <div className="transition-all duration-500">
+        {activeTab === "users" && <UsersManagement apiBaseUrl={API_BASE_URL} />}
+        {activeTab === "gasStations" && <GasStationsManagement apiBaseUrl={API_BASE_URL} />}
+      </div>
+
+      <button
+        onClick={scrollToTop}
+        className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] bg-lime-800 text-white p-4 rounded-full shadow-2xl hover:bg-lime-700 transition-all duration-500 ease-in-out cursor-pointer flex items-center justify-center border-2 border-lime-500 w-14 h-14 ${
+          showScrollButton 
+            ? "opacity-100 scale-100 visible" 
+            : "opacity-0 scale-50 invisible pointer-events-none"
+        }`}
+        title="Į viršų"
+      >
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          fill="none" 
+          viewBox="0 0 24 24" 
+          strokeWidth="3" 
+          stroke="currentColor" 
+          className="w-6 h-6 text-white block"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
+        </svg>
+      </button>
     </div>
   );
-};
-
-export default AdminPage;
+}

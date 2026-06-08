@@ -72,6 +72,28 @@ namespace KuroOpti.Repositories.Implementations
             return await db.Users.ToListAsync();
         }
 
-        public Task SaveChangesAsync() => db.SaveChangesAsync();
+        public async Task<bool> UpdateAsync(User user)
+        {
+            var existingUser = await db.Users.FindAsync(user.Id);
+            if (existingUser == null)
+                return false;
+
+            existingUser.Email = user.Email;
+            existingUser.PasswordHash = user.PasswordHash;
+
+            await db.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteAsync(User user)
+        {
+            var existingUser = await db.Users.FindAsync(user.Id);
+            if (existingUser == null)
+                return false;
+
+            db.Users.Remove(existingUser);
+            await db.SaveChangesAsync();
+            return true;
+        }
     }
 }

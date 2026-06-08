@@ -4,7 +4,7 @@ import {
   Routes,
   Route,
   Navigate,
-  useNavigate
+  useNavigate,
 } from "react-router-dom";
 import Navbar from "./components/common/Navbar.jsx";
 import HomePage from "./pages/HomePage.jsx";
@@ -15,6 +15,7 @@ import Footer from "./components/common/Footer.jsx";
 import BgImage from "./assets/images/sunrise.jpg";
 import ChatBotPage from "./pages/ChatBotPage.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
+import SavedRoutesPage from './pages/SavedRoutesPage.jsx'
 
 const ProtectedRoute = ({ children, user }) => {
   if (!user) {
@@ -31,7 +32,7 @@ const AdminProtectedRoute = ({ children, user }) => {
 };
 
 const App = () => {
- const [loginPopup, setLoginPopup] = useState(false);
+  const [loginPopup, setLoginPopup] = useState(false);
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("app_user");
     try {
@@ -40,10 +41,10 @@ const App = () => {
       console.error("Nepavyko nuskaityti vartotojo iš localStorage:", error);
       return null;
     }
-  }); 
+  });
 
   const navigate = useNavigate();
-
+  
   const handleLoginPopup = () => {
     setLoginPopup(!loginPopup);
   };
@@ -54,6 +55,7 @@ const App = () => {
     backgroundSize: "cover",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
+    backgroundAttachment: "fixed",
   };
 
   return (
@@ -63,22 +65,22 @@ const App = () => {
     //     v7_relativeSplatPath: true,
     //   }}
     // >
-      <div style={bgImageStyle} className="relative">
-        <Navbar
-          handleLoginPopup={handleLoginPopup}
-          user={user}
-          setUser={setUser}
+    <div style={bgImageStyle} className="relative">    
+      <Navbar
+        handleLoginPopup={handleLoginPopup}
+        user={user}
+        setUser={setUser}
+      />      
+
+      <Routes>
+        {/* Home Page */}
+        <Route
+          path="/"
+          element={<HomePage handleLoginPopup={handleLoginPopup} user={user} />}
         />
 
-        <Routes>
-          {/* Home Page */}
-          <Route
-            path="/"
-            element={<HomePage handleLoginPopup={handleLoginPopup} user={user}/>}
-          />
-
-
-          {/* Žemėlapio puslapis */}
+   
+          {/* Map page */}
           <Route
             path="/MapPage"
             element={
@@ -88,44 +90,52 @@ const App = () => {
             } 
           />
 
+          <Route 
+            path="/SavedRoutesPage"
+            element={
+              <ProtectedRoute user={user}>
+                <SavedRoutesPage />
+              </ProtectedRoute>
+            }/>
+
           {/* Contact Page */}
           <Route path="/ContactPage" element={<ContactPage />} />
 
           {/*mano ProtectedAdminRoute kodas*/}
-          <Route path="/admin"
-            element=
-            {
-              <AdminProtectedRoute user={user}>
-                <AdminPage />
-              </AdminProtectedRoute>
-            }
-          />
-        </Routes>
-
-        {/* ChatBot */}
-        <ChatBotPage />
-        
-        {/* Footer */}
-        <Footer />
-
-        {/* Login Popup */}
-        <LoginPopup
-          show={loginPopup}
-          onClose={handleLoginPopup}
-          onLoginSuccess={(userData) => {
-            console.log("Vartotojas sėkmingai išsaugotas App state:", userData); 
-            localStorage.setItem("app_user", JSON.stringify(userData));
-            
-            setUser(userData);
-
-            if (userData && userData.role === "admin"){
-              setTimeout(() => {
-              navigate("/admin");
-              }, 50);
-            }
-          }}
+        <Route
+          path="/admin"
+          element={
+            <AdminProtectedRoute user={user}>
+              <AdminPage />
+            </AdminProtectedRoute>
+          }
         />
-      </div>
+      </Routes>
+
+      {/* Footer */}
+      <Footer />
+
+         {/* ChatBot */}
+      <ChatBotPage />
+
+      {/* Login Popup */}
+      <LoginPopup
+        show={loginPopup}
+        onClose={handleLoginPopup}
+        onLoginSuccess={(userData) => {
+          console.log("Vartotojas sėkmingai išsaugotas App state:", userData);
+          localStorage.setItem("app_user", JSON.stringify(userData));
+
+          setUser(userData);
+
+          if (userData && userData.role === "admin") {
+            setTimeout(() => {
+              navigate("/admin");
+            }, 50);
+          }
+        }}
+      />
+    </div>
     // </Router>
   );
 };
