@@ -100,7 +100,7 @@ const App = () => {
           {/* Contact Page */}
           <Route path="/ContactPage" element={<ContactPage />} />
 
-                  {/*mano ProtectedAdminRoute kodas*/}
+          {/*mano ProtectedAdminRoute kodas*/}
         <Route
           path="/admin"
           element={
