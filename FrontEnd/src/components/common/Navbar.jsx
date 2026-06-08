@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
-import {Logo} from "./Logo.jsx";
+import { Logo } from "./Logo.jsx";
 
 const Navbar = ({ handleLoginPopup, user, setUser }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+
+  const isAdmin = user && user.role === "admin";
 
   const handleLogout = () => {
     localStorage.removeItem("app_user");
@@ -16,11 +18,10 @@ const Navbar = ({ handleLoginPopup, user, setUser }) => {
   return (
     <nav className="shadow-lg bg-white/30 backdrop-blur-sm sticky top-0 z-1001">
       <div className="container mx-auto flex justify-between items-center p-4 gap-4">
-        
         {/* LOGO  */}
-        <Link 
-          to="/" 
-          state={{ fromNavigation: true }} 
+        <Link
+          to="/"
+          state={{ fromNavigation: true }}
           className="text-gray-800 text-2xl sm:text-3xl font-bold min-w-max"
         >
           <Logo />
@@ -30,51 +31,58 @@ const Navbar = ({ handleLoginPopup, user, setUser }) => {
         <div className="hidden md:block">
           <ul className="flex font-semibold items-center gap-2 lg:gap-4 text-sm lg:text-base">
             <li>
-              <Link 
-                to="/" 
-                state={{ fromNavigation: true }} 
+              <Link
+                to="/"
+                state={{ fromNavigation: true }}
                 className="text-gray-700 hover:text-gray-900 hover:bg-lime-400 hover:rounded-2xl hover:transition-colors px-3 py-2 select-none block whitespace-nowrap"
               >
                 Į pradžią
               </Link>
             </li>
-
+            {/* tik Adminui matomas mygtukas, kuris veda į Admin puslapį */}
+            {isAdmin && (
+              <li>
+                <Link
+                  to="/admin"
+                  className="text-lime-900 bg-lime-400/60 hover:bg-lime-400 border border-lime-500/30 font-bold rounded-2xl transition-all px-3 py-2 select-none block whitespace-nowrap shadow-sm"
+                >
+                  ⚙️ Admin Zona
+                </Link>
+              </li>
+            )}
             {user && (
               <li>
-                <Link 
-                  to="/MapPage" 
+                <Link
+                  to="/MapPage"
                   className="text-gray-700 hover:text-gray-900 hover:bg-lime-400 hover:rounded-2xl hover:transition-colors px-3 py-2 select-none block whitespace-nowrap"
                 >
                   Žemėlapis
                 </Link>
               </li>
             )}
-
             {user && (
               <li>
-                <Link 
-                  to="/SavedRoutesPage" 
+                <Link
+                  to="/SavedRoutesPage"
                   className="text-gray-700 hover:text-gray-900 hover:bg-lime-400 hover:rounded-2xl hover:transition-colors px-3 py-2 select-none block whitespace-nowrap"
                 >
                   Maršrutų istorija
                 </Link>
               </li>
             )}
-
             <li>
-              <Link 
-                to="/ContactPage" 
+              <Link
+                to="/ContactPage"
                 className="text-gray-700 hover:text-gray-900 hover:bg-lime-400 hover:rounded-2xl hover:transition-colors px-3 py-2 select-none block whitespace-nowrap"
               >
                 Kontaktai
               </Link>
             </li>
-
             <li>
               {user ? (
                 <div className="flex items-center gap-2 bg-white/50 px-3 py-1.5 rounded-2xl border border-white/30 max-w-xs shadow-sm">
                   <span className="text-gray-800 font-bold text-xs lg:text-sm truncate max-w-37.5 lg:max-w-50">
-                    {user.username.split('@')[0]}
+                    {user.username.split("@")[0]}
                   </span>
                   <button
                     onClick={handleLogout}
@@ -96,42 +104,60 @@ const Navbar = ({ handleLoginPopup, user, setUser }) => {
         </div>
 
         {/* Hamburger mygtukas  */}
-        <GiHamburgerMenu 
-          className="flex items-center text-3xl md:hidden cursor-pointer text-gray-800 ml-auto" 
+        <GiHamburgerMenu
+          className="flex items-center text-3xl md:hidden cursor-pointer text-gray-800 ml-auto"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         />
 
         {/* --- MOBILE MENIU  --- */}
-        <div 
-          className={`absolute md:hidden top-full left-0 w-full bg-white/95 backdrop-blur-md flex flex-col items-center gap-4 font-semibold text-lg border-t border-gray-100 shadow-xl transform transition-all duration-300 ${isMenuOpen ? "opacity-100 py-6" : "opacity-0 pointer-events-none h-0 overflow-hidden"}`} 
+        <div
+          className={`absolute md:hidden top-full left-0 w-full bg-white/95 backdrop-blur-md flex flex-col items-center gap-4 font-semibold text-lg border-t border-gray-100 shadow-xl transform transition-all duration-300 ${isMenuOpen ? "opacity-100 py-6" : "opacity-0 pointer-events-none h-0 overflow-hidden"}`}
         >
-          <Link to="/" className="w-full text-center p-3 hover:bg-lime-400 hover:text-white transition-all" onClick={() => setIsMenuOpen(false)}>Į pradžią</Link>
-          
+          <Link
+            to="/"
+            className="w-full text-center p-3 hover:bg-lime-400 hover:text-white transition-all"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Į pradžią
+          </Link>
+          {/*Admino grizimo mygtukas*/}
+          {isAdmin && (
+            <Link
+              to="/admin"
+              className="w-full text-center p-3 bg-lime-100 text-lime-900 font-bold hover:bg-lime-400 hover:text-white transition-all"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              ⚙️ Admin Zona
+            </Link>
+          )}
+
           {user && (
-              
-                <Link 
-                  to="/MapPage" 
-                  className="text-gray-700 hover:text-gray-900 hover:bg-lime-400 hover:rounded-2xl hover:transition-colors px-3 py-2 select-none block whitespace-nowrap"
-                >
-                  Žemėlapis
-                </Link>
-              
-            )}
+            <Link
+              to="/MapPage"
+              className="text-gray-700 hover:text-gray-900 hover:bg-lime-400 hover:rounded-2xl hover:transition-colors px-3 py-2 select-none block whitespace-nowrap"
+            >
+              Žemėlapis
+            </Link>
+          )}
 
-            {user && (
-              
-                <Link 
-                  to="/SavedRoutesPage" 
-                  className="text-gray-700 hover:text-gray-900 hover:bg-lime-400 hover:rounded-2xl hover:transition-colors px-3 py-2 select-none block whitespace-nowrap"
-                >
-                  Maršrutų istorija
-                </Link>
-             
-            )}
+          {user && (
+            <Link
+              to="/SavedRoutesPage"
+              className="text-gray-700 hover:text-gray-900 hover:bg-lime-400 hover:rounded-2xl hover:transition-colors px-3 py-2 select-none block whitespace-nowrap"
+            >
+              Maršrutų istorija
+            </Link>
+          )}
 
-          <Link to="/ContactPage" className="w-full text-center p-3 hover:bg-lime-400 hover:text-white transition-all" onClick={() => setIsMenuOpen(false)}>Kontaktai</Link>
+          <Link
+            to="/ContactPage"
+            className="w-full text-center p-3 hover:bg-lime-400 hover:text-white transition-all"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Kontaktai
+          </Link>
         </div>
-        
+
         {/* --- MOBILE LOGIN  --- */}
         <div className="block md:hidden min-w-max">
           {user ? (
@@ -155,7 +181,6 @@ const Navbar = ({ handleLoginPopup, user, setUser }) => {
             </button>
           )}
         </div>
-        
       </div>
     </nav>
   );
