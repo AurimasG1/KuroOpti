@@ -119,7 +119,8 @@ const MapPage = () => {
   };
 
   const displayStations = React.useMemo(() => {
-    return filteredStations.filter((s) => {
+  
+      const filtered = filteredStations.filter((s) => {
       const simplify = (text) =>
         text
           ?.toString()
@@ -142,6 +143,17 @@ const MapPage = () => {
 
       return matchesText && matchesFuel;
     });
+
+   
+    if (fuelType !== "all") {
+      return [...filtered].sort((a, b) => {
+        const priceA = parseFloat(a[fuelType]) || 0;
+        const priceB = parseFloat(b[fuelType]) || 0;
+        return priceA - priceB; 
+      });
+    }
+
+    return filtered;
   }, [filteredStations, searchQuery, fuelType]);
 
   useEffect(() => {
