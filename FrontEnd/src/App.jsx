@@ -78,34 +78,7 @@ const App = () => {
           element={<HomePage handleLoginPopup={handleLoginPopup} user={user} />}
         />
 
-        {/* Žemėlapio puslapis */}
-        <Route
-          path="/MapPage"
-          element={
-            <ProtectedRoute user={user}>
-              <MapPage />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Contact Page */}
-        <Route path="/ContactPage" element={<ContactPage />} />
-
-<<<<<<< Updated upstream
-        {/*mano ProtectedAdminRoute kodas*/}
-        <Route
-          path="/admin"
-          element={
-            <AdminProtectedRoute user={user}>
-              <AdminPage />
-            </AdminProtectedRoute>
-          }
-        />
-      </Routes>
-
-      {/* ChatBot */}
-      <ChatBotPage />
-=======
+   
           {/* Map page */}
           <Route
             path="/MapPage"
@@ -126,10 +99,23 @@ const App = () => {
 
           {/* Contact Page */}
           <Route path="/ContactPage" element={<ContactPage />} />
->>>>>>> Stashed changes
+
+                  {/*mano ProtectedAdminRoute kodas*/}
+        <Route
+          path="/admin"
+          element={
+            <AdminProtectedRoute user={user}>
+              <AdminPage />
+            </AdminProtectedRoute>
+          }
+        />
+      </Routes>
 
       {/* Footer */}
       <Footer />
+
+         {/* ChatBot */}
+      <ChatBotPage />
 
       {/* Login Popup */}
       <LoginPopup

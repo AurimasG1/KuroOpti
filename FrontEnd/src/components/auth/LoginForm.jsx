@@ -31,7 +31,7 @@ const Login = ({ handleSignIn, onLoginSuccess }) => {
 
       const backendRole = data?.user?.role || data?.user?.Role || "user";
       localStorage.setItem("accessToken", data.accessToken);
-      const backendRole = data?.user?.role || data?.user?.Role || "user;";
+     
 
       const userData =
         data && data.user && data.user.email
