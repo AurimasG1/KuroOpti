@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Toaster } from "react-hot-toast";
 import {
   BrowserRouter as Router,
   Routes,
@@ -67,6 +68,7 @@ const App = () => {
     //   }}
     // >
     <div style={bgImageStyle} className="relative">
+      <Toaster position="top-center" />
       <Navbar
         handleLoginPopup={handleLoginPopup}
         user={user}

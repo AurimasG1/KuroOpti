@@ -3,6 +3,8 @@ import { FcGoogle } from "react-icons/fc";
 import { FaEye, FaEyeSlash, FaFacebook, FaLinkedinIn } from "react-icons/fa";
 import { login, forgotPassword } from "../../services/authService.js";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
 
 const Login = ({ handleSignIn, onLoginSuccess }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -35,7 +37,8 @@ const Login = ({ handleSignIn, onLoginSuccess }) => {
       if (typeof onLoginSuccess === "function") {
         console.log("5. Iškviečiame onLoginSuccess iš LoginForm!");
         onLoginSuccess(userData);
-        alert("Prisijungta sėkmingai!");
+        toast.success("Prisijungta sėkmingai!");
+        // alert("Prisijungta sėkmingai!");
 
       } else {
         console.error(
@@ -49,7 +52,9 @@ const Login = ({ handleSignIn, onLoginSuccess }) => {
       }
     } catch (error) {
       console.error("Klaida try/catch bloke:", error);
-      alert("Klaida: " + error.message);
+      // alert("Klaida: " + error.message);
+      toast.error("Klaida: " + error.message);
+
     }
   };
 
@@ -58,10 +63,13 @@ const Login = ({ handleSignIn, onLoginSuccess }) => {
     setLoading(true);
     try {
       await forgotPassword(email);
-      alert(`Instrukcijos išsiųstos į el. paštą: ${email}`);
+      // alert(`Instrukcijos išsiųstos į el. paštą: ${email}`);
+      toast.success(`Instrukcijos išsiųstos į el. paštą: ${email}`);
+
       setIsForgotPassword(false);
     } catch (error) {
-      alert("Klaida: " + error.message);
+      // alert("Klaida: " + error.message);
+      toast.error("Klaida: " + error.message);
     } finally {
       setLoading(false);
     }

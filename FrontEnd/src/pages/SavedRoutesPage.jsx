@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getDetailedRouteHistory } from "../services/api.js";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const SavedRoutesPage = () => {
   const [savedRoutes, setSavedRoutes] = useState([]);
@@ -30,6 +31,7 @@ const SavedRoutesPage = () => {
         endLng: route.endLng
       },
     });
+    toast.success("Maršrutas įkeltas sėkmingai");
   };
 
   useEffect(() => {
@@ -45,6 +47,7 @@ const SavedRoutesPage = () => {
         console.log("Štai ką React gavo iš BackEnd:", data);
         setSavedRoutes(data);
       } catch (err) {
+        toast.error("Klaida istorijos puslapyje");
         console.error("Klaida istorijos puslapyje:", err);
         setError("Nepavyko užkrauti maršrutų istorijos iš serverio.");
       } finally {
