@@ -44,7 +44,7 @@ const Navbar = ({ handleLoginPopup, user, setUser }) => {
               <li>
                 <Link
                   to="/admin"
-                  className="text-lime-900 bg-lime-400/60 hover:bg-lime-400 border border-lime-500/30 font-bold rounded-2xl transition-all px-3 py-2 select-none block whitespace-nowrap shadow-sm"
+                  className="text-gray-700 hover:text-gray-900 hover:bg-lime-400 hover:rounded-2xl hover:transition-colors px-3 py-2 select-none block whitespace-nowrap"
                 >
                   ⚙️ Admin Zona
                 </Link>
@@ -124,7 +124,7 @@ const Navbar = ({ handleLoginPopup, user, setUser }) => {
           {isAdmin && (
             <Link
               to="/admin"
-              className="w-full text-center p-3 bg-lime-100 text-lime-900 font-bold hover:bg-lime-400 hover:text-white transition-all"
+              className="w-full text-center p-3 hover:bg-lime-400 hover:text-white transition-all"
               onClick={() => setIsMenuOpen(false)}
             >
               ⚙️ Admin Zona
