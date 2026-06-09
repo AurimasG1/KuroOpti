@@ -11,10 +11,11 @@ namespace KuroOpti.API.Mapping
         public MappingProfile()
         {
             // User
-            CreateMap<User, UserDto>().ReverseMap()
-            .ForMember(dest => dest.PasswordHash, opt => opt.Ignore())
-             .ForMember(dest => dest.Routes, opt => opt.Ignore())
-             .ForMember(dest => dest.SearchLogs, opt => opt.Ignore());
+            CreateMap<User, UserDto>()
+                .ReverseMap()
+                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore())
+                .ForMember(dest => dest.Routes, opt => opt.Ignore())
+                .ForMember(dest => dest.SearchLogs, opt => opt.Ignore());
             CreateMap<RegistrationRequest, User>()
                 .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
 
@@ -25,6 +26,7 @@ namespace KuroOpti.API.Mapping
             // Route
 
             CreateMap<Entities.Route, RouteDto>();
+            CreateMap<CreateRouteRequest, Entities.Route>();
 
             CreateMap<RouteDto, Entities.Route>()
                 .ForMember(r => r.UserId, opt => opt.Ignore())
@@ -46,14 +48,21 @@ namespace KuroOpti.API.Mapping
                     Latitude = src.FuelStation.Latitude,
                     Longitude = src.FuelStation.Longitude,
                 });
+            // RoutePlanningHistory → DTO
             CreateMap<RoutePlanningHistory, RoutePlanningHistoryDto>()
                 .ForMember(
                     dest => dest.SelectedStations,
                     opt =>
                         opt.MapFrom(src =>
-                            JsonSerializer.Deserialize<List<int>>(src.SelectedStationsJson)!
+                            string.IsNullOrWhiteSpace(src.SelectedStationsJson)
+                                ? new List<int>()
+                                : JsonSerializer.Deserialize<List<int>>(
+                                    src.SelectedStationsJson,
+                                    (JsonSerializerOptions?)null
+                                )
                         )
                 );
+
             CreateMap<RoutePlanningHistory, RoutePlanningHistoryWithStationsDto>()
                 .ForMember(dest => dest.Stations, opt => opt.MapFrom(src => src.Stations));
         }

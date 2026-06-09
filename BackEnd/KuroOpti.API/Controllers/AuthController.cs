@@ -17,23 +17,23 @@ namespace KuroOpti.API.Controllers
     {
         private readonly ITokenService tokenService;
         private readonly IUserService userService;
-        private readonly IMapper mapper;
         private readonly IRefreshTokenService refreshTokenService;
         private readonly IPasswordResetService passwordResetService;
+        private readonly IMapper mapper;
 
         public AuthController(
             ITokenService tokenService,
             IUserService userService,
-            IMapper mapper,
             IRefreshTokenService refreshTokenService,
-            IPasswordResetService passwordResetService
+            IPasswordResetService passwordResetService,
+            IMapper mapper
         )
         {
             this.tokenService = tokenService;
             this.userService = userService;
-            this.mapper = mapper;
             this.refreshTokenService = refreshTokenService;
             this.passwordResetService = passwordResetService;
+            this.mapper = mapper;
         }
 
         private List<Claim> BuildClaims(User user)

@@ -4,6 +4,7 @@ using KuroOpti.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KuroOpti.Data.Migrations
 {
     [DbContext(typeof(KuroOptiDbContext))]
-    partial class KuroOptiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260608213050_AddedStartAndEndAddress")]
+    partial class AddedStartAndEndAddress
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,6 +156,7 @@ namespace KuroOpti.Data.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Polyline")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<decimal>("StartLat")
@@ -181,20 +185,7 @@ namespace KuroOpti.Data.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("DistanceKm")
-                        .HasColumnType("double");
-
                     b.Property<string>("EndAddress")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<double>("EndLat")
-                        .HasColumnType("double");
-
-                    b.Property<double>("EndLng")
-                        .HasColumnType("double");
-
-                    b.Property<string>("FuelType")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -211,12 +202,6 @@ namespace KuroOpti.Data.Migrations
                     b.Property<string>("StartAddress")
                         .IsRequired()
                         .HasColumnType("longtext");
-
-                    b.Property<double>("StartLat")
-                        .HasColumnType("double");
-
-                    b.Property<double>("StartLng")
-                        .HasColumnType("double");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");

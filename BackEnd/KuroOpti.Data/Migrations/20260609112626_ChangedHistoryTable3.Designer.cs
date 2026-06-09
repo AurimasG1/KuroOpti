@@ -4,6 +4,7 @@ using KuroOpti.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KuroOpti.Data.Migrations
 {
     [DbContext(typeof(KuroOptiDbContext))]
-    partial class KuroOptiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260609112626_ChangedHistoryTable3")]
+    partial class ChangedHistoryTable3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,6 +156,7 @@ namespace KuroOpti.Data.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Polyline")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<decimal>("StartLat")

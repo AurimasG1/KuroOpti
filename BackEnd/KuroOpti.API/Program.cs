@@ -41,7 +41,7 @@ builder
     })
     .AddJwtBearer(options =>
     {
-        options.RequireHttpsMetadata = true;
+        options.RequireHttpsMetadata = false;
         options.SaveToken = true;
 
         options.TokenValidationParameters = new TokenValidationParameters
@@ -61,6 +61,7 @@ builder
             RoleClaimType = ClaimTypes.Role,
         };
     });
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddDbContext<KuroOptiDbContext>(options =>
@@ -76,9 +77,9 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+
 builder.Services.AddScoped<IPasswordResetRepository, PasswordResetRepository>();
 builder.Services.AddScoped<IPasswordResetService, PasswordResetService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -91,6 +92,9 @@ builder.Services.AddScoped<IRouteService, RouteService>();
 
 builder.Services.AddScoped<IFuelStationRepository, FuelStationRepository>();
 builder.Services.AddScoped<IFuelStationService, FuelStationService>();
+
+builder.Services.AddScoped<IRoutePlanningHistoryRepository, RoutePlanningHistoryRepository>();
+builder.Services.AddScoped<IRoutePlanningHistoryService, RoutePlanningHistoryService>();
 
 builder.Services.AddScoped<IAdminService, AdminService>();
 

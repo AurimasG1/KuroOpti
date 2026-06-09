@@ -12,31 +12,36 @@ const SavedRoutesPage = () => {
   const handleReloadRoute = (route) => {
     console.log("Maršruto duomenys iš DB:", route);
 
-    if (!route.selectedStations || route.selectedStations.length === 0) {
-      alert("Šis maršrutas neturi išsaugotų stotelių.");
-      return;
+    if (!route.stations || route.stations.length === 0) {
+      // alert("Šis maršrutas neturi išsaugotų stotelių.");
+      console.log("Maršrutas be stotelių — kraunam tik start/end.");
+      // return;
     }
 
-const start = route.startAddress || route.StartAddress || ""; 
-  const end = route.endAddress || route.EndAddress || "";
+    const start = route.startAddress || route.StartAddress || "";
+    const end = route.endAddress || route.EndAddress || "";
 
-  navigate("/MapPage", {
-    state: {
-      reloadedStations: route.selectedStations,
-      reloadedStart: start,
-      reloadedEnd: end,
-    },
-  });
-};
+    navigate("/MapPage", {
+      state: {
+        reloadedStations: route.stations,
+        startLat: route.startLat,
+        startLng: route.startLng,
+        endLat: route.endLat,
+        endLng: route.endLng
+      },
+    });
+  };
 
   useEffect(() => {
-    const fetchHistory = async () => {
-      const currentToken = localStorage.getItem("accessToken");
-      console.log("-> Istorijos puslapis siunčia šį žetoną:", currentToken);
+    const token = localStorage.getItem("accessToken");
+    if (!token) return;
+    console.log("API siunčia token:", token);
 
+
+    const fetchHistory = async () => {
       try {
         setLoading(true);
-        const data = await getDetailedRouteHistory(currentToken);
+        const data = await getDetailedRouteHistory();
         console.log("Štai ką React gavo iš BackEnd:", data);
         setSavedRoutes(data);
       } catch (err) {
@@ -77,7 +82,7 @@ const start = route.startAddress || route.StartAddress || "";
           <div className="bg-slate-800 p-4 rounded-lg border border-slate-700 shadow-md space-y-4">
             {savedRoutes.map((route, idx) => {
               const hasAddress = route.startAddress || route.StartAddress;
-              const marsrutoTekstas = hasAddress 
+              const marsrutoTekstas = hasAddress
                 ? `${route.startAddress || route.StartAddress} ➔ ${route.endAddress || route.EndAddress}`
                 : `Maršrutas per degalinę (ID: ${route.selectedStations?.join(", ") || "Nenurodyta"})`;
 

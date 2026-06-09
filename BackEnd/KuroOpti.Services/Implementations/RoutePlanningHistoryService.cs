@@ -1,4 +1,5 @@
 using System.Text.Json;
+using KuroOpti.Common.Requests;
 using KuroOpti.Entities;
 using KuroOpti.Repositories;
 using KuroOpti.Repositories.Interfaces;
@@ -20,17 +21,24 @@ namespace KuroOpti.Services.Implementations
             this.fuelStationRepo = fuelStationRepo;
         }
 
-        public async Task AddHistoryAsync(int userId, int routeId, List<int> selectedStationIds)
+        public async Task AddHistoryAsync(int userId, SaveHistoryRequest req)
         {
-            var json = JsonSerializer.Serialize(selectedStationIds);
-
             var history = new RoutePlanningHistory
             {
                 UserId = userId,
-                RouteId = routeId,
-                SelectedStationsJson = json,
+                RouteId = req.RouteId,
+                StartAddress = req.StartAddress,
+                EndAddress = req.EndAddress,
+                StartLat = req.StartLat,
+                StartLng = req.StartLng,
+                EndLat = req.EndLat,
+                EndLng = req.EndLng,
+                FuelType = req.FuelType,
+                DistanceKm = req.DistanceKm,
+                SelectedStationsJson = JsonSerializer.Serialize(req.SelectedStationIds),
                 PlannedAt = DateTime.UtcNow,
             };
+
             await historyRepo.AddAsync(history);
         }
 

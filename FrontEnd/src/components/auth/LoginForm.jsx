@@ -10,7 +10,7 @@ const Login = ({ handleSignIn, onLoginSuccess }) => {
   const [password, setPassword] = useState("");
 
   const [isForgotPassword, setIsForgotPassword] = useState(false);
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -20,23 +20,14 @@ const Login = ({ handleSignIn, onLoginSuccess }) => {
       const data = await login(email, password);
       console.log("2. Atsakymas iš BackEnd:", data);
 
-      // Tokeno issaugojimas localStorage
-      const jwtToken = data?.AccessToken || data?.accessToken || data?.token || data?.user?.token;
-      if (jwtToken) {
-        localStorage.setItem("token", jwtToken);
-        console.log("JWT tokenas išsaugotas localStorage:", jwtToken);
-      } else {
-        console.warn("Įspėjimas: JWT tokenas nerastas!");
-      }
-
-      const backendRole = data?.user?.role || data?.user?.Role || "user";
       localStorage.setItem("accessToken", data.accessToken);
-     
+      const backendRole = data?.user?.role || data?.user?.Role || "user";
+
 
       const userData =
         data && data.user && data.user.email
-          ? { username: data.user.email, role: backendRole } 
-          : { userName: email, role: backendRole }; 
+          ? { username: data.user.email, role: backendRole }
+          : { userName: email, role: backendRole };
 
       console.log("3. Paruoštas userData objektas:", userData);
       console.log("4. Ar onLoginSuccess yra funkcija?", typeof onLoginSuccess);
@@ -46,15 +37,15 @@ const Login = ({ handleSignIn, onLoginSuccess }) => {
         onLoginSuccess(userData);
         alert("Prisijungta sėkmingai!");
 
-        if (userData.role === "admin") {
-          navigate("/admin");
-        } else {
-          navigate("/MapPage");
-        }
       } else {
         console.error(
           "KLAIDA: onLoginSuccess nėra funkcija LoginForm komponente!",
         );
+      }
+      if (userData.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/MapPage");
       }
     } catch (error) {
       console.error("Klaida try/catch bloke:", error);
