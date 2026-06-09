@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaEye, FaEyeSlash, FaFacebook, FaLinkedinIn } from "react-icons/fa";
 import { signUp } from "../../services/authService.js";
+import toast from "react-hot-toast";
 
 const Signup = ({ handleSignIn }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -33,9 +34,11 @@ const Signup = ({ handleSignIn }) => {
       };
 
       await signUp(cleanData);
-      alert("Paskyra sėkmingai sukurta! Dabar galite prisijungti.");
+      toast.success("Paskyra sėkmingai sukurta! Dabar galite prisijungti.");
+      // alert("Paskyra sėkmingai sukurta! Dabar galite prisijungti.");
       handleSignIn();
     } catch (error) {
+      toast.error(`Registracija nepavyko: ${error.message}`)
       alert("Registracija nepavyko: " + error.message);
     } finally {
       setIsLoading(false);
@@ -104,21 +107,21 @@ const Signup = ({ handleSignIn }) => {
               Admino Kodas (pildo tik Admin)
             </label>
             <div className="relative">
-            <input
-              id="adminCode"
-              type={showAdminCode ? "text" : "password"}
-              placeholder="Admino kodas"
-              className="input pr-8"
-              value={formData.adminCode}
-              onChange={handleChange}
-            />
-            <div
-              className="text-white absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
-              onClick={() => setShowAdminCode(!showAdminCode)}
-            >
-              {showAdminCode ? <FaEye /> : <FaEyeSlash />}
+              <input
+                id="adminCode"
+                type={showAdminCode ? "text" : "password"}
+                placeholder="Admino kodas"
+                className="input pr-8"
+                value={formData.adminCode}
+                onChange={handleChange}
+              />
+              <div
+                className="text-white absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
+                onClick={() => setShowAdminCode(!showAdminCode)}
+              >
+                {showAdminCode ? <FaEye /> : <FaEyeSlash />}
+              </div>
             </div>
-          </div>
           </div>
 
           <button className="primary-btn cursor-pointer" disabled={isLoading}>
