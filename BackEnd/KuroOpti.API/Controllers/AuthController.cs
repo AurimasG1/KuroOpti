@@ -169,7 +169,7 @@ namespace KuroOpti.API.Controllers
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
-            var baseUrl = "https://localhost:5173/reset-password"; // arba FE URL
+            var baseUrl = "http://localhost:5173/reset-password"; // arba FE URL
 
             await passwordResetService.RequestPasswordResetAsync(request.Email, baseUrl);
 

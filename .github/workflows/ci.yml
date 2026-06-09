@@ -36,13 +36,13 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore KuroOpti.slnx
+        run: dotnet restore KuroOpti.sln
 
       - name: Build solution
-        run: dotnet build KuroOpti.slnx --configuration Release --no-restore
+        run: dotnet build KuroOpti.sln --configuration Release --no-restore
 
       - name: Run tests
-        run: dotnet test KuroOpti.slnx --configuration Release --no-build --verbosity normal
+        run: dotnet test KuroOpti.sln --configuration Release --no-build --verbosity normal
       - name: Check for pending EF Core migrations
         run: |
           dotnet tool install --global dotnet-ef
