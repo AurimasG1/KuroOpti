@@ -5,95 +5,95 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KuroOpti.Repositories.Implementations
 {
-	public class UserRepository : IUserRepository
-	{
-		private readonly KuroOptiDbContext db;
+    public class UserRepository : IUserRepository
+    {
+        private readonly KuroOptiDbContext db;
 
-		public UserRepository(KuroOptiDbContext db)
-		{
-			this.db = db;
-		}
+        public UserRepository(KuroOptiDbContext db)
+        {
+            this.db = db;
+        }
 
-		public async Task<int> CreateAsync(User user)
-		{
-			db.Users.Add(user);
-			await db.SaveChangesAsync();
-			return user.Id;
-		}
+        public async Task<int> CreateAsync(User user)
+        {
+            db.Users.Add(user);
+            await db.SaveChangesAsync();
+            return user.Id;
+        }
 
-		public async Task<User?> GetByIdAsync(int id)
-		{
-			return await db.Users.FindAsync(id);
-		}
+        public async Task<User?> GetByIdAsync(int id)
+        {
+            return await db.Users.FindAsync(id);
+        }
 
-		public async Task<User?> GetByEmailAsync(string email)
-		{
-			return await db.Users.FirstOrDefaultAsync(u => u.Email == email);
-		}
+        public async Task<User?> GetByEmailAsync(string email)
+        {
+            return await db.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
 
-		public async Task UpdateEmailAsync(int userId, string newEmail)
-		{
-			var user = await db.Users.FindAsync(userId);
-			if (user == null)
-				return;
+        public async Task UpdateEmailAsync(int userId, string newEmail)
+        {
+            var user = await db.Users.FindAsync(userId);
+            if (user == null)
+                return;
 
-			user.Email = newEmail;
-			await db.SaveChangesAsync();
-		}
+            user.Email = newEmail;
+            await db.SaveChangesAsync();
+        }
 
-		public async Task UpdatePasswordHashAsync(int userId, string newPasswordHash)
-		{
-			var user = await db.Users.FindAsync(userId);
-			if (user == null)
-				return;
+        public async Task UpdatePasswordHashAsync(int userId, string newPasswordHash)
+        {
+            var user = await db.Users.FindAsync(userId);
+            if (user == null)
+                return;
 
-			user.PasswordHash = newPasswordHash;
-			await db.SaveChangesAsync();
-		}
+            user.PasswordHash = newPasswordHash;
+            await db.SaveChangesAsync();
+        }
 
-		public async Task DeleteAsync(int id)
-		{
-			await db.Users.Where(u => u.Id == id).ExecuteDeleteAsync();
-			await db.SaveChangesAsync();
-		}
+        public async Task DeleteAsync(int id)
+        {
+            await db.Users.Where(u => u.Id == id).ExecuteDeleteAsync();
+            await db.SaveChangesAsync();
+        }
 
-		public async Task<List<User>> GetAllAsync(int page, int itemsPerPage)
-		{
-			return await db.Users.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToListAsync();
-		}
+        public async Task<List<User>> GetAllAsync(int page, int itemsPerPage)
+        {
+            return await db.Users.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToListAsync();
+        }
 
-		public async Task<int> CountAsync()
-		{
-			return await db.Users.CountAsync();
-		}
+        public async Task<int> CountAsync()
+        {
+            return await db.Users.CountAsync();
+        }
 
-		public async Task<List<User>> GetAllAsync()
-		{
-			return await db.Users.ToListAsync();
-		}
+        public async Task<List<User>> GetAllAsync()
+        {
+            return await db.Users.ToListAsync();
+        }
 
-		public async Task<bool> UpdateAsync(User user)
-		{
-			var existingUser = await db.Users.FindAsync(user.Id);
-			if (existingUser == null)
-				return false;
+        public async Task<bool> UpdateAsync(User user)
+        {
+            var existingUser = await db.Users.FindAsync(user.Id);
+            if (existingUser == null)
+                return false;
 
-			existingUser.Email = user.Email;
-			existingUser.PasswordHash = user.PasswordHash;
+            existingUser.Email = user.Email;
+            existingUser.PasswordHash = user.PasswordHash;
 
-			await db.SaveChangesAsync();
-			return true;
-		}
+            await db.SaveChangesAsync();
+            return true;
+        }
 
-		public async Task<bool> DeleteAsync(User user)
-		{
-			var existingUser = await db.Users.FindAsync(user.Id);
-			if (existingUser == null)
-				return false;
+        public async Task<bool> DeleteAsync(User user)
+        {
+            var existingUser = await db.Users.FindAsync(user.Id);
+            if (existingUser == null)
+                return false;
 
-			db.Users.Remove(existingUser);
-			await db.SaveChangesAsync();
-			return true;
-		}
-	}
+            db.Users.Remove(existingUser);
+            await db.SaveChangesAsync();
+            return true;
+        }
+    }
 }

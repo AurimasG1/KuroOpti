@@ -14,7 +14,7 @@ namespace KuroOpti.Entities
         public decimal EndLat { get; set; }
         public decimal EndLng { get; set; }
 
-        public string Polyline { get; set; } = default!;
+        public string? Polyline { get; set; }
 
         public ICollection<SearchLog> SearchLogs { get; set; } = new List<SearchLog>();
         public ICollection<UserRouteStation> SelectedStations { get; set; } =

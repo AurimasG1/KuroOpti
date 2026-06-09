@@ -9,7 +9,7 @@ const RouteLayer = ({ start, end, addedWaypoints = [], onRouteFound }) => {
 
   useEffect(() => {
     if (!map || !start || !end) return;
- 
+
     const points = [
       L.latLng(start[0], start[1]),
       ...addedWaypoints
@@ -21,11 +21,11 @@ const RouteLayer = ({ start, end, addedWaypoints = [], onRouteFound }) => {
         .filter(wp => wp !== null),
       L.latLng(end[0], end[1])
     ];
- 
+
     if (routingControlRef.current) {
       try {
         map.removeControl(routingControlRef.current);
-      } catch (e) { 
+      } catch (e) {
       }
     }
 
@@ -36,9 +36,9 @@ const RouteLayer = ({ start, end, addedWaypoints = [], onRouteFound }) => {
       },
       addWaypoints: false,
       routeWhileDragging: false,
-      show: false  
+      show: false
     });
- 
+
     control.on("routesfound", (e) => {
       const routes = e.routes;
       if (routes && routes[0] && onRouteFound) {
@@ -47,7 +47,7 @@ const RouteLayer = ({ start, end, addedWaypoints = [], onRouteFound }) => {
     });
 
     routingControlRef.current = control;
- 
+
     const timer = setTimeout(() => {
       if (map && routingControlRef.current) {
         try {
@@ -57,10 +57,10 @@ const RouteLayer = ({ start, end, addedWaypoints = [], onRouteFound }) => {
         }
       }
     }, 100);
- 
+
     return () => {
       clearTimeout(timer);
-      
+
       if (routingControlRef.current) {
         try {
           if (map && map._container) {
@@ -75,6 +75,6 @@ const RouteLayer = ({ start, end, addedWaypoints = [], onRouteFound }) => {
   }, [map, start, end, addedWaypoints, onRouteFound]);
 
   return null;
-}; 
+};
 
 export default RouteLayer;

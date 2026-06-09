@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using AutoMapper;
 using KuroOpti.Common.DTO;
-using KuroOpti.Common.Responses;
+using KuroOpti.Common.Requests;
 using KuroOpti.Entities;
 using KuroOpti.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -30,7 +30,7 @@ namespace KuroOpti.API.Controllers
 
         // POST: api/routes
         [HttpPost]
-        public async Task<IActionResult> CreateRoute([FromBody] RouteDto dto)
+        public async Task<IActionResult> CreateRoute([FromBody] CreateRouteRequest dto)
         {
             if (dto == null)
                 return BadRequest("Route data is required");
@@ -73,7 +73,7 @@ namespace KuroOpti.API.Controllers
             return Ok(dto);
         }
 
-        // Delete: api/routes/{routeId}
+        // DELETE: api/routes/{routeId}
         [HttpDelete("{routeId}")]
         public async Task<IActionResult> DeleteRoute(int routeId)
         {

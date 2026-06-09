@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using System.Text;
 using KuroOpti.API.Mapping;
+using KuroOpti.Common.Config;
 using KuroOpti.Data;
 using KuroOpti.Repositories;
 using KuroOpti.Repositories.Implementations;
@@ -40,7 +41,7 @@ builder
     })
     .AddJwtBearer(options =>
     {
-        options.RequireHttpsMetadata = true;
+        options.RequireHttpsMetadata = false;
         options.SaveToken = true;
 
         options.TokenValidationParameters = new TokenValidationParameters
@@ -57,9 +58,10 @@ builder
             ValidateLifetime = true,
             ClockSkew = TimeSpan.FromMinutes(1),
 
-            RoleClaimType = ClaimTypes.Role    
+            RoleClaimType = ClaimTypes.Role,
         };
     });
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddDbContext<KuroOptiDbContext>(options =>
@@ -68,10 +70,16 @@ builder.Services.AddDbContext<KuroOptiDbContext>(options =>
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
     )
 );
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+
+builder.Services.AddScoped<IPasswordResetRepository, PasswordResetRepository>();
+builder.Services.AddScoped<IPasswordResetService, PasswordResetService>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -84,6 +92,9 @@ builder.Services.AddScoped<IRouteService, RouteService>();
 
 builder.Services.AddScoped<IFuelStationRepository, FuelStationRepository>();
 builder.Services.AddScoped<IFuelStationService, FuelStationService>();
+
+builder.Services.AddScoped<IRoutePlanningHistoryRepository, RoutePlanningHistoryRepository>();
+builder.Services.AddScoped<IRoutePlanningHistoryService, RoutePlanningHistoryService>();
 
 builder.Services.AddScoped<IAdminService, AdminService>();
 

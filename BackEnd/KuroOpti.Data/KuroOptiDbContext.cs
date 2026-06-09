@@ -15,6 +15,7 @@ namespace KuroOpti.Data
         public DbSet<UserRouteStation> UserRouteStations { get; set; } = default!;
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<RoutePlanningHistory> RoutePlanningHistories { get; set; }
+        public DbSet<PasswordResetToken> PasswordResetTokens { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -92,6 +93,20 @@ namespace KuroOpti.Data
                     .WithMany() // jei nereikia navigacijos iš FuelStation
                     .HasForeignKey(x => x.FuelStationId)
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // PasswordResetToken
+            modelBuilder.Entity<PasswordResetToken>(entity =>
+            {
+                entity.HasKey(x => x.Id);
+
+                entity
+                    .HasOne(x => x.User)
+                    .WithMany()
+                    .HasForeignKey(x => x.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.Property(x => x.Token).IsRequired().HasMaxLength(200);
             });
         }
     }

@@ -18,13 +18,13 @@ namespace KuroOpti.API.Controllers
 
         public UserController(
             IUserService userService,
-            IMapper mapper,
-            IUserRouteStationService userRouteStationService
+            IUserRouteStationService userRouteStationService,
+            IMapper mapper
         )
         {
             this.userService = userService;
-            this.mapper = mapper;
             this.userRouteStationService = userRouteStationService;
+            this.mapper = mapper;
         }
 
         private int GetUserId()

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Bibliography;
 using KuroOpti.Common.DTO;
 using KuroOpti.Common.Requests;
 using KuroOpti.Entities;
@@ -12,7 +13,6 @@ namespace KuroOpti.API.Controllers
     public class FuelStationController : ControllerBase
     {
         private readonly IFuelStationService fuelStationService;
-
         private readonly IMapper mapper;
 
         public FuelStationController(IFuelStationService fuelStationService, IMapper mapper)
@@ -20,6 +20,41 @@ namespace KuroOpti.API.Controllers
             this.fuelStationService = fuelStationService;
             this.mapper = mapper;
         }
+
+        // --- MAPPING HELPERS ---
+
+        private FuelStationDto ToDto(FuelStation s)
+        {
+            return new FuelStationDto
+            {
+                Id = s.Id,
+                Name = s.Name,
+                Address = s.Address,
+                Municipality = s.Municipality,
+                DieselPrice = s.DieselPrice,
+                PetrolPrice = s.PetrolPrice,
+                LpgPrice = s.LpgPrice,
+                Latitude = s.Latitude,
+                Longitude = s.Longitude,
+            };
+        }
+
+        private FuelStation ToEntity(FuelStationDto dto)
+        {
+            return new FuelStation
+            {
+                Name = dto.Name,
+                Address = dto.Address,
+                Municipality = dto.Municipality,
+                DieselPrice = dto.DieselPrice,
+                PetrolPrice = dto.PetrolPrice,
+                LpgPrice = dto.LpgPrice,
+                Latitude = dto.Latitude,
+                Longitude = dto.Longitude,
+            };
+        }
+
+        // --- END MAPPING ---
 
         [HttpGet]
         public async Task<IActionResult> GetAllFuelStations()
@@ -37,7 +72,6 @@ namespace KuroOpti.API.Controllers
             {
                 var station = await fuelStationService.GetFuelStationById(id);
                 var dto = mapper.Map<FuelStationDto>(station);
-
                 return Ok(dto);
             }
             catch (KeyNotFoundException ex)
@@ -87,16 +121,15 @@ namespace KuroOpti.API.Controllers
             var deleted = await fuelStationService.DeleteFuelStation(id);
 
             if (!deleted)
-            {
                 return NotFound("Fuel station not found");
-            }
 
             return Ok("Fuel station deleted");
         }
 
-        // POST: api/fuelstation/along-route
         [HttpPost("along-route")]
-        public async Task<IActionResult> GetStationsAlongRoute([FromBody] StationsAlongRouteRequest request)
+        public async Task<IActionResult> GetStationsAlongRoute(
+            [FromBody] StationsAlongRouteRequest request
+        )
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import MapSection from "../components/map/MapSection.jsx";
 import * as turf from "@turf/turf";
 import { LuRefreshCcw } from "react-icons/lu";
-import { getStations, fetchGeocode, saveRouteHistory as sendRouteToBackend } from "../services/api.js";
+import { getStations, fetchGeocode, saveRouteHistory as sendRouteToBackend, createRouteOnBackend } from "../services/api.js";
 import { useLocation } from "react-router-dom";
 
 const MapPage = () => {
@@ -15,6 +15,8 @@ const MapPage = () => {
   const [endAddr, setEndAddr] = useState("");
   const [isRouteActive, setIsRouteActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [polyline, setPolyline] = useState("");
+
 
   const savedUser = JSON.parse(localStorage.getItem("user"));
   const defaultFuel = savedUser?.fuel || "all";
@@ -28,27 +30,49 @@ const MapPage = () => {
 
   const location = useLocation();
 
+  // useEffect(() => {
+  //   if (
+  //     location.state &&
+  //     location.state.reloadedStations &&
+  //     location.state.reloadedStart !== undefined &&
+  //     location.state.reloadedEnd !== undefined
+  //   ) {
+  //     console.log("[KuroOpti] Gauti duomenys iš istorijos:", location.state);
+
+  //     // Naudojame atstatymo funkciją
+  //     handleReloadFromHistory(
+  //       location.state.reloadedStations,
+  //       location.state.reloadedStart,
+  //       location.state.reloadedEnd,
+  //     );
+  //   }
+  // }, [location.state, allStations]);
+
   useEffect(() => {
     if (
       location.state &&
-      location.state.reloadedStations &&
-      location.state.reloadedStart !== undefined &&
-      location.state.reloadedEnd !== undefined
+      location.state.startLat !== undefined &&
+      location.state.startLng !== undefined &&
+      location.state.endLat !== undefined &&
+      location.state.endLng !== undefined
     ) {
-      console.log("[KuroOpti] Gauti duomenys iš istorijos:", location.state);
+      console.log("[KuroOpti] Atkuriamas maršrutas iš istorijos:", location.state);
 
-      // Naudojame atstatymo funkciją
-      handleReloadFromHistory(
-        location.state.reloadedStations,
-        location.state.reloadedStart,
-        location.state.reloadedEnd,
-      );
+      setRoutePoints({
+        start: [location.state.startLat, location.state.startLng],
+        end: [location.state.endLat, location.state.endLng]
+      });
+
+      // jei nori atkurti stoteles – paliekam
+      setSelectedWaypoints(location.state.reloadedStations || []);
+
+      setIsRouteActive(true);
     }
-  }, [location.state, allStations]); 
+  }, [location.state]);
 
   const handleReloadFromHistory = async (stations, startText, endText) => {
     if (!stations || stations.length === 0) return;
-    
+
     setLoading(true);
     setIsRouteActive(true);
 
@@ -119,8 +143,8 @@ const MapPage = () => {
   };
 
   const displayStations = React.useMemo(() => {
-  
-      const filtered = filteredStations.filter((s) => {
+
+    const filtered = filteredStations.filter((s) => {
       const simplify = (text) =>
         text
           ?.toString()
@@ -144,12 +168,12 @@ const MapPage = () => {
       return matchesText && matchesFuel;
     });
 
-   
+
     if (fuelType !== "all") {
       return [...filtered].sort((a, b) => {
         const priceA = parseFloat(a[fuelType]) || 0;
         const priceB = parseFloat(b[fuelType]) || 0;
-        return priceA - priceB; 
+        return priceA - priceB;
       });
     }
 
@@ -187,11 +211,11 @@ const MapPage = () => {
         updated.sort((a, b) => {
           const distA = Math.sqrt(
             Math.pow(a.Latitude - routePoints.start[0], 2) +
-              Math.pow(a.Longitude - routePoints.start[1], 2),
+            Math.pow(a.Longitude - routePoints.start[1], 2),
           );
           const distB = Math.sqrt(
             Math.pow(b.Latitude - routePoints.start[0], 2) +
-              Math.pow(b.Longitude - routePoints.start[1], 2),
+            Math.pow(b.Longitude - routePoints.start[1], 2),
           );
           return distA - distB;
         });
@@ -272,17 +296,31 @@ const MapPage = () => {
       return;
     }
 
+    const currentToken = localStorage.getItem("accessToken");
+
     try {
-      const currentToken = localStorage.getItem("accessToken");
+      const createdRoute = await createRouteOnBackend({
+        startLat: routePoints.start[0],
+        startLng: routePoints.start[1],
+        endLat: routePoints.end[0],
+        endLng: routePoints.end[1],
+      }, currentToken);
+
       const tikriStoteliuId = selectedWaypoints
         .map((wp) => wp.Id || wp.id)
         .filter((id) => id !== undefined && !String(id).startsWith("hist-"));
 
-      await sendRouteToBackend({ 
-        routeId: 0, 
+      sendRouteToBackend({
+        routeId: createdRoute.id,
         startAddress: startAddr,
-        endAddress: endAddr,    
-        selectedStationIds: tikriStoteliuId 
+        endAddress: endAddr,
+        startLat: routePoints.start[0],
+        startLng: routePoints.start[1],
+        endLat: routePoints.end[0],
+        endLng: routePoints.end[1],
+        fuelType: fuelType,
+        distanceKm: distance,
+        selectedStationIds: tikriStoteliuId
       }, currentToken);
 
       console.log("Istorija išsaugota sėkmingai!");
@@ -295,7 +333,7 @@ const MapPage = () => {
     const waypointString = selectedWaypoints
       .map((wp) => `${wp.Latitude},${wp.Longitude}`)
       .join("|");
-      
+
     const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}${waypointString ? `&waypoints=${waypointString}` : ""}&travelmode=driving`;
     window.open(googleMapsUrl, "_blank");
   };
@@ -321,11 +359,11 @@ const MapPage = () => {
           updated.sort((a, b) => {
             const distA = Math.sqrt(
               Math.pow(a.Latitude - routePoints.start[0], 2) +
-                Math.pow(a.Longitude - routePoints.start[1], 2),
+              Math.pow(a.Longitude - routePoints.start[1], 2),
             );
             const distB = Math.sqrt(
               Math.pow(b.Latitude - routePoints.start[0], 2) +
-                Math.pow(b.Longitude - routePoints.start[1], 2),
+              Math.pow(b.Longitude - routePoints.start[1], 2),
             );
             return distA - distB;
           });

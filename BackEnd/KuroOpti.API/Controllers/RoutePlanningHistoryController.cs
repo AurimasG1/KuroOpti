@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using AutoMapper;
 using KuroOpti.Common.DTO;
+using KuroOpti.Common.Requests;
 using KuroOpti.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,16 +31,12 @@ namespace KuroOpti.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddHistory([FromBody] AddHistoryRequest request)
+        public async Task<IActionResult> AddHistory([FromBody] SaveHistoryRequest req)
         {
             var userId = GetUserId();
-            await historyService.AddHistoryAsync(
-                userId,
-                request.RouteId,
-                request.SelectedStationIds
-            );
+            await historyService.AddHistoryAsync(userId, req);
 
-            return Ok();
+            return Ok(new { message = "History saved" });
         }
 
         [HttpGet]

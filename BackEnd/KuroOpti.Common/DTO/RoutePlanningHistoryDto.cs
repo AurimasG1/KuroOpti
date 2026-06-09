@@ -6,5 +6,7 @@ namespace KuroOpti.Common.DTO
         public int RouteId { get; set; }
         public DateTime PlannedAt { get; set; }
         public List<int> SelectedStations { get; set; } = new();
+        public string StartAddress { get; set; } = default!;
+        public string EndAddress { get; set; } = default!;
     }
 }

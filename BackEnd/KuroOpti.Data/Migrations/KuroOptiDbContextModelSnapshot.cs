@@ -76,6 +76,35 @@ namespace KuroOpti.Data.Migrations
                     b.ToTable("FuelStations");
                 });
 
+            modelBuilder.Entity("KuroOpti.Entities.PasswordResetToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<bool>("Used")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PasswordResetTokens");
+                });
+
             modelBuilder.Entity("KuroOpti.Entities.RefreshToken", b =>
                 {
                     b.Property<int>("Id")
@@ -124,7 +153,6 @@ namespace KuroOpti.Data.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Polyline")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<decimal>("StartLat")
@@ -153,6 +181,23 @@ namespace KuroOpti.Data.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<double>("DistanceKm")
+                        .HasColumnType("double");
+
+                    b.Property<string>("EndAddress")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<double>("EndLat")
+                        .HasColumnType("double");
+
+                    b.Property<double>("EndLng")
+                        .HasColumnType("double");
+
+                    b.Property<string>("FuelType")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<DateTime>("PlannedAt")
                         .HasColumnType("datetime(6)");
 
@@ -162,6 +207,16 @@ namespace KuroOpti.Data.Migrations
                     b.Property<string>("SelectedStationsJson")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<string>("StartAddress")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<double>("StartLat")
+                        .HasColumnType("double");
+
+                    b.Property<double>("StartLng")
+                        .HasColumnType("double");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -259,6 +314,17 @@ namespace KuroOpti.Data.Migrations
                     b.HasIndex("RouteId");
 
                     b.ToTable("UserRouteStations");
+                });
+
+            modelBuilder.Entity("KuroOpti.Entities.PasswordResetToken", b =>
+                {
+                    b.HasOne("KuroOpti.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("KuroOpti.Entities.RefreshToken", b =>
