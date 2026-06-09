@@ -170,7 +170,6 @@ export default function GasStationsManagement() {
         )}
       </div>
 
-      {/* ♿ WCAG FORMOS TAMSUS REŽIMAS: Puikiai dera su antruoju failu */}
       {isFormOpen && (
         <form
           ref={formRef}
@@ -277,12 +276,10 @@ export default function GasStationsManagement() {
       {/* LENTELĖ */}
       <div className="overflow-x-auto w-full rounded-xl border border-gray-300 shadow-md bg-white/95 backdrop-blur-sm">
         <table className="min-w-full divide-y divide-gray-300 text-sm">
-          {/* ♿ WCAG THEAD: Maksimalus kontrastas */}
           <thead className="bg-gray-200/90 text-gray-900 font-extrabold text-left border-b border-gray-300">
             <tr>
               <th className="px-4 py-3 w-40">Pavadinimas</th>
               <th className="px-4 py-3">Miestas / Adresas</th>
-              {/* Pakeista iš text-gray-500 į text-gray-900 ryškiam matomumui */}
               <th className="px-4 py-3 text-gray-900 font-extrabold text-xs">
                 Platuma
               </th>
@@ -337,12 +334,10 @@ export default function GasStationsManagement() {
                     <div className="font-bold text-gray-900">
                       {gasStation.municipality}
                     </div>
-                    {/* ♿ SPRENDIMAS: Adresas padarytas lengvai skaitomas (pakeistas iš text-gray-400 į text-gray-700) */}
                     <div className="text-xs text-gray-700 font-medium mt-0.5">
                       {gasStation.address}
                     </div>
                   </td>
-                  {/* ♿ SPRENDIMAS: Koordinatės dabar yra aiškiai matomos (text-gray-900 font-bold) */}
                   <td className="px-4 py-3 font-mono text-xs text-gray-900 font-bold">
                     {gasStation.latitude ? gasStation.latitude.toFixed(5) : "—"}
                   </td>

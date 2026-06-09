@@ -244,7 +244,6 @@ export default function UsersManagement({ apiBaseUrl }) {
             </div>
           </div>
           <div className="flex gap-2 justify-end pt-2">
-            {/* ♿ WCAG: Geltonas mygtukas naudoja text-black visiškam kontrasto saugumui */}
             <button
               type="button"
               onClick={() => setIsAddingUser(false)}
@@ -323,7 +322,6 @@ export default function UsersManagement({ apiBaseUrl }) {
       {/* LENTELĖ */}
       <div className="overflow-x-auto rounded-xl border border-gray-300 shadow-md bg-white/95 backdrop-blur-sm">
         <table className="min-w-full divide-y divide-gray-300 text-sm">
-          {/* ♿ WCAG: Patamsintas thead fonas ir tekstas iki text-gray-900 stipriam kontrastui */}
           <thead className="bg-gray-200/90 text-gray-900 font-extrabold text-left border-b border-gray-300">
             <tr>
               <th className="px-4 py-3 w-28">Vartotojo ID</th>
@@ -338,7 +336,6 @@ export default function UsersManagement({ apiBaseUrl }) {
                 key={user.id}
                 className="hover:bg-lime-50/50 transition-colors"
               >
-                {/* ♿ SPRENDIMAS: ID pakeistas iš text-gray-400 į text-gray-800, kad idealiai matytųsi! */}
                 <td
                   className="px-4 py-3 font-mono text-xs text-gray-800 font-semibold truncate max-w-[110px]"
                   title={user.id}
@@ -349,7 +346,6 @@ export default function UsersManagement({ apiBaseUrl }) {
                   {user.email}
                 </td>
                 <td className="px-4 py-3">
-                  {/* ♿ WCAG SPRENDIMAS: Pakeistos tekstų spalvos ženkliukuose į saugias (AAA lygio kontrastas) */}
                   <span
                     className={`px-2.5 py-0.5 rounded-full text-xs font-black tracking-wider uppercase ${
                       user.role === "admin"
@@ -362,7 +358,6 @@ export default function UsersManagement({ apiBaseUrl }) {
                 </td>
                 <td className="px-4 py-3 text-center">
                   <div className="flex gap-2 justify-center">
-                    {/* ♿ WCAG SPRENDIMAS: Nuorodos pakeistos į ryškesnius mygtukus su pasunkintu fontu */}
                     <button
                       onClick={() => startEdit(user)}
                       className="text-blue-700 hover:text-blue-900 text-xs font-bold px-2 py-1 hover:bg-blue-100 rounded transition cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"
