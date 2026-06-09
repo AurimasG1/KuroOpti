@@ -15,6 +15,7 @@ import Footer from "./components/common/Footer.jsx";
 import BgImage from "./assets/images/sunrise.jpg";
 import ChatBotPage from "./pages/ChatBotPage.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
+import ResetPassword from "./pages/ResetPassword";
 import SavedRoutesPage from './pages/SavedRoutesPage.jsx'
 
 const ProtectedRoute = ({ children, user }) => {
@@ -44,7 +45,7 @@ const App = () => {
   });
 
   const navigate = useNavigate();
-  
+
   const handleLoginPopup = () => {
     setLoginPopup(!loginPopup);
   };
@@ -65,12 +66,12 @@ const App = () => {
     //     v7_relativeSplatPath: true,
     //   }}
     // >
-    <div style={bgImageStyle} className="relative">    
+    <div style={bgImageStyle} className="relative">
       <Navbar
         handleLoginPopup={handleLoginPopup}
         user={user}
         setUser={setUser}
-      />      
+      />
 
       <Routes>
         {/* Home Page */}
@@ -78,30 +79,32 @@ const App = () => {
           path="/"
           element={<HomePage handleLoginPopup={handleLoginPopup} user={user} />}
         />
+        {/* ... */}
+        <Route path="/reset-password" element={<ResetPassword />} />
 
-   
-          {/* Map page */}
-          <Route
-            path="/MapPage"
-            element={
-              <ProtectedRoute user={user}>
-                <MapPage />
-              </ProtectedRoute>
-            } 
-          />
 
-          <Route 
-            path="/SavedRoutesPage"
-            element={
-              <ProtectedRoute user={user}>
-                <SavedRoutesPage />
-              </ProtectedRoute>
-            }/>
+        {/* Map page */}
+        <Route
+          path="/MapPage"
+          element={
+            <ProtectedRoute user={user}>
+              <MapPage />
+            </ProtectedRoute>
+          }
+        />
 
-          {/* Contact Page */}
-          <Route path="/ContactPage" element={<ContactPage />} />
+        <Route
+          path="/SavedRoutesPage"
+          element={
+            <ProtectedRoute user={user}>
+              <SavedRoutesPage />
+            </ProtectedRoute>
+          } />
 
-          {/*mano ProtectedAdminRoute kodas*/}
+        {/* Contact Page */}
+        <Route path="/ContactPage" element={<ContactPage />} />
+
+        {/*mano ProtectedAdminRoute kodas*/}
         <Route
           path="/admin"
           element={
@@ -115,7 +118,7 @@ const App = () => {
       {/* Footer */}
       <Footer />
 
-         {/* ChatBot */}
+      {/* ChatBot */}
       <ChatBotPage />
 
       {/* Login Popup */}
