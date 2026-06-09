@@ -2,7 +2,19 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import LoginPopup from "./LoginPopup";
 import routeScreen from "../assets/images/route.png";
+import ChatBot from "../assets/images/ChatBot.png";
+import filters from "../assets/images/filters.png";
+import fuelPrice from "../assets/images/fuelPrice.png";
 import { login } from "../services/authService.js";
+import Carousel from "../components/common/Carousel.jsx";
+
+
+const slides =[
+  routeScreen,
+  ChatBot,
+  fuelPrice,
+  filters,
+]
 
 const HomePage = ({ user: propsUser }) => {
   const [isStarted, setIsStarted] = useState(false);
@@ -32,9 +44,9 @@ const HomePage = ({ user: propsUser }) => {
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center text-white overflow-hidden p-4">
+    <main className="min-h-full flex flex-col items-center justify-center text-white overflow-hidden p-2">
        {/* Introduction */}
-      <div className="text-center mb-6">
+      <div className="text-center mb-8">
         {["CTRL ALT DELETE", "Pristato projektą"].map((text, i) => (
           <motion.h2
             key={i}
@@ -61,6 +73,9 @@ const HomePage = ({ user: propsUser }) => {
             "Suplanuoti maršrutą",
             "Įterpti degalinę pakeliui",
             "Nusisiųsti maršrutą į Google Maps",
+            "Filtruoti pagal reikiamą kurą",
+            "Pasirinkti pigiausią reikiamo kuro degalinę",
+            "Pasinaudok ChatBot pagalba!"
           ].map((text, e) => (
             <motion.p
               key={e}
@@ -73,12 +88,17 @@ const HomePage = ({ user: propsUser }) => {
               {text}
             </motion.p>
           ))}
-          <div className="flex p-4">
-            <img
-              src={routeScreen}
-              alt=""
-              className="w-80 h-60 md:w-180 md:h-160 rounded-2xl hover:shadow-2xl hover:scale-110 transition-all duration-700"
-            />
+          <div className="max-w-lg rounded-2xl mt-4">
+            <Carousel>
+              {slides.map((s, index)=>(
+                <img 
+                  key={index} 
+                  src={s} 
+                  alt={`Slide ${index}`} 
+                  className="w-50 h-auto flex shrink-0 object-cover rounded-2xl"
+                />
+              ))}
+            </Carousel>
           </div>
         </div>
       </div>
