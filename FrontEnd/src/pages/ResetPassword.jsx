@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const ResetPassword = () => {
     const [params] = useSearchParams();
@@ -9,6 +10,7 @@ const ResetPassword = () => {
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState("");
     const navigate = useNavigate();
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,9 +28,11 @@ const ResetPassword = () => {
             });
 
             if (res.ok) {
+                toast.success("Slaptažodis sėkmingai pakeistas!");
                 setStatus("Slaptažodis sėkmingai pakeistas!");
                 setTimeout(() => navigate("/login"), 1500);
             } else {
+                toast.error("Klaida keičiant slaptažodį.");
                 setStatus("Klaida keičiant slaptažodį.");
             }
         } catch (err) {

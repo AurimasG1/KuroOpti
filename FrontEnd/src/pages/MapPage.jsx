@@ -4,6 +4,7 @@ import * as turf from "@turf/turf";
 import { LuRefreshCcw } from "react-icons/lu";
 import { getStations, fetchGeocode, saveRouteHistory as sendRouteToBackend, createRouteOnBackend } from "../services/api.js";
 import { useLocation } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const MapPage = () => {
   const [allStations, setAllStations] = useState([]);
@@ -281,7 +282,8 @@ const MapPage = () => {
       if (start && end) {
         setRoutePoints({ start, end });
       } else {
-        alert("Adresas nerastas.");
+        toast.error("Adresas nerastas")
+        // alert("Adresas nerastas.");
       }
     } catch (error) {
       console.error(error);
@@ -292,7 +294,8 @@ const MapPage = () => {
 
   const handleStartRoute = async () => {
     if (!routePoints?.start || !routePoints?.end) {
-      alert("Pirmiausia įveskite maršrutą!");
+      toast.error("Pirmiausia įveskite maršrutą!")
+      // alert("Pirmiausia įveskite maršrutą!");
       return;
     }
 
@@ -324,7 +327,9 @@ const MapPage = () => {
       }, currentToken);
 
       console.log("Istorija išsaugota sėkmingai!");
+      toast.success("Maršrutas sėkmingai išsaugotas");
     } catch (dbErr) {
+      toast.error("Nepavyko išsaugoti istorijos");
       console.error("Nepavyko išsaugoti istorijos:", dbErr);
     }
 
@@ -336,6 +341,7 @@ const MapPage = () => {
 
     const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}${waypointString ? `&waypoints=${waypointString}` : ""}&travelmode=driving`;
     window.open(googleMapsUrl, "_blank");
+
   };
 
   const handleToggleRoute = (station) => {
