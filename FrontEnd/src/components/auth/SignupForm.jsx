@@ -93,7 +93,7 @@ const Signup = ({ handleSignIn }) => {
                 />
               )} */}
               <div
-                className="text-white absolute top-1/2 right-3 -translate-y-1/2 cursor-ponter"
+                className="text-white absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <FaEye /> : <FaEyeSlash />}
