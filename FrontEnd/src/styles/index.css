@@ -12,6 +12,16 @@
     text-shadow: 2px 2px 2px #1128015b;
   }
 
+
+  .input:-webkit-autofill,
+  .input:-webkit-autofill:hover, 
+  .input:-webkit-autofill:focus, 
+  .input:-webkit-autofill:active {
+    -webkit-text-fill-color: white !important; 
+    transition: background-color 9999s ease-in-out 0s; 
+    caret-color: white; 
+  }
+
   .input-label {
     @apply text-white block pb-1;
     text-shadow: 2px 2px 2px #1128015b;
