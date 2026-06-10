@@ -25,6 +25,7 @@ export default function AdminPage() {
       if (scrolled > 100) {
         setShowScrollButton(true);
       } else {
+      } else {
         setShowScrollButton(false);
       }
     };
@@ -87,6 +88,7 @@ export default function AdminPage() {
           /
         </span>
 
+        {/* DEGALINIŲ VALDYMO MYGTUKAS */}
         <button
           ref={tabGasRef}
           type="button"
@@ -132,6 +134,7 @@ export default function AdminPage() {
         )}
       </div>
 
+      {/* 🌟 SCROLL BUTTON: Pridėtas aria-label ir focus būsena */}
       <button
         onClick={scrollToTop}
         className={`fixed bottom-6 right-6 z-[9999] bg-lime-800 text-white rounded-full shadow-2xl hover:bg-lime-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transition-all duration-300 ease-in-out cursor-pointer flex items-center justify-center border-2 border-lime-400 w-14 h-14 ${
@@ -139,6 +142,7 @@ export default function AdminPage() {
             ? "opacity-100 scale-100 visible"
             : "opacity-0 scale-50 invisible pointer-events-none"
         }`}
+        aria-label="Grįžti į puslapio viršų"
         aria-label="Grįžti į puslapio viršų"
         title="Į viršų"
       >
@@ -149,6 +153,7 @@ export default function AdminPage() {
           strokeWidth="3"
           stroke="currentColor"
           className="w-6 h-6 text-white block"
+          aria-hidden="true"
           aria-hidden="true"
         >
           <path
