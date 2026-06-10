@@ -172,11 +172,6 @@ export default function UsersManagement({ apiBaseUrl }) {
         role="alert"
       >
         Klaida: {error}
-      <p
-        className="text-center pr-4 text-red-400 drop-shadow-md font-bold bg-transparent"
-        role="alert"
-      >
-        Klaida: {error}
       </p>
     );
 
@@ -191,7 +186,6 @@ export default function UsersManagement({ apiBaseUrl }) {
               scrollToForm();
             }}
             className="bg-lime-800 hover:bg-lime-700 text-white border-lime-400 border px-4 py-2 rounded text-sm font-bold transition cursor-pointer shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
-            className="bg-lime-800 hover:bg-lime-700 text-white border-lime-400 border px-4 py-2 rounded text-sm font-bold transition cursor-pointer shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
           >
             Pridėti vartotoją
           </button>
@@ -205,7 +199,6 @@ export default function UsersManagement({ apiBaseUrl }) {
           className="bg-gray-900/95 backdrop-blur-md border border-gray-700 p-5 rounded-xl space-y-4 shadow-xl mb-6 text-white"
           aria-label="Naujo vartotojo kūrimo forma"
         >
-          <h3 className="text-md font-bold text-lime-400">
           <h3 className="text-md font-bold text-lime-400">
             Sukurti Naują Vartotoją
           </h3>
@@ -222,7 +215,6 @@ export default function UsersManagement({ apiBaseUrl }) {
                 type="email"
                 value={newUserEmail}
                 onChange={(e) => setNewUserEmail(e.target.value)}
-                className="w-full border border-gray-600 rounded px-3 py-1.5 text-sm bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-lime-500"
                 className="w-full border border-gray-600 rounded px-3 py-1.5 text-sm bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-lime-500"
                 placeholder="example@mail.com"
                 required
@@ -242,7 +234,6 @@ export default function UsersManagement({ apiBaseUrl }) {
                 value={newUserPassword}
                 onChange={(e) => setNewUserPassword(e.target.value)}
                 className="w-full border border-gray-600 rounded px-3 py-1.5 text-sm bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-lime-500"
-                className="w-full border border-gray-600 rounded px-3 py-1.5 text-sm bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-lime-500"
                 placeholder="••••••••"
                 required
                 aria-required="true"
@@ -261,24 +252,20 @@ export default function UsersManagement({ apiBaseUrl }) {
                 value={newUserAdminCode}
                 onChange={(e) => setNewUserAdminCode(e.target.value)}
                 className="w-full border border-gray-600 rounded px-3 py-1.5 text-sm bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-lime-500"
-                className="w-full border border-gray-600 rounded px-3 py-1.5 text-sm bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-lime-500"
                 placeholder="AdminCode"
               />
             </div>
           </div>
           <div className="flex gap-2 justify-end pt-2">
-            {/* ♿ WCAG: Geltonas mygtukas naudoja text-black visiškam kontrasto saugumui */}
             <button
               type="button"
               onClick={() => setIsAddingUser(false)}
-              className="bg-amber-400 hover:bg-amber-300 text-black px-4 py-1.5 rounded text-sm font-bold transition cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
               className="bg-amber-400 hover:bg-amber-300 text-black px-4 py-1.5 rounded text-sm font-bold transition cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
             >
               Atšaukti
             </button>
             <button
               type="submit"
-              className="bg-lime-600 hover:bg-lime-500 text-white px-4 py-1.5 rounded text-sm font-bold transition cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
               className="bg-lime-600 hover:bg-lime-500 text-white px-4 py-1.5 rounded text-sm font-bold transition cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
             >
               Sukurti Vartotoją
@@ -294,7 +281,6 @@ export default function UsersManagement({ apiBaseUrl }) {
           className="bg-gray-900/95 backdrop-blur-md border border-gray-700 p-5 rounded-xl space-y-4 shadow-xl mb-6 text-white"
           aria-label="Vartotojo informacijos redagavimo forma"
         >
-          <h3 className="text-md font-bold text-lime-400">
           <h3 className="text-md font-bold text-lime-400">
             Redaguoti Vartotojo informaciją
           </h3>
@@ -314,7 +300,6 @@ export default function UsersManagement({ apiBaseUrl }) {
                   setFormData({ ...formData, email: e.target.value })
                 }
                 className="w-full border border-gray-600 rounded px-3 py-1.5 text-sm bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-lime-500"
-                className="w-full border border-gray-600 rounded px-3 py-1.5 text-sm bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-lime-500"
                 required
                 aria-required="true"
               />
@@ -333,7 +318,6 @@ export default function UsersManagement({ apiBaseUrl }) {
                   setFormData({ ...formData, role: e.target.value })
                 }
                 className="w-full border border-gray-600 rounded px-3 py-2 text-sm bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-lime-500"
-                className="w-full border border-gray-600 rounded px-3 py-2 text-sm bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-lime-500"
               >
                 <option value="user">User</option>
                 <option value="admin">Admin</option>
@@ -345,13 +329,11 @@ export default function UsersManagement({ apiBaseUrl }) {
               type="button"
               onClick={handleFormClose}
               className="bg-amber-400 hover:bg-amber-300 text-black px-4 py-1.5 rounded text-sm font-bold transition cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
-              className="bg-amber-400 hover:bg-amber-300 text-black px-4 py-1.5 rounded text-sm font-bold transition cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
             >
               Atšaukti
             </button>
             <button
               type="submit"
-              className="bg-lime-600 hover:bg-lime-500 text-white px-4 py-1.5 rounded text-sm font-bold transition cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
               className="bg-lime-600 hover:bg-lime-500 text-white px-4 py-1.5 rounded text-sm font-bold transition cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
             >
               Saugoti pakeitimus
@@ -379,7 +361,6 @@ export default function UsersManagement({ apiBaseUrl }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 text-gray-800">
-          <tbody className="divide-y divide-gray-200 text-gray-800">
             {users.map((user) => (
               <tr
                 key={user.id}
@@ -387,23 +368,17 @@ export default function UsersManagement({ apiBaseUrl }) {
               >
                 <td
                   className="px-4 py-3 font-mono text-xs text-gray-800 font-semibold truncate max-w-[110px]"
-                  className="px-4 py-3 font-mono text-xs text-gray-800 font-semibold truncate max-w-[110px]"
                   title={user.id}
                 >
                   {user.id}
                 </td>
                 <td className="px-4 py-3 font-bold text-gray-900">
-                <td className="px-4 py-3 font-bold text-gray-900">
                   {user.email}
                 </td>
                 <td className="px-4 py-3">
-                  {/* ♿ WCAG SPRENDIMAS: Pakeistos tekstų spalvos ženkliukuose į saugias (AAA lygio kontrastas) */}
                   <span
                     className={`px-2.5 py-0.5 rounded-full text-xs font-black tracking-wider uppercase ${
-                    className={`px-2.5 py-0.5 rounded-full text-xs font-black tracking-wider uppercase ${
                       user.role === "admin"
-                        ? "bg-purple-200 text-purple-900 border border-purple-300"
-                        : "bg-slate-200 text-slate-900 border border-slate-300"
                         ? "bg-purple-200 text-purple-900 border border-purple-300"
                         : "bg-slate-200 text-slate-900 border border-slate-300"
                     }`}
@@ -413,7 +388,6 @@ export default function UsersManagement({ apiBaseUrl }) {
                 </td>
                 <td className="px-4 py-3 text-center">
                   <div className="flex gap-2 justify-center">
-                    {/* ♿ WCAG SPRENDIMAS: Nuorodos pakeistos į ryškesnius mygtukus su pasunkintu fontu */}
                     <button
                       onClick={() => startEdit(user)}
                       className="text-blue-700 hover:text-blue-900 text-xs font-bold px-2 py-1 hover:bg-blue-100 rounded transition cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"
@@ -436,7 +410,6 @@ export default function UsersManagement({ apiBaseUrl }) {
               <tr>
                 <td
                   colSpan="4"
-                  className="text-center py-6 text-gray-600 font-medium italic"
                   className="text-center py-6 text-gray-600 font-medium italic"
                 >
                   Nėra registruotų vartotojų.

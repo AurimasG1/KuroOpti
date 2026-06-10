@@ -162,15 +162,17 @@ export default function GasStationsManagement() {
         )}
       </div>
 
-      {/* ♿ WCAG FORMOS TAMSUS REŽIMAS: Puikiai dera su antruoju failu */}
       {isFormOpen && (
         <form
           ref={formRef}
           onSubmit={handleSubmit}
           className="bg-gray-900/95 backdrop-blur-md border border-gray-700 p-5 rounded-xl space-y-4 shadow-xl mb-6 text-white"
-          aria-label={editingGasStationId ? "Degalinės redagavimo forma" : "Naujos degalinės kūrimo forma"}
+          aria-label={
+            editingGasStationId
+              ? "Degalinės redagavimo forma"
+              : "Naujos degalinės kūrimo forma"
+          }
         >
-          <h3 className="text-md font-bold text-lime-400">
           <h3 className="text-md font-bold text-lime-400">
             {editingGasStationId
               ? `Redaguoti informaciją: ${formData.name}`
@@ -179,7 +181,10 @@ export default function GasStationsManagement() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label htmlFor="station-name" className="block text-xs font-semibold text-gray-200 mb-1">
+              <label
+                htmlFor="station-name"
+                className="block text-xs font-semibold text-gray-200 mb-1"
+              >
                 Degalinės pavadinimas *
               </label>
               <input
@@ -194,7 +199,10 @@ export default function GasStationsManagement() {
               />
             </div>
             <div>
-              <label htmlFor="station-municipality" className="block text-xs font-semibold text-gray-200 mb-1">
+              <label
+                htmlFor="station-municipality"
+                className="block text-xs font-semibold text-gray-200 mb-1"
+              >
                 Savivaldybė/Miestas *
               </label>
               <input
@@ -209,7 +217,10 @@ export default function GasStationsManagement() {
               />
             </div>
             <div>
-              <label htmlFor="station-address" className="block text-xs font-semibold text-gray-200 mb-1">
+              <label
+                htmlFor="station-address"
+                className="block text-xs font-semibold text-gray-200 mb-1"
+              >
                 Adresas *
               </label>
               <input
@@ -226,9 +237,11 @@ export default function GasStationsManagement() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-gray-700">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-gray-700">
             <div>
-              <label htmlFor="station-latitude" className="block text-xs font-semibold text-gray-200 mb-1">
+              <label
+                htmlFor="station-latitude"
+                className="block text-xs font-semibold text-gray-200 mb-1"
+              >
                 Platuma (X koordinatė) *
               </label>
               <input
@@ -244,7 +257,10 @@ export default function GasStationsManagement() {
               />
             </div>
             <div>
-              <label htmlFor="station-longitude" className="block text-xs font-semibold text-gray-200 mb-1">
+              <label
+                htmlFor="station-longitude"
+                className="block text-xs font-semibold text-gray-200 mb-1"
+              >
                 Ilguma (Y koordinatė) *
               </label>
               <input
@@ -266,13 +282,11 @@ export default function GasStationsManagement() {
               type="button"
               onClick={handleFormClose}
               className="bg-amber-400 hover:bg-amber-300 text-black px-4 py-1.5 rounded text-sm font-bold transition cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
-              className="bg-amber-400 hover:bg-amber-300 text-black px-4 py-1.5 rounded text-sm font-bold transition cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
             >
               Atšaukti
             </button>
             <button
               type="submit"
-              className="bg-lime-600 hover:bg-lime-500 text-white px-4 py-1.5 rounded text-sm font-bold transition cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
               className="bg-lime-600 hover:bg-lime-500 text-white px-4 py-1.5 rounded text-sm font-bold transition cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
             >
               {editingGasStationId ? "Saugoti pakeitimus" : "Sukurti Degalinę"}
@@ -285,14 +299,29 @@ export default function GasStationsManagement() {
         <table className="min-w-full divide-y divide-gray-300 text-sm">
           <thead className="bg-gray-200/90 text-gray-900 font-extrabold text-left border-b border-gray-300">
             <tr>
-              <th scope="col" className="px-4 py-3 w-40">Pavadinimas</th>
-              <th scope="col" className="px-4 py-3">Miestas / Adresas</th>
-              <th scope="col" className="px-4 py-3 text-gray-900 font-extrabold text-xs">Platuma</th>
-              <th scope="col" className="px-4 py-3 text-gray-900 font-extrabold text-xs">Ilguma</th>
-              <th scope="col" className="px-4 py-3 text-center w-36">Veiksmai</th>
+              <th scope="col" className="px-4 py-3 w-40">
+                Pavadinimas
+              </th>
+              <th scope="col" className="px-4 py-3">
+                Miestas / Adresas
+              </th>
+              <th
+                scope="col"
+                className="px-4 py-3 text-gray-900 font-extrabold text-xs"
+              >
+                Platuma
+              </th>
+              <th
+                scope="col"
+                className="px-4 py-3 text-gray-900 font-extrabold text-xs"
+              >
+                Ilguma
+              </th>
+              <th scope="col" className="px-4 py-3 text-center w-36">
+                Veiksmai
+              </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 text-gray-800">
           <tbody className="divide-y divide-gray-200 text-gray-800">
             {loading && gasStations.length === 0 ? (
               <tr>
@@ -319,7 +348,6 @@ export default function GasStationsManagement() {
                 <td
                   colSpan="5"
                   className="text-center py-10 text-gray-700 font-medium italic"
-                  className="text-center py-10 text-gray-700 font-medium italic"
                 >
                   Nėra užregistruotų degalinių.
                 </td>
@@ -329,17 +357,14 @@ export default function GasStationsManagement() {
                 <tr
                   key={gasStation.id}
                   className="hover:bg-lime-50/50 transition-colors"
-                  className="hover:bg-lime-50/50 transition-colors"
                 >
                   <td
-                    className="px-4 py-3 font-bold text-gray-900 max-w-[160px] truncate"
                     className="px-4 py-3 font-bold text-gray-900 max-w-[160px] truncate"
                     title={gasStation.name}
                   >
                     {gasStation.name}
                   </td>
                   <td className="px-4 py-3">
-                    <div className="font-bold text-gray-900">
                     <div className="font-bold text-gray-900">
                       {gasStation.municipality}
                     </div>
@@ -350,7 +375,6 @@ export default function GasStationsManagement() {
                   <td className="px-4 py-3 font-mono text-xs text-gray-900 font-bold">
                     {gasStation.latitude ? gasStation.latitude.toFixed(5) : "—"}
                   </td>
-                  <td className="px-4 py-3 font-mono text-xs text-gray-900 font-bold">
                   <td className="px-4 py-3 font-mono text-xs text-gray-900 font-bold">
                     {gasStation.longitude
                       ? gasStation.longitude.toFixed(5)
