@@ -74,7 +74,6 @@ export default function UsersManagement({ apiBaseUrl }) {
         throw new Error(errorText || "Nepavyko sukurti vartotojo");
       }
 
-      // alert("Vartotojas sėkmingai pridėtas!");
       toast.success("Vartotojas sėkmingai pridėtas!");
       setNewUserEmail("");
       setNewUserPassword("");
@@ -83,7 +82,6 @@ export default function UsersManagement({ apiBaseUrl }) {
       fetchUsers();
     } catch (error) {
       console.error("Error creating user:", error);
-      // alert("Klaida: " + error.message);
       toast.error("Klaida: " + error.message);
     }
   };
@@ -103,12 +101,10 @@ export default function UsersManagement({ apiBaseUrl }) {
       });
       if (!response.ok) throw new Error("Nepavyko ištrinti vartotojo");
 
-      // alert("Vartotojas ištrintas sėkmingai!");
       toast.success("Vartotojas ištrintas sėkmingai!");
       fetchUsers();
     } catch (error) {
       console.error("Error deleting user:", error);
-      // alert("Klaida: " + error.message);
       toast.error("Klaida: " + error.message);
     }
   };
@@ -150,23 +146,25 @@ export default function UsersManagement({ apiBaseUrl }) {
         );
       }
 
-      // alert("Pakeitimai sėkmingai išsaugoti!");
       toast.success("Pakeitimai sėkmingai išsaugoti!");
       setEditingUser(null);
       fetchUsers();
     } catch (error) {
       console.error("Error updating user:", error);
-      // alert("Nepavyko išsaugoti: " + error.message);
       toast.error("Nepavyko išsaugoti: " + error.message);
     }
   };
 
   if (loading && users.length === 0)
     return (
-      <p className="text-center pr-4 text-white drop-shadow-md font-bold bg-transparent">
+      <p
+        aria-live="polite"
+        className="text-center pr-4 text-white drop-shadow-md font-bold bg-transparent"
+      >
         Kraunama vartotojų informacija...
       </p>
     );
+
   if (error)
     return (
       <p
@@ -199,42 +197,57 @@ export default function UsersManagement({ apiBaseUrl }) {
           ref={userFormRef}
           onSubmit={handleCreateUser}
           className="bg-gray-900/95 backdrop-blur-md border border-gray-700 p-5 rounded-xl space-y-4 shadow-xl mb-6 text-white"
+          aria-label="Naujo vartotojo kūrimo forma"
         >
           <h3 className="text-md font-bold text-lime-400">
             Sukurti Naują Vartotoją
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-200 mb-1">
-                Elektroninis paštas
+              <label
+                htmlFor="new-email"
+                className="block text-xs font-semibold text-gray-200 mb-1"
+              >
+                Elektroninis paštas *
               </label>
               <input
+                id="new-email"
                 type="email"
                 value={newUserEmail}
                 onChange={(e) => setNewUserEmail(e.target.value)}
                 className="w-full border border-gray-600 rounded px-3 py-1.5 text-sm bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-lime-500"
                 placeholder="example@mail.com"
                 required
+                aria-required="true"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-200 mb-1">
-                Slaptažodis
+              <label
+                htmlFor="new-password"
+                className="block text-xs font-semibold text-gray-200 mb-1"
+              >
+                Slaptažodis *
               </label>
               <input
+                id="new-password"
                 type="password"
                 value={newUserPassword}
                 onChange={(e) => setNewUserPassword(e.target.value)}
                 className="w-full border border-gray-600 rounded px-3 py-1.5 text-sm bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-lime-500"
                 placeholder="••••••••"
                 required
+                aria-required="true"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-200 mb-1">
+              <label
+                htmlFor="admin-code"
+                className="block text-xs font-semibold text-gray-200 mb-1"
+              >
                 Administratoriaus kodas (tik Admin-ui)
               </label>
               <input
+                id="admin-code"
                 type="password"
                 value={newUserAdminCode}
                 onChange={(e) => setNewUserAdminCode(e.target.value)}
@@ -266,16 +279,21 @@ export default function UsersManagement({ apiBaseUrl }) {
           ref={userFormRef}
           onSubmit={handleSaveEdit}
           className="bg-gray-900/95 backdrop-blur-md border border-gray-700 p-5 rounded-xl space-y-4 shadow-xl mb-6 text-white"
+          aria-label="Vartotojo informacijos redagavimo forma"
         >
           <h3 className="text-md font-bold text-lime-400">
             Redaguoti Vartotojo informaciją
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-200 mb-1">
-                Elektroninis paštas
+              <label
+                htmlFor="edit-email"
+                className="block text-xs font-semibold text-gray-200 mb-1"
+              >
+                Elektroninis paštas *
               </label>
               <input
+                id="edit-email"
                 type="email"
                 value={formData.email}
                 onChange={(e) =>
@@ -283,13 +301,18 @@ export default function UsersManagement({ apiBaseUrl }) {
                 }
                 className="w-full border border-gray-600 rounded px-3 py-1.5 text-sm bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-lime-500"
                 required
+                aria-required="true"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-200 mb-1">
+              <label
+                htmlFor="edit-role"
+                className="block text-xs font-semibold text-gray-200 mb-1"
+              >
                 Vartotojo rolė
               </label>
               <select
+                id="edit-role"
                 value={formData.role}
                 onChange={(e) =>
                   setFormData({ ...formData, role: e.target.value })
@@ -319,15 +342,22 @@ export default function UsersManagement({ apiBaseUrl }) {
         </form>
       )}
 
-      {/* LENTELĖ */}
       <div className="overflow-x-auto rounded-xl border border-gray-300 shadow-md bg-white/95 backdrop-blur-sm">
         <table className="min-w-full divide-y divide-gray-300 text-sm">
           <thead className="bg-gray-200/90 text-gray-900 font-extrabold text-left border-b border-gray-300">
             <tr>
-              <th className="px-4 py-3 w-28">Vartotojo ID</th>
-              <th className="px-4 py-3">El. paštas</th>
-              <th className="px-4 py-3 w-32">Rolė</th>
-              <th className="px-4 py-3 text-center w-36">Veiksmai</th>
+              <th scope="col" className="px-4 py-3 w-28">
+                Vartotojo ID
+              </th>
+              <th scope="col" className="px-4 py-3">
+                El. paštas
+              </th>
+              <th scope="col" className="px-4 py-3 w-32">
+                Rolė
+              </th>
+              <th scope="col" className="px-4 py-3 text-center w-36">
+                Veiksmai
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 text-gray-800">
@@ -361,12 +391,14 @@ export default function UsersManagement({ apiBaseUrl }) {
                     <button
                       onClick={() => startEdit(user)}
                       className="text-blue-700 hover:text-blue-900 text-xs font-bold px-2 py-1 hover:bg-blue-100 rounded transition cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"
+                      aria-label={`Redaguoti vartotoją ${user.email}`}
                     >
                       Redaguoti
                     </button>
                     <button
                       onClick={() => handleDelete(user.id, user.email)}
                       className="text-red-700 hover:text-red-900 text-xs font-bold px-2 py-1 hover:bg-red-100 rounded transition cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-700"
+                      aria-label={`Ištrinti vartotoją ${user.email}`}
                     >
                       Ištrinti
                     </button>
