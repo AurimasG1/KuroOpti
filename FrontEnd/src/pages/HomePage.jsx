@@ -89,7 +89,7 @@ const HomePage = ({ user: propsUser }) => {
             </motion.p>
           ))}
           <div className="max-w-lg rounded-2xl mt-4">
-            <Carousel>
+            <Carousel autoSlide={true} autoSlideInterval={3000}>
               {slides.map((s, index)=>(
                 <img 
                   key={index} 
