@@ -2,8 +2,17 @@ const BASE_URL = 'http://localhost:5211';
 const API_URL = 'http://localhost:5211';
 
 export const fetchPricesFromApi = async () => {
-	const response = await fetch(`${BASE_URL}/api/prices`);
-	if (!response.ok) throw new Error('Network is not responding');
+	const response = await fetch(`${BASE_URL}/api/prices/update`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'applications/json',
+		},
+	});
+	if (!response.ok) {
+		const text = await response.text();
+		console.error('Kainų atnaujinimo klaida:', text);
+		throw new Error('Nepavyko atnaujinti kainų');
+	}
 	return await response.json();
 };
 
@@ -46,26 +55,23 @@ export const getStations = async () => {
 // 	return await response.json();
 // };
 
-export const saveRouteHistory = async historyData => {
-	const token = localStorage.getItem('accessToken');
-
-	// Siunčiame istoriją fone — be await
-	fetch(`${API_URL}/api/history`, {
+export const saveRouteHistory = async (historyData, token) => {
+	const response = await fetch(`${API_URL}/api/history/list`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 			Authorization: `Bearer ${token}`,
 		},
 		body: JSON.stringify(historyData),
-	})
-		.then(res => {
-			if (!res.ok) {
-				console.warn('Istorijos išsaugoti nepavyko:', res.status);
-			}
-		})
-		.catch(err => {
-			console.warn('Klaida siunčiant istoriją:', err);
-		});
+	});
+
+	if (!response.ok) {
+		const text = await response.text();
+		console.error('Istorijos išsaugoti nepavyko', text);
+		throw new Error(`Nepavyko išsaugoti istorijos. Statusas: ${response.status}`);
+	}
+
+	return await response.json();
 };
 
 export const createRouteOnBackend = async (routeData, token) => {
@@ -93,7 +99,7 @@ export const createRouteOnBackend = async (routeData, token) => {
 export const getDetailedRouteHistory = async () => {
 	const token = localStorage.getItem('accessToken');
 
-	const response = await fetch(`${API_URL}/api/history/detailed`, {
+	const response = await fetch(`${API_URL}/api/history/list`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
@@ -122,6 +128,46 @@ export const fetchGeocode = async addr => {
 		console.error('Geo-kodo klaida adresui:', addr, err);
 		return null;
 	}
+};
+
+export const deleteRouteHistory = async routeId => {
+	const token = localStorage.getItem('accessToken');
+
+	const response = await fetch(`${API_URL}/api/history/${routeId}`, {
+		method: 'DELETE',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${token}`,
+		},
+	});
+	if (!response.ok) {
+		throw new Error('Nepavyko gauti maršruto istorijos');
+	}
+
+	return true;
+};
+
+export const clearRouteHistory = async () => {
+	const token = localStorage.getItem('accessToken');
+
+	const res = await fetch(`${API_URL}/api/history/clear`, {
+		method: 'DELETE',
+		headers: {
+			Authorization: `Bearer ${token}`,
+		},
+	});
+
+	if (!res.ok) {
+		throw new Error('Nepavyko išvalyti istorijos');
+	}
+
+	return true;
+};
+
+export const getRegionPrices = async () => {
+	const res = await fetch(`${BASE_URL}/api/analytics/region-prices`);
+	if (!res.ok) throw new Error('Nepavyko gauti regioninių kainų');
+	return await res.json();
 };
 
 // Laikinas testavimui

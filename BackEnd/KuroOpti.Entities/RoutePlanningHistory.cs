@@ -17,12 +17,14 @@ namespace KuroOpti.Entities
         public double StartLng { get; set; }
         public double EndLat { get; set; }
         public double EndLng { get; set; }
-        public string FuelType { get; set; }
+        public string FuelType { get; set; } = default!;
         public double DistanceKm { get; set; }
+        public string Polyline { get; set; } = default!;
+        public double FuelEstimate { get; set; }
 
-        public DateTime PlannedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public string SelectedStationsJson { get; set; } = default!;
+        public string StationsJson { get; set; } = default!;
 
         [NotMapped]
         public List<FuelStation> Stations { get; set; } = new();

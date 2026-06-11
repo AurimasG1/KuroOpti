@@ -9,12 +9,12 @@ namespace KuroOpti.Entities
 
         public string? Name { get; set; }
 
-        public decimal StartLat { get; set; }
-        public decimal StartLng { get; set; }
-        public decimal EndLat { get; set; }
-        public decimal EndLng { get; set; }
+        public double StartLat { get; set; }
+        public double StartLng { get; set; }
+        public double EndLat { get; set; }
+        public double EndLng { get; set; }
 
-        public string? Polyline { get; set; }
+        public string Polyline { get; set; } = default!;
 
         public ICollection<SearchLog> SearchLogs { get; set; } = new List<SearchLog>();
         public ICollection<UserRouteStation> SelectedStations { get; set; } =

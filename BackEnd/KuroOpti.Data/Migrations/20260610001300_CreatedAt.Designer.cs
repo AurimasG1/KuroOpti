@@ -4,6 +4,7 @@ using KuroOpti.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KuroOpti.Data.Migrations
 {
     [DbContext(typeof(KuroOptiDbContext))]
-    partial class KuroOptiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260610001300_CreatedAt")]
+    partial class CreatedAt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,28 +144,27 @@ namespace KuroOpti.Data.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("EndLat")
+                    b.Property<decimal>("EndLat")
                         .HasPrecision(9, 6)
-                        .HasColumnType("double");
+                        .HasColumnType("decimal(9,6)");
 
-                    b.Property<double>("EndLng")
+                    b.Property<decimal>("EndLng")
                         .HasPrecision(9, 6)
-                        .HasColumnType("double");
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<string>("Name")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Polyline")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<double>("StartLat")
+                    b.Property<decimal>("StartLat")
                         .HasPrecision(9, 6)
-                        .HasColumnType("double");
+                        .HasColumnType("decimal(9,6)");
 
-                    b.Property<double>("StartLng")
+                    b.Property<decimal>("StartLng")
                         .HasPrecision(9, 6)
-                        .HasColumnType("double");
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -198,9 +200,6 @@ namespace KuroOpti.Data.Migrations
                     b.Property<double>("EndLng")
                         .HasColumnType("double");
 
-                    b.Property<double>("FuelEstimate")
-                        .HasColumnType("double");
-
                     b.Property<string>("FuelType")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -212,6 +211,10 @@ namespace KuroOpti.Data.Migrations
                     b.Property<int>("RouteId")
                         .HasColumnType("int");
 
+                    b.Property<string>("SelectedStationsJson")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("StartAddress")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -221,10 +224,6 @@ namespace KuroOpti.Data.Migrations
 
                     b.Property<double>("StartLng")
                         .HasColumnType("double");
-
-                    b.Property<string>("StationsJson")
-                        .IsRequired()
-                        .HasColumnType("longtext");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");

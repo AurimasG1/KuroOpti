@@ -6,14 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\KuroOpti.Common\KuroOpti.Common.csproj" />
     <ProjectReference Include="..\KuroOpti.Entities\KuroOpti.Entities.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.16" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.16">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.16" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
   </ItemGroup>
 </Project>

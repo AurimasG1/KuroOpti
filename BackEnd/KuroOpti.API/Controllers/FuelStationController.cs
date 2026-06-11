@@ -21,41 +21,6 @@ namespace KuroOpti.API.Controllers
             this.mapper = mapper;
         }
 
-        // --- MAPPING HELPERS ---
-
-        private FuelStationDto ToDto(FuelStation s)
-        {
-            return new FuelStationDto
-            {
-                Id = s.Id,
-                Name = s.Name,
-                Address = s.Address,
-                Municipality = s.Municipality,
-                DieselPrice = s.DieselPrice,
-                PetrolPrice = s.PetrolPrice,
-                LpgPrice = s.LpgPrice,
-                Latitude = s.Latitude,
-                Longitude = s.Longitude,
-            };
-        }
-
-        private FuelStation ToEntity(FuelStationDto dto)
-        {
-            return new FuelStation
-            {
-                Name = dto.Name,
-                Address = dto.Address,
-                Municipality = dto.Municipality,
-                DieselPrice = dto.DieselPrice,
-                PetrolPrice = dto.PetrolPrice,
-                LpgPrice = dto.LpgPrice,
-                Latitude = dto.Latitude,
-                Longitude = dto.Longitude,
-            };
-        }
-
-        // --- END MAPPING ---
-
         [HttpGet]
         public async Task<IActionResult> GetAllFuelStations()
         {

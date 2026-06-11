@@ -1,23 +1,30 @@
-import React, { useState, useEffect, useCallback } from "react";
-import MapSection from "../components/map/MapSection.jsx";
+import React, { useRef, useState, useEffect, useCallback } from "react";
+import { useLocation } from "react-router-dom";
+import polyline from "@mapbox/polyline";
 import * as turf from "@turf/turf";
 import { LuRefreshCcw } from "react-icons/lu";
-import { getStations, fetchGeocode, saveRouteHistory as sendRouteToBackend, createRouteOnBackend } from "../services/api.js";
-import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
+import { getStations, fetchGeocode, saveRouteHistory as sendRouteToBackend, createRouteOnBackend, getDetailedRouteHistory, fetchPricesFromApi } from "../services/api.js";
+import MapSection from "../components/map/MapSection.jsx";
 
 const MapPage = () => {
+  const location = useLocation();
+
+
   const [allStations, setAllStations] = useState([]);
   const [filteredStations, setFilteredStations] = useState([]);
   const [selectedWaypoints, setSelectedWaypoints] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [routePoints, setRoutePoints] = useState(null);
   const [startAddr, setStartAddr] = useState("");
   const [endAddr, setEndAddr] = useState("");
   const [isRouteActive, setIsRouteActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [polyline, setPolyline] = useState("");
-
+  const [polylineStr, setPolylineStr] = useState("");
+  const [routeCoordinates, setRouteCoordinates] = useState([]);
+  const [restoredFromHistory, setRestoredFromHistory] = useState(false);
+  const [selectedHistoryId, setSelectedHistoryId] = useState("");
+  const [autoRestored, setAutoRestored] = useState(false);
+  const [loadingPrices, setLoadingPrices] = useState(false);
 
   const savedUser = JSON.parse(localStorage.getItem("user"));
   const defaultFuel = savedUser?.fuel || "all";
@@ -27,105 +34,172 @@ const MapPage = () => {
   const [wayFrom, setWayFrom] = useState("");
   const [wayTo, setWayTo] = useState("");
 
+  const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const token = localStorage.getItem("accessToken");
 
-  const location = useLocation();
+  const polylineDecode = (encoded) =>
+    polyline.decode(encoded).map(([lat, lng]) => ({ lat, lng }));
 
-  // useEffect(() => {
-  //   if (
-  //     location.state &&
-  //     location.state.reloadedStations &&
-  //     location.state.reloadedStart !== undefined &&
-  //     location.state.reloadedEnd !== undefined
-  //   ) {
-  //     console.log("[KuroOpti] Gauti duomenys iš istorijos:", location.state);
+  const handleRouteFound = useCallback(
+    ({ coordinates, polyline }) => {
+      if (polyline) {
+        setPolylineStr(polyline);
+      }
 
-  //     // Naudojame atstatymo funkciją
-  //     handleReloadFromHistory(
-  //       location.state.reloadedStations,
-  //       location.state.reloadedStart,
-  //       location.state.reloadedEnd,
-  //     );
-  //   }
-  // }, [location.state, allStations]);
+      if (!coordinates || coordinates.length === 0 || allStations.length === 0)
+        return;
 
-  useEffect(() => {
-    if (
-      location.state &&
-      location.state.startLat !== undefined &&
-      location.state.startLng !== undefined &&
-      location.state.endLat !== undefined &&
-      location.state.endLng !== undefined
-    ) {
-      console.log("[KuroOpti] Atkuriamas maršrutas iš istorijos:", location.state);
+      setRouteCoordinates(coordinates);
 
+      try {
+        const turfCoords = coordinates.map((c) => [
+          c.lng || c.Longitude,
+          c.lat || c.Latitude,
+        ]);
+
+        const line = turf.lineString(turfCoords);
+        const buffer = turf.buffer(line, distance, { units: "kilometers" });
+
+        const found = allStations.filter((station) => {
+          const sLng = Number(
+            station.Longitude || station.longitude || station.lng,
+          );
+          const sLat = Number(
+            station.Latitude || station.latitude || station.lat,
+          );
+
+          if (isNaN(sLng) || isNaN(sLat)) return false;
+
+          const stationPt = turf.point([sLng, sLat]);
+          return turf.booleanPointInPolygon(stationPt, buffer);
+        });
+
+        setFilteredStations(found);
+      } catch (err) {
+        console.error("Filtravimo klaida:", err);
+      }
+    },
+    [allStations, distance],
+  );
+
+  const restoreRouteFromHistory = useCallback(
+    (item) => {
+      if (!item) return;
+      setRestoredFromHistory(true);
+
+      console.log("[History] Atkuriamas maršrutas:", item);
+
+      setSelectedHistoryId(String(item.id));
+
+      // 1. Formos laukai
+      setStartAddr(item.startAddress);
+      setEndAddr(item.endAddress);
+      setFuelType(item.fuelType);
+      setDistance(15);
+
+      // 2. Start/End koordinatės
       setRoutePoints({
-        start: [location.state.startLat, location.state.startLng],
-        end: [location.state.endLat, location.state.endLng]
+        start: [item.startLat, item.startLng],
+        end: [item.endLat, item.endLng]
       });
 
-      // jei nori atkurti stoteles – paliekam
-      setSelectedWaypoints(location.state.reloadedStations || []);
-
-      setIsRouteActive(true);
-    }
-  }, [location.state]);
-
-  const handleReloadFromHistory = async (stations, startText, endText) => {
-    if (!stations || stations.length === 0) return;
-
-    setLoading(true);
-    setIsRouteActive(true);
-
-    try {
-      console.log("[KuroOpti] Atstatomi stotelių ID iš istorijos:", stations);
-
-      const surastosDegalines = stations.map(id => {
-        return allStations.find(s => String(s.Id || s.id) === String(id));
-      }).filter(Boolean);
-
-      const paruostosStoteles = surastosDegalines.map((st) => ({
-        Id: st.Id || st.id,
-        id: st.Id || st.id,
-        Name: st.Name || st.name,
-        name: st.Name || st.name,
-        Latitude: Number(st.Latitude || st.latitude),
-        latitude: Number(st.Latitude || st.latitude),
-        Longitude: Number(st.Longitude || st.longitude),
-        longitude: Number(st.Longitude || st.longitude)
+      // 3. Waypoints
+      const restoredWaypoints = item.stations.map((s) => ({
+        Id: s.id,
+        Name: s.name,
+        Address: s.address,
+        Municipality: s.municipality,
+        Latitude: s.latitude,
+        Longitude: s.longitude,
+        PetrolPrice: s.petrolPrice,
+        DieselPrice: s.dieselPrice,
+        LpgPrice: s.lpgPrice
       }));
 
-      setSelectedWaypoints(paruostosStoteles);
+      setSelectedWaypoints(restoredWaypoints);
 
-      let finalStartText = startText;
-      let finalEndText = endText;
+      // 4. Polyline
+      setPolylineStr(item.polyline);
 
-      if (!finalStartText && surastosDegalines.length > 0) {
-        finalStartText = surastosDegalines[0].Address || surastosDegalines[0].Name;
-      }
-      if (!finalEndText && surastosDegalines.length > 0) {
-        finalEndText = surastosDegalines[surastosDegalines.length - 1].Address || surastosDegalines[surastosDegalines.length - 1].Name;
-      }
+      // 5. Degalinės pagal atstumą
+      const decodedCoords = polylineDecode(item.polyline);
+      setRouteCoordinates(decodedCoords);
 
-      setStartAddr(finalStartText || "Pradžia");
-      setEndAddr(finalEndText || "Pabaiga");
+      // handleRouteFound({
+      //   coordinates: decodedCoords,
+      //   polyline: item.polyline
+      // });
 
-      const startCoord = await fetchGeocode(finalStartText);
-      const endCoord = await fetchGeocode(finalEndText);
+      // 6. UI režimas
+      setIsRouteActive(true);
 
-      if (startCoord && endCoord) {
-        setRoutePoints({ start: startCoord, end: endCoord });
-        console.log("[KuroOpti] Maršrutas sėkmingai atkurtas aplink išsaugotas degalines!");
-      } else {
-        console.warn("[KuroOpti] Nepavyko gauti koordinačių pagal degalinių adresus.");
-      }
+      toast.success("Maršrutas atkurtas iš istorijos");
+    },
+    [handleRouteFound]
+  );
 
-    } catch (err) {
-      console.error("Klaida handleReloadFromHistory:", err);
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (autoRestored) return;
+    if (!location.state?.routeId) return;
+    if (history.length === 0) return;
+
+    const item = history.find(h => h.id === location.state.routeId);
+    if (item) {
+      restoreRouteFromHistory(item);
+      setAutoRestored(true);
     }
+  }, [history, autoRestored, location.state]);
+
+  const loadHistory = (e) => {
+    const id = Number(e.target.value);
+    setSelectedHistoryId(id);
+
+    if (!id) return;
+
+    const item = history.find(h => h.id === id);
+    if (item) restoreRouteFromHistory(item);
   };
+
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const h = await getDetailedRouteHistory(token);
+        setHistory(Array.isArray(h) ? h : []);
+      } catch (err) {
+        console.error("Nepavyko gauti istorijos:", err);
+        setHistory([]);
+      }
+    };
+
+    load();
+  }, []);
+
+  useEffect(() => {
+    const loadStations = async () => {
+      try {
+        const data = await getStations();
+        setAllStations(data);
+        setFilteredStations(data);
+      } catch (error) {
+        console.error("Nepavyko užkrauti degalinių iš BackEnd:", error);
+      }
+    };
+
+    loadStations();
+  }, []);
+
+  useEffect(() => {
+    if (routeCoordinates.length > 0) {
+      handleRouteFound({
+        coordinates: routeCoordinates,
+        polyline: polylineStr
+      });
+    }
+  }, [distance, routeCoordinates, polylineStr, restoredFromHistory]);
+
 
   const handleSliderChange = (e) => {
     setDistance(e.target.value);
@@ -181,20 +255,6 @@ const MapPage = () => {
     return filtered;
   }, [filteredStations, searchQuery, fuelType]);
 
-  useEffect(() => {
-    const loadStations = async () => {
-      try {
-        const data = await getStations();
-        setAllStations(data);
-        setFilteredStations(data);
-      } catch (error) {
-        console.error("Nepavyko užkrauti degalinių iš BackEnd:", error);
-      }
-    };
-
-    loadStations();
-  }, []);
-
   const handleAddToRoute = (station) => {
     setSelectedWaypoints((prev) => {
       if (prev.find((p) => p.id === station.id)) return prev;
@@ -229,49 +289,18 @@ const MapPage = () => {
     setSelectedWaypoints((prev) => prev.filter((p) => p.Id !== id));
   };
 
-  const handleRouteFound = useCallback(
-    (coordinates) => {
-      if (!coordinates || coordinates.length === 0 || allStations.length === 0)
-        return;
-
-      try {
-        const turfCoords = coordinates.map((c) => [
-          c.lng || c.Longitude,
-          c.lat || c.Latitude,
-        ]);
-
-        const line = turf.lineString(turfCoords);
-        const buffer = turf.buffer(line, distance, { units: "kilometers" });
-
-        const found = allStations.filter((station) => {
-          const sLng = Number(
-            station.Longitude || station.longitude || station.lng,
-          );
-          const sLat = Number(
-            station.Latitude || station.latitude || station.lat,
-          );
-
-          if (isNaN(sLng) || isNaN(sLat)) return false;
-
-          const stationPt = turf.point([sLng, sLat]);
-          return turf.booleanPointInPolygon(stationPt, buffer);
-        });
-
-        setFilteredStations(found);
-      } catch (err) {
-        console.error("Filtravimo klaida:", err);
-      }
-    },
-    [allStations, distance],
-  );
-
   const handleRouteSearch = async (e) => {
     e.preventDefault();
     if (!startAddr || !endAddr) return;
+
+    setRestoredFromHistory(false);
+
     setLoading(true);
     setIsRouteActive(true);
+
     setSelectedWaypoints([]);
     setFilteredStations([]);
+    setPolylineStr(null);
 
     try {
       const [start, end] = await Promise.all([
@@ -280,10 +309,12 @@ const MapPage = () => {
       ]);
 
       if (start && end) {
-        setRoutePoints({ start, end });
+        setRoutePoints({
+          start: [start[0], start[1]],
+          end: [end[0], end[1]]
+        });
       } else {
         toast.error("Adresas nerastas")
-        // alert("Adresas nerastas.");
       }
     } catch (error) {
       console.error(error);
@@ -295,7 +326,11 @@ const MapPage = () => {
   const handleStartRoute = async () => {
     if (!routePoints?.start || !routePoints?.end) {
       toast.error("Pirmiausia įveskite maršrutą!")
-      // alert("Pirmiausia įveskite maršrutą!");
+      return;
+    }
+
+    if (!polylineStr) {
+      toast.error("Maršrutas dar nesugeneruotas - palaukite sekundę");
       return;
     }
 
@@ -307,13 +342,14 @@ const MapPage = () => {
         startLng: routePoints.start[1],
         endLat: routePoints.end[0],
         endLng: routePoints.end[1],
+        polyline: polylineStr
       }, currentToken);
 
       const tikriStoteliuId = selectedWaypoints
         .map((wp) => wp.Id || wp.id)
         .filter((id) => id !== undefined && !String(id).startsWith("hist-"));
 
-      sendRouteToBackend({
+      await sendRouteToBackend({
         routeId: createdRoute.id,
         startAddress: startAddr,
         endAddress: endAddr,
@@ -321,9 +357,19 @@ const MapPage = () => {
         startLng: routePoints.start[1],
         endLat: routePoints.end[0],
         endLng: routePoints.end[1],
-        fuelType: fuelType,
-        distanceKm: distance,
-        selectedStationIds: tikriStoteliuId
+        fuelType,
+        polyline: polylineStr,
+        stations: selectedWaypoints.map(s => ({
+          id: s.Id || s.id,
+          name: s.Name || s.name,
+          municipality: s.Municipality || s.municipality || "",
+          address: s.Address || s.address || "",
+          latitude: s.Latitude || s.latitude,
+          longitude: s.Longitude || s.longitude,
+          petrolPrice: s.PetrolPrice ?? s.petrolPrice ?? 0,
+          dieselPrice: s.DieselPrice ?? s.dieselPrice ?? 0,
+          lpgPrice: s.LpgPrice ?? s.lpgPrice ?? 0
+        })),
       }, currentToken);
 
       console.log("Istorija išsaugota sėkmingai!");
@@ -339,9 +385,33 @@ const MapPage = () => {
       .map((wp) => `${wp.Latitude},${wp.Longitude}`)
       .join("|");
 
+    // -----------------------------
+    // PILNAS STATE RESET (kaip refresh)
+    // -----------------------------
+    setRestoredFromHistory(false);
+    setIsRouteActive(false);
+
+    setSelectedWaypoints([]);
+    setFilteredStations([]);
+
+    setRoutePoints(null);
+    setRouteCoordinates([]);
+
+    setPolylineStr("");
+
+    setStartAddr("");
+    setEndAddr("");
+
+    setDistance(15);
+    setSearchQuery("");
+    setWayFrom("");
+    setWayTo("");
+    setSelectedHistoryId("");
+
     const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}${waypointString ? `&waypoints=${waypointString}` : ""}&travelmode=driving`;
     window.open(googleMapsUrl, "_blank");
-
+    const h = await getDetailedRouteHistory(token);
+    setHistory(h);
   };
 
   const handleToggleRoute = (station) => {
@@ -358,6 +428,9 @@ const MapPage = () => {
           Latitude: station.Latitude,
           Longitude: station.Longitude,
           Name: station.Name,
+          PetrolPrice: station.PetrolPrice,
+          DieselPrice: station.DieselPrice,
+          LpgPrice: station.LpgPrice
         };
 
         const updated = [...prev, newWaypoint];
@@ -378,6 +451,22 @@ const MapPage = () => {
       }
     });
   };
+
+  const handleUpdatePrices = async () => {
+    setLoadingPrices(true);
+    try {
+      toast.loading("Atnaujinama...");
+      const result = await fetchPricesFromApi();
+      toast.dismiss();
+      toast.success("Kainos sėkmingai atnaujintos!");
+      console.log("Atnaujinimo rezultatas:", result);
+    } catch (err) {
+      toast.dismiss();
+      toast.error("Nepavyko atnaujinti kainų");
+      console.error(err);
+    }
+    setLoadingPrices(false);
+  }
 
   return (
     <div className="flex flex-col h-screen bg-slate-900 text-white sm:flex-row">
@@ -429,20 +518,40 @@ const MapPage = () => {
               </div>
             </div>
 
-            <div className="flex flex-row items-center justify-between mt-2">
-              <h2 className="text-xl font-bold text-lime-500">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mt-2 gap-3">
+
+              {/* Title */}
+              <h2 className="text-xl font-bold text-lime-500 flex-shrink-0">
                 Kelionės planas
               </h2>
-              <div className="group relative flex items-center cursor-pointer">
+
+              {/* Select */}
+              <select
+                value={selectedHistoryId}
+                onChange={loadHistory}
+                className="bg-slate-700 p-2 rounded w-full lg:max-w-[55%] xl:max-w-[60%]"
+              >
+                <option value="">Pasirink maršrutą</option>
+                {history.map(h => (
+                  <option key={h.id} value={h.id}>
+                    {h.startAddress} → {h.endAddress} ({h.distanceKm} km)
+                  </option>
+                ))}
+              </select>
+
+              {/* Refresh button */}
+              <div className="group relative flex items-center justify-end lg:justify-center cursor-pointer flex-shrink-0">
                 <span className="absolute -top-3 -left-9 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm text-gray-200 text-nowrap">
                   Atnaujinti kainas
                 </span>
 
                 <LuRefreshCcw
-                  onClick={updateDateOnClick}
-                  className="bg-lime-600 m-2 p-2 rounded-lg text-4xl text-white transition-colors group-hover:bg-lime-500"
+                  onClick={handleUpdatePrices}
+                  className={`bg-lime-600 p-2 rounded-lg text-3xl lg:text-4xl text-white transition-colors group-hover:bg-lime-500 ${loadingPrices ? "animate-spin" : ""
+                    }`}
                 />
               </div>
+
             </div>
           </div>
 
@@ -576,6 +685,7 @@ const MapPage = () => {
             onRouteFound={handleRouteFound}
             onAddToRoute={handleAddToRoute}
             onToggleRoute={handleToggleRoute}
+            polyline={polylineStr}
           />
         </div>
       </main>

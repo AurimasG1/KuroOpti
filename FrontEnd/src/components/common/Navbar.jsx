@@ -60,6 +60,13 @@ const Navbar = ({ handleLoginPopup, user, setUser }) => {
                 </Link>
               </li>
             )}
+            <li>
+              <Link
+                to="/AnalyticsPage"
+                className="text-gray-700 hover:text-gray-900 hover:bg-lime-400 hover:rounded-2xl hover:transition-colors px-3 py-2 select-none block whitespace-nowrap">
+                Analytics
+              </Link>
+            </li>
             {user && (
               <li>
                 <Link
