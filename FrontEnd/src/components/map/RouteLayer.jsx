@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet-routing-machine";
+import polyline from "@mapbox/polyline"
 
 const RouteLayer = ({ start, end, addedWaypoints = [], onRouteFound }) => {
   const map = useMap();
@@ -40,10 +41,20 @@ const RouteLayer = ({ start, end, addedWaypoints = [], onRouteFound }) => {
     });
 
     control.on("routesfound", (e) => {
-      const routes = e.routes;
-      if (routes && routes[0] && onRouteFound) {
-        onRouteFound(routes[0].coordinates);
-      }
+      const route = e.routes?.[0];
+      if (!route || !onRouteFound) return;
+
+      // 1) coordinates — kaip anksčiau (Turf filtravimui)
+      const coordinates = route.coordinates;
+
+      // 2) encoded polyline — NAUJAS (backend ir istorijai)
+      const encodedPolyline = polyline.encode(
+        coordinates.map(c => [c.lat, c.lng])
+      );
+
+      onRouteFound({
+        coordinates, polyline: encodedPolyline
+      });
     });
 
     routingControlRef.current = control;

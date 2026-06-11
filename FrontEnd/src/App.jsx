@@ -18,6 +18,7 @@ import ChatBotPage from "./pages/ChatBotPage.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
 import ResetPassword from "./pages/ResetPassword";
 import SavedRoutesPage from './pages/SavedRoutesPage.jsx'
+import AnalyticsPage from './pages/AnalyticsPage.jsx';
 
 const ProtectedRoute = ({ children, user }) => {
   if (!user) {
@@ -95,6 +96,7 @@ const App = () => {
           }
         />
 
+        {/* User saved routes history page */}
         <Route
           path="/SavedRoutesPage"
           element={
@@ -102,6 +104,11 @@ const App = () => {
               <SavedRoutesPage />
             </ProtectedRoute>
           } />
+
+        <Route
+          path='/AnalyticsPage'
+          element={<AnalyticsPage />}
+        />
 
         {/* Contact Page */}
         <Route path="/ContactPage" element={<ContactPage />} />

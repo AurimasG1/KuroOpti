@@ -30,43 +30,39 @@ namespace KuroOpti.API.Controllers
             return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddHistory([FromBody] SaveHistoryRequest req)
+        [HttpPost("list")]
+        public async Task<IActionResult> Add([FromBody] RoutePlanningHistoryDto dto)
         {
-            var userId = GetUserId();
-            await historyService.AddHistoryAsync(userId, req);
-
+            await historyService.AddHistoryAsync(GetUserId(), dto);
             return Ok(new { message = "History saved" });
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetHistory()
+        [HttpGet("list")]
+        public async Task<IActionResult> List()
         {
-            var userId = GetUserId();
-            var history = await historyService.GetHistoryForUserAsync(userId);
-            var dto = mapper.Map<List<RoutePlanningHistoryDto>>(history);
-
-            return Ok(dto);
-        }
-
-        [HttpGet("detailed")]
-        public async Task<IActionResult> GetHistoryWithStations()
-        {
-            var userId = GetUserId();
-            var history = await historyService.GetHistoryWithStationsAsync(userId);
-            var dto = mapper.Map<List<RoutePlanningHistoryWithStationsDto>>(history);
-
-            return Ok(dto);
+            var result = await historyService.GetHistoryForUserAsync(GetUserId());
+            return Ok(result);
         }
 
         [HttpGet("{routeId}")]
-        public async Task<IActionResult> GetHistoryForRoute(int routeId)
+        public async Task<IActionResult> GetForRoute(int routeId)
         {
-            var userId = GetUserId();
-            var history = await historyService.GetHistoryForRouteAsync(userId, routeId);
-            var dto = mapper.Map<List<RoutePlanningHistoryDto>>(history);
+            var result = await historyService.GetHistoryForRouteAsync(GetUserId(), routeId);
+            return Ok(result);
+        }
 
-            return Ok(dto);
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await historyService.DeleteHistoryAsync(id, GetUserId());
+            return Ok(new { message = "Deleted" });
+        }
+
+        [HttpDelete("clear")]
+        public async Task<IActionResult> Clear()
+        {
+            await historyService.ClearHistoryAsync(GetUserId());
+            return Ok(new { message = "Cleared" });
         }
     }
 }

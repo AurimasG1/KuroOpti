@@ -7,5 +7,7 @@ namespace KuroOpti.Repositories.Interfaces
         Task AddAsync(RoutePlanningHistory history);
         Task<List<RoutePlanningHistory>> GetByUserIdAsync(int userId);
         Task<List<RoutePlanningHistory>> GetByRouteIdAsync(int routeId);
+        Task DeleteAsync(int id, int userId);
+        Task ClearAsync(int userId);
     }
 }

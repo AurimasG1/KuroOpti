@@ -1,26 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\KuroOpti.Common\KuroOpti.Common.csproj" />
+    <ProjectReference Include="..\KuroOpti.Data\KuroOpti.Data.csproj" />
+    <ProjectReference Include="..\KuroOpti.Entities\KuroOpti.Entities.csproj" />
     <ProjectReference Include="..\KuroOpti.Repositories\KuroOpti.Repositories.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-  <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.16" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.0.16" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.10" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.19.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.11" />
     <PackageReference Include="ClosedXML" Version="0.105.0" />
     <PackageReference Include="HtmlAgilityPack" Version="1.6.13" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.16" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.16" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
   </ItemGroup>
 </Project>

@@ -10,61 +10,14 @@ namespace KuroOpti.API.Mapping
     {
         public MappingProfile()
         {
-            // User
-            CreateMap<User, UserDto>()
-                .ReverseMap()
-                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore())
-                .ForMember(dest => dest.Routes, opt => opt.Ignore())
-                .ForMember(dest => dest.SearchLogs, opt => opt.Ignore());
-            CreateMap<RegistrationRequest, User>()
-                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
-
-            // FuelStation
-            CreateMap<FuelStation, FuelStationDto>();
-            CreateMap<FuelStationDto, FuelStation>().ForMember(x => x.Id, opt => opt.Ignore()); // saugiau
-
-            // Route
-
-            CreateMap<Entities.Route, RouteDto>();
-            CreateMap<CreateRouteRequest, Entities.Route>();
-
-            CreateMap<RouteDto, Entities.Route>()
-                .ForMember(r => r.UserId, opt => opt.Ignore())
-                .ForMember(r => r.User, opt => opt.Ignore())
-                .ForMember(r => r.SelectedStations, opt => opt.Ignore())
-                .ForMember(r => r.SearchLogs, opt => opt.Ignore());
-
-            // UserRouteStation → FuelStationDto
-            CreateMap<UserRouteStation, FuelStationDto>()
-                .ConvertUsing(src => new FuelStationDto
-                {
-                    Id = src.FuelStation.Id,
-                    Name = src.FuelStation.Name,
-                    Municipality = src.FuelStation.Municipality,
-                    Address = src.FuelStation.Address,
-                    DieselPrice = src.FuelStation.DieselPrice,
-                    PetrolPrice = src.FuelStation.PetrolPrice,
-                    LpgPrice = src.FuelStation.LpgPrice,
-                    Latitude = src.FuelStation.Latitude,
-                    Longitude = src.FuelStation.Longitude,
-                });
-            // RoutePlanningHistory → DTO
+            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<FuelStation, FuelStationDto>().ReverseMap();
+            CreateMap<Entities.Route, RouteDto>().ReverseMap();
+            CreateMap<UserRouteStation, FuelStationDto>();
             CreateMap<RoutePlanningHistory, RoutePlanningHistoryDto>()
-                .ForMember(
-                    dest => dest.SelectedStations,
-                    opt =>
-                        opt.MapFrom(src =>
-                            string.IsNullOrWhiteSpace(src.SelectedStationsJson)
-                                ? new List<int>()
-                                : JsonSerializer.Deserialize<List<int>>(
-                                    src.SelectedStationsJson,
-                                    (JsonSerializerOptions?)null
-                                )
-                        )
-                );
-
-            CreateMap<RoutePlanningHistory, RoutePlanningHistoryWithStationsDto>()
-                .ForMember(dest => dest.Stations, opt => opt.MapFrom(src => src.Stations));
+                .ForMember(d => d.Stations, opt => opt.MapFrom(src => src.Stations));
+            CreateMap<CreateRouteRequest, Entities.Route>()
+                .ForMember(dest => dest.Polyline, opt => opt.MapFrom(src => src.Polyline));
         }
     }
 }

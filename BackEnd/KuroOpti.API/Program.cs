@@ -70,6 +70,12 @@ builder.Services.AddDbContext<KuroOptiDbContext>(options =>
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
     )
 );
+
+builder.Services.AddHttpClient<GoogleGeocodingService>();
+builder.Services.AddScoped<IGeocodingService, GoogleGeocodingService>();
+builder.Services.AddHttpClient<EnaFuelPriceImporter>();
+builder.Services.AddScoped<IFuelPriceImporter, EnaFuelPriceImporter>();
+
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
 builder.Services.AddScoped<IEmailService, EmailService>();
