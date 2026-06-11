@@ -14,7 +14,7 @@ const Card = ({
     primary: "bg-blue-50 border border-blue-200",
     success: "bg-green-50 border border-green-200",
     dark: "bg-gray-900 border border-gray-700 text-white",
-    glass: "bg-white/20 backdrop-blur-md border border-white/20 shadow-lg",
+    glass: "bg-black/30 backdrop-blur-md border border-white/10 shadow-xl",
   };
 
   const hoverStyles = hover ? "hover:shadow-xl hover:translate-y-1" : "";
