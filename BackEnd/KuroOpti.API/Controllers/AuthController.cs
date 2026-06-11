@@ -172,7 +172,7 @@ namespace KuroOpti.API.Controllers
             if (string.IsNullOrWhiteSpace(request.Email))
                 return BadRequest("Email is required");
 
-            var baseUrl = "http://localhost:5173/forgot-password";
+            var baseUrl = "http://localhost:5173/reset-password";
 
             await passwordResetService.RequestPasswordResetAsync(request.Email, baseUrl);
 
