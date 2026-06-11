@@ -96,11 +96,6 @@ export default function GasStationsManagement() {
 
       if (!response.ok) throw new Error("Nepavyko išsaugoti degalinės");
 
-      // alert(
-      //   editingGasStationId
-      //     ? "Degalinės informacija atnaujinta sėkmingai!"
-      //     : "Degalinė pridėta sėkmingai!",
-      // );
       if (editingGasStationId) {
         toast.success("Degalinės informacija atnaujinta sėkmingai!");
       } else {
@@ -109,7 +104,6 @@ export default function GasStationsManagement() {
       handleFormClose();
       fetchGasStations();
     } catch (err) {
-      // alert(err.message);
       toast.error("Klaida: " + err.message);
     }
   };
@@ -120,11 +114,9 @@ export default function GasStationsManagement() {
     try {
       const response = await fetch(`${apiUrl}/${id}`, { method: "DELETE" });
       if (!response.ok) throw new Error("Nepavyko ištrinti degalinės");
-      // alert("Degalinė ištrinta sėkmingai!");
       toast.success("Degalinė ištrinta sėkmingai!");
       fetchGasStations();
     } catch (err) {
-      // alert(err.message);
       toast.error("Klaida: " + err.message);
     }
   };
@@ -170,12 +162,16 @@ export default function GasStationsManagement() {
         )}
       </div>
 
-      {/* ♿ WCAG FORMOS TAMSUS REŽIMAS: Puikiai dera su antruoju failu */}
       {isFormOpen && (
         <form
           ref={formRef}
           onSubmit={handleSubmit}
           className="bg-gray-900/95 backdrop-blur-md border border-gray-700 p-5 rounded-xl space-y-4 shadow-xl mb-6 text-white"
+          aria-label={
+            editingGasStationId
+              ? "Degalinės redagavimo forma"
+              : "Naujos degalinės kūrimo forma"
+          }
         >
           <h3 className="text-md font-bold text-lime-400">
             {editingGasStationId
@@ -185,41 +181,56 @@ export default function GasStationsManagement() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-200 mb-1">
-                Degalinės pavadinimas
+              <label
+                htmlFor="station-name"
+                className="block text-xs font-semibold text-gray-200 mb-1"
+              >
+                Degalinės pavadinimas *
               </label>
               <input
+                id="station-name"
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
                 required
+                aria-required="true"
                 className="w-full border border-gray-600 rounded px-3 py-1.5 text-sm bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-lime-500"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-200 mb-1">
-                Savivaldybė/Miestas
+              <label
+                htmlFor="station-municipality"
+                className="block text-xs font-semibold text-gray-200 mb-1"
+              >
+                Savivaldybė/Miestas *
               </label>
               <input
+                id="station-municipality"
                 type="text"
                 name="municipality"
                 value={formData.municipality}
                 onChange={handleInputChange}
                 required
+                aria-required="true"
                 className="w-full border border-gray-600 rounded px-3 py-1.5 text-sm bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-lime-500"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-200 mb-1">
-                Adresas
+              <label
+                htmlFor="station-address"
+                className="block text-xs font-semibold text-gray-200 mb-1"
+              >
+                Adresas *
               </label>
               <input
+                id="station-address"
                 type="text"
                 name="address"
                 value={formData.address}
                 onChange={handleInputChange}
                 required
+                aria-required="true"
                 className="w-full border border-gray-600 rounded px-3 py-1.5 text-sm bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-lime-500"
               />
             </div>
@@ -227,30 +238,40 @@ export default function GasStationsManagement() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-gray-700">
             <div>
-              <label className="block text-xs font-semibold text-gray-200 mb-1">
-                Platuma (X koordinatė)
+              <label
+                htmlFor="station-latitude"
+                className="block text-xs font-semibold text-gray-200 mb-1"
+              >
+                Platuma (X koordinatė) *
               </label>
               <input
+                id="station-latitude"
                 type="number"
                 step="0.000001"
                 name="latitude"
                 value={formData.latitude}
                 onChange={handleInputChange}
                 required
+                aria-required="true"
                 className="w-full border border-gray-600 rounded px-3 py-1.5 text-sm bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-lime-500"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-200 mb-1">
-                Ilguma (Y koordinatė)
+              <label
+                htmlFor="station-longitude"
+                className="block text-xs font-semibold text-gray-200 mb-1"
+              >
+                Ilguma (Y koordinatė) *
               </label>
               <input
+                id="station-longitude"
                 type="number"
                 step="0.000001"
                 name="longitude"
                 value={formData.longitude}
                 onChange={handleInputChange}
                 required
+                aria-required="true"
                 className="w-full border border-gray-600 rounded px-3 py-1.5 text-sm bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-lime-500"
               />
             </div>
@@ -274,22 +295,31 @@ export default function GasStationsManagement() {
         </form>
       )}
 
-      {/* LENTELĖ */}
       <div className="overflow-x-auto w-full rounded-xl border border-gray-300 shadow-md bg-white/95 backdrop-blur-sm">
         <table className="min-w-full divide-y divide-gray-300 text-sm">
-          {/* ♿ WCAG THEAD: Maksimalus kontrastas */}
           <thead className="bg-gray-200/90 text-gray-900 font-extrabold text-left border-b border-gray-300">
             <tr>
-              <th className="px-4 py-3 w-40">Pavadinimas</th>
-              <th className="px-4 py-3">Miestas / Adresas</th>
-              {/* Pakeista iš text-gray-500 į text-gray-900 ryškiam matomumui */}
-              <th className="px-4 py-3 text-gray-900 font-extrabold text-xs">
+              <th scope="col" className="px-4 py-3 w-40">
+                Pavadinimas
+              </th>
+              <th scope="col" className="px-4 py-3">
+                Miestas / Adresas
+              </th>
+              <th
+                scope="col"
+                className="px-4 py-3 text-gray-900 font-extrabold text-xs"
+              >
                 Platuma
               </th>
-              <th className="px-4 py-3 text-gray-900 font-extrabold text-xs">
+              <th
+                scope="col"
+                className="px-4 py-3 text-gray-900 font-extrabold text-xs"
+              >
                 Ilguma
               </th>
-              <th className="px-4 py-3 text-center w-36">Veiksmai</th>
+              <th scope="col" className="px-4 py-3 text-center w-36">
+                Veiksmai
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 text-gray-800">
@@ -297,7 +327,8 @@ export default function GasStationsManagement() {
               <tr>
                 <td
                   colSpan="5"
-                  className="text-center py-10 font-bold text-white drop-shadow-md bg-transparent"
+                  aria-live="polite"
+                  className="text-center py-10 font-bold text-gray-800 drop-shadow-sm bg-transparent animate-pulse"
                 >
                   Užkraunamos degalinės...
                 </td>
@@ -306,7 +337,7 @@ export default function GasStationsManagement() {
               <tr>
                 <td
                   colSpan="5"
-                  className="text-center py-10 font-bold text-red-600 drop-shadow-md bg-transparent"
+                  className="text-center py-10 font-bold text-red-600 drop-shadow-sm bg-transparent"
                   role="alert"
                 >
                   Klaida: {error}
@@ -337,12 +368,10 @@ export default function GasStationsManagement() {
                     <div className="font-bold text-gray-900">
                       {gasStation.municipality}
                     </div>
-                    {/* ♿ SPRENDIMAS: Adresas padarytas lengvai skaitomas (pakeistas iš text-gray-400 į text-gray-700) */}
                     <div className="text-xs text-gray-700 font-medium mt-0.5">
                       {gasStation.address}
                     </div>
                   </td>
-                  {/* ♿ SPRENDIMAS: Koordinatės dabar yra aiškiai matomos (text-gray-900 font-bold) */}
                   <td className="px-4 py-3 font-mono text-xs text-gray-900 font-bold">
                     {gasStation.latitude ? gasStation.latitude.toFixed(5) : "—"}
                   </td>
@@ -356,6 +385,7 @@ export default function GasStationsManagement() {
                       <button
                         onClick={() => handleEdit(gasStation)}
                         className="text-blue-700 hover:text-blue-900 text-xs font-bold px-2 py-1 hover:bg-blue-100 rounded transition cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"
+                        aria-label={`Redaguoti degalinę ${gasStation.name}`}
                       >
                         Redaguoti
                       </button>
@@ -364,6 +394,7 @@ export default function GasStationsManagement() {
                           handleDelete(gasStation.id, gasStation.name)
                         }
                         className="text-red-700 hover:text-red-900 text-xs font-bold px-2 py-1 hover:bg-red-100 rounded transition cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-700"
+                        aria-label={`Ištrinti degalinę ${gasStation.name}`}
                       >
                         Ištrinti
                       </button>
