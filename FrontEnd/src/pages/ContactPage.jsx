@@ -13,10 +13,10 @@ const ContactPage = () => {
     <div className="min-h-screen p-8">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-gray-800 mb-4 text-nowrap">
+          <h1 className="text-5xl font-bold drop-shadow-xl text-gray-800 mb-4 text-nowrap">
             CTRL ALT DELETE
           </h1>
-          <p className="text-xl text-gray-600">Susipažink su mūsų komanda:</p>
+          <p className="text-xl drop-shadow-xl text-gray-600">Susipažink su mūsų komanda:</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ">
@@ -24,7 +24,7 @@ const ContactPage = () => {
             <Card
               key={card.id}
               // variant={card.id % 2 === 0 ? "primary" : "default"}
-            variant="glass"
+              variant="glass"
               padding="none"
             >
               <div className="p-6">
@@ -43,13 +43,13 @@ const ContactPage = () => {
                     >
                       {card.title}
                     </CardTitle>
-                   
+
                   </CardHeader>
                 </div>
 
                 {card.description ? (
                   <CardBody
-                    className={card.id % 2 === 0 ? "text-blue-700" : ""}
+                    className={card.id % 2 === 0 ? "text-blue-700 " : ""}
                   >
                     {card.description}
                   </CardBody>
@@ -61,12 +61,12 @@ const ContactPage = () => {
                 <CardFooter
                   className={card.id % 2 === 0 ? "border-blue-200" : ""}
                 >
-                  
-                    <button className="w-full px-5 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                        <a href={card.contact} target="_blank">Contact Now</a>
-                      
-                    </button>
-                  
+
+                  <button className="w-full px-5 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                    <a href={card.contact} target="_blank">Contact Now</a>
+
+                  </button>
+
                 </CardFooter>
               </div>
             </Card>

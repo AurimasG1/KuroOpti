@@ -30,7 +30,7 @@ const ResetPassword = () => {
             if (res.ok) {
                 toast.success("Slaptažodis sėkmingai pakeistas!");
                 setStatus("Slaptažodis sėkmingai pakeistas!");
-                setTimeout(() => navigate("/login"), 1500);
+                setTimeout(() => navigate("/"), 1500);
             } else {
                 toast.error("Klaida keičiant slaptažodį.");
                 setStatus("Klaida keičiant slaptažodį.");
@@ -90,7 +90,7 @@ const ResetPassword = () => {
 
             <p
                 className="text-center text-white text-sm my-4 hover:text-lime-100 cursor-pointer text-shadow underline"
-                onClick={() => navigate("/login")}
+                onClick={() => navigate("/")}
             >
                 Grįžti į prisijungimą
             </p>

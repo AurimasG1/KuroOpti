@@ -9,7 +9,7 @@ import { login } from "../services/authService.js";
 import Carousel from "../components/common/Carousel.jsx";
 
 
-const slides =[
+const slides = [
   routeScreen,
   ChatBot,
   fuelPrice,
@@ -45,7 +45,7 @@ const HomePage = ({ user: propsUser }) => {
 
   return (
     <main className="min-h-full flex flex-col items-center justify-center text-white overflow-hidden p-2">
-       {/* Introduction */}
+      {/* Introduction */}
       <div className="text-center mb-8">
         {["CTRL ALT DELETE", "Pristato projektą"].map((text, i) => (
           <motion.h2
@@ -54,19 +54,19 @@ const HomePage = ({ user: propsUser }) => {
             variants={textVariants}
             initial="hidden"
             animate="visible"
-            className="text-3xl md:text-5xl font-extrabold tracking-widest mb-4 uppercase italic opacity-90"
+            className="text-3xl text-shadow-[0_2px_8px_rgba(0,0,0,0.9)] md:text-5xl font-extrabold tracking-widest mb-4 uppercase italic opacity-90"
           >
             {text}
           </motion.h2>
         ))}
       </div>
-        {/* What's done */}
+      {/* What's done */}
       <div className="home__data ">
         <div className="flex flex-col items-center justify-center p-4">
-          <h1 className="flex items-center justify-center py-4 px-2 font-bold text-4xl text-lime-800">
+          <h1 className="flex items-center justify-center py-4 px-2 font-bold text-4xl text-lime-800 drop-shadow-xl">
             {user && user.username ? `Labas, ${user.username.split('@')[0]}! ` : "Labas, Nepažįstamasis! "}
           </h1>
-          <p className="font-bold text-2xl p-2">
+          <p className="font-bold text-2xl text-shadow-[0_2px_8px_rgba(0,0,0,0.9)] p-2">
             ką galėsi daryti prisiregistravęs:
           </p>
           {[
@@ -83,18 +83,18 @@ const HomePage = ({ user: propsUser }) => {
               variants={ulVariants}
               initial="hidden"
               animate="visible"
-              className="text-2xl font-semibold"
+              className="text-2xl text-shadow-[0_2px_8px_rgba(0,0,0,0.9)] font-semibold"
             >
               {text}
             </motion.p>
           ))}
           <div className="max-w-lg rounded-2xl mt-4">
             <Carousel autoSlide={true} autoSlideInterval={3000}>
-              {slides.map((s, index)=>(
-                <img 
-                  key={index} 
-                  src={s} 
-                  alt={`Slide ${index}`} 
+              {slides.map((s, index) => (
+                <img
+                  key={index}
+                  src={s}
+                  alt={`Slide ${index}`}
                   className="w-50 h-auto flex shrink-0 object-cover rounded-2xl"
                 />
               ))}
@@ -103,7 +103,7 @@ const HomePage = ({ user: propsUser }) => {
         </div>
       </div>
 
-     
+
 
       {/* login Popup */}
       <AnimatePresence>
