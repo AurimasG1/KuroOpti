@@ -8,7 +8,7 @@ Graduation Project – Fullstack system (React + .NET + MySQL)
 
 Reikalingas BackEnd projektams.
 
-https://dotnet.microsoft.com/en-us/download
+https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-8.0.422-windows-x64-installer
 
 ## 2. EF Core CLI Tool
 
