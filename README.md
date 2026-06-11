@@ -4,7 +4,7 @@ Graduation Project – Fullstack system (React + .NET + MySQL)
 
 # Reikalavimai
 
-## 1. .NET 10 SDK
+## 1. .NET 8 SDK
 
 Reikalingas BackEnd projektams.
 
@@ -15,7 +15,7 @@ https://dotnet.microsoft.com/en-us/download
 Reikalingas DB migracijoms.
 
 ```bash
-dotnet tool install --global dotnet-ef --version 9.*
+dotnet tool install --global dotnet-ef --version 8.*
 ```
 
 Patikrinimas:
