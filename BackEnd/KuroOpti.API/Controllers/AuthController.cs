@@ -176,7 +176,7 @@ namespace KuroOpti.API.Controllers
 
             await passwordResetService.RequestPasswordResetAsync(request.Email, baseUrl);
 
-            return Ok("If this email exists, a reset link was sent.");
+            return Ok(new { message = "If this email exists, a reset link was sent." });
         }
 
         [HttpPost("reset-password")]
