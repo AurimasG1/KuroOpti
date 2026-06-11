@@ -127,10 +127,10 @@ const MapPage = () => {
       const decodedCoords = polylineDecode(item.polyline);
       setRouteCoordinates(decodedCoords);
 
-      handleRouteFound({
-        coordinates: decodedCoords,
-        polyline: item.polyline
-      });
+      // handleRouteFound({
+      //   coordinates: decodedCoords,
+      //   polyline: item.polyline
+      // });
 
       // 6. UI režimas
       setIsRouteActive(true);
@@ -288,7 +288,6 @@ const MapPage = () => {
   const handleRemoveWaypoint = (id) => {
     setSelectedWaypoints((prev) => prev.filter((p) => p.Id !== id));
   };
-
 
   const handleRouteSearch = async (e) => {
     e.preventDefault();
@@ -452,7 +451,6 @@ const MapPage = () => {
       }
     });
   };
-
 
   const handleUpdatePrices = async () => {
     setLoadingPrices(true);
