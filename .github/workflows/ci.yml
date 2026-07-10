@@ -2,15 +2,30 @@ name: CI
 
 on:
   push:
-    branches:
-      - '**'
   pull_request:
-    branches:
-      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build_and_test:
+  backend:
+    name: Backend - Build and Test
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      DOTNET_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: >-
+        Server=127.0.0.1;
+        Port=3306;
+        Database=testdb;
+        User=root;
+        Password=root
 
     services:
       mysql:
@@ -21,17 +36,17 @@ jobs:
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
+          --health-cmd="mysqladmin ping --host=127.0.0.1 --user=root --password=root --silent"
+          --health-interval=5s
           --health-timeout=5s
-          --health-retries=5
+          --health-retries=20
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '8.0.x'
 
@@ -39,36 +54,53 @@ jobs:
         run: dotnet restore KuroOpti.sln
 
       - name: Build solution
-        run: dotnet build KuroOpti.sln --configuration Release --no-restore
+        run: >
+          dotnet build KuroOpti.sln
+          --configuration Release
+          --no-restore
 
-      - name: Run tests
-        run: dotnet test KuroOpti.sln --configuration Release --no-build --verbosity normal
-      - name: Check for pending EF Core migrations
-        run: |
-          dotnet tool install --global dotnet-ef
-          export PATH="$PATH:/home/runner/.dotnet/tools"
+      - name: Run backend tests
+        run: >
+          dotnet test KuroOpti.sln
+          --configuration Release
+          --no-build
+          --verbosity normal
 
-          echo "Checking if EF Core detects pending migrations..."
+      - name: Install EF Core CLI
+        run: >
+          dotnet tool install
+          --global dotnet-ef
+          --version 8.0.13
 
-          dotnet ef migrations add _TempMigrationCheck \
-            --project BackEnd/KuroOpti.Data \
-            --startup-project BackEnd/KuroOpti.Console \
-            --output-dir Migrations \
-            --connection "Server=127.0.0.1;Port=3306;Database=testdb;User=root;Password=root" \
-            || true
+      - name: Check pending EF Core model changes
+        run: >
+          dotnet ef migrations has-pending-model-changes
+          --project BackEnd/KuroOpti.Data
+          --startup-project BackEnd/KuroOpti.Console
+          --configuration Release
+          --no-build
 
-          FILE=$(ls BackEnd/KuroOpti.Data/Migrations/*_TempMigrationCheck*.cs 2>/dev/null || true)
+  frontend:
+    name: Frontend - Lint and Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
 
-          if [ -z "$FILE" ]; then
-            echo "✔ No pending migrations (no file generated)."
-            exit 0
-          fi
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
 
-          if grep -q "migrationBuilder" "$FILE"; then
-            echo "❌ ERROR: EF Core detected pending model changes!"
-            rm -f "$FILE"
-            exit 1
-          else
-            echo "✔ No pending migrations."
-            rm -f "$FILE"
-          fi
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Build frontend
+        run: npm run build
