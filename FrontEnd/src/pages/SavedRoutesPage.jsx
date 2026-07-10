@@ -224,7 +224,7 @@ const SavedRoutesPage = () => {
           <input
             type="range"
             min="0"
-            max="300"
+            max="400"
             value={maxDistance}
             onChange={(e) => setMaxDistance(Number(e.target.value))}
             className="w-full"

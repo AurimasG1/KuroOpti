@@ -11,6 +11,8 @@ const Navbar = ({ handleLoginPopup, user, setUser }) => {
 
   const handleLogout = () => {
     localStorage.removeItem("app_user");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     setUser(null);
     navigate("/");
   };
