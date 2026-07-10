@@ -94,14 +94,6 @@ const SavedRoutesPage = () => {
   // FILTRAVIMAS
   // -------------------------------------------------------
 
-  const getFuelPrice = (route, fuelType) => {
-    return (
-      route[fuelType] ??
-      route[fuelType.toLowerCase()] ??
-      0
-    );
-  };
-
   const filteredRoutes = savedRoutes
     .filter((r) => {
       const text = filterText.toLowerCase();

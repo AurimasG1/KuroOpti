@@ -17,14 +17,30 @@ export default function Carousel({
     setCurrent((current) => (current === slideCount - 1 ? 0 : current + 1));
 
   useEffect(() => {
-    if (!autoSlide || slideCount <= 1) return;
-    const slideInterval = setInterval(next, autoSlideInterval);
-    return () => clearInterval(slideInterval);
-  }, [current, autoSlide, autoSlideInterval, slideCount]);
+    if (!autoSlide || slideCount <= 1) {
+      return undefined;
+    }
+
+    const slideInterval = setInterval(() => {
+      setCurrent((currentSlide) =>
+        currentSlide === slideCount - 1
+          ? 0
+          : currentSlide + 1,
+      );
+    }, autoSlideInterval);
+
+    return () => {
+      clearInterval(slideInterval);
+    };
+  }, [
+    autoSlide,
+    autoSlideInterval,
+    slideCount,
+  ]);
 
   if (slideCount === 0) return null;
 
-  return ( 
+  return (
     <div className="overflow-hidden relative w-full aspect-4/3 rounded-xl shadow-lg bg-gray-900">
       <div
         className="flex transition-transform ease-out duration-500 h-full"
@@ -38,7 +54,7 @@ export default function Carousel({
             key={index}
             className="h-full flex shrink-0 items-center justify-center bg-gray-800"
             style={{ width: `${100 / slideCount}%` }}
-          > 
+          >
             {slide}
           </div>
         ))}

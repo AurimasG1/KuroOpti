@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import UsersManagement from "./UsersManagement";
 import GasStationsManagement from "./GasStationsManagement";
 
@@ -71,11 +71,10 @@ export default function AdminPage() {
           id="tab-users"
           onClick={() => setActiveTab("users")}
           onKeyDown={(e) => handleKeyDown(e, "users")}
-          className={`transition-all duration-300 ease-in-out cursor-pointer text-center rounded-xl p-3 text-base md:text-lg tracking-wide shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white ${
-            activeTab === "users"
+          className={`transition-all duration-300 ease-in-out cursor-pointer text-center rounded-xl p-3 text-base md:text-lg tracking-wide shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white ${activeTab === "users"
               ? "bg-lime-800 text-white font-extrabold border-2 border-lime-400 ring-2 ring-lime-900"
               : "bg-gray-900/90 text-gray-100 font-bold hover:bg-gray-800 border border-gray-700 opacity-90 hover:opacity-100"
-          }`}
+            }`}
         >
           Vartotojų Valdymas
         </button>
@@ -97,11 +96,10 @@ export default function AdminPage() {
           id="tab-gas-stations"
           onClick={() => setActiveTab("gasStations")}
           onKeyDown={(e) => handleKeyDown(e, "gasStations")}
-          className={`transition-all duration-300 ease-in-out cursor-pointer text-center rounded-xl p-3 text-base md:text-lg tracking-wide shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white ${
-            activeTab === "gasStations"
+          className={`transition-all duration-300 ease-in-out cursor-pointer text-center rounded-xl p-3 text-base md:text-lg tracking-wide shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white ${activeTab === "gasStations"
               ? "bg-lime-800 text-white font-extrabold border-2 border-lime-400 ring-2 ring-lime-900"
               : "bg-gray-900/90 text-gray-100 font-bold hover:bg-gray-800 border border-gray-700 opacity-90 hover:opacity-100"
-          }`}
+            }`}
         >
           Degalinių Valdymas
         </button>
@@ -134,11 +132,10 @@ export default function AdminPage() {
 
       <button
         onClick={scrollToTop}
-        className={`fixed bottom-6 right-6 z-[9999] bg-lime-800 text-white rounded-full shadow-2xl hover:bg-lime-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transition-all duration-300 ease-in-out cursor-pointer flex items-center justify-center border-2 border-lime-400 w-14 h-14 ${
-          showScrollButton
+        className={`fixed bottom-6 right-6 z-[9999] bg-lime-800 text-white rounded-full shadow-2xl hover:bg-lime-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transition-all duration-300 ease-in-out cursor-pointer flex items-center justify-center border-2 border-lime-400 w-14 h-14 ${showScrollButton
             ? "opacity-100 scale-100 visible"
             : "opacity-0 scale-50 invisible pointer-events-none"
-        }`}
+          }`}
         aria-label="Grįžti į puslapio viršų"
         title="Į viršų"
       >

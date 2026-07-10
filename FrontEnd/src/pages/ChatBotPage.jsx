@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ChatBotIcon from "../components/ChatBot/ChatBotIcon";
 import { IoArrowDownCircleOutline } from "react-icons/io5";
 import ChatForm from "../components/ChatBot/ChatForm";
 import ChatMessage from "../components/ChatBot/ChatMessage";
 import { IoChatboxOutline } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
-import { Link } from 'react-router-dom'; 
 
 const INITIAL_THEMES = [
   { id: "intro", label: "Prisistatymas" },
@@ -45,9 +44,9 @@ const ChatBotPage = () => {
     };
 
     const cleanHistory = history.filter((msg) => msg.text !== "Thinking...");
-    const formattedHistory = cleanHistory.map(({ role, text }) => ({ 
-      role, 
-      parts: [{ text }] 
+    const formattedHistory = cleanHistory.map(({ role, text }) => ({
+      role,
+      parts: [{ text }]
     }));
 
     const requestOptions = {
@@ -59,7 +58,7 @@ const ChatBotPage = () => {
     try {
       const response = await fetch(import.meta.env.VITE_API_URL, requestOptions);
       const textData = await response.text();
-      
+
       if (!textData) {
         throw new Error("Serveris grąžino tuščią atsakymą.");
       }
@@ -89,14 +88,14 @@ const ChatBotPage = () => {
         { role: "model", text: "Štai ką galite padaryti programėlėje. Pasirinkite funkciją, kad sužinotumėte daugiau:" }
       ]);
       setCurrentOptions(FEATURE_THEMES);
-    } 
+    }
     else if (STATIC_RESPONSES[option.id]) {
       setChatHistory((prev) => [
         ...prev,
         { role: "model", text: STATIC_RESPONSES[option.id] }
       ]);
       setCurrentOptions(INITIAL_THEMES);
-    } 
+    }
     else {
       setChatHistory((prev) => [...prev, { role: "model", text: "Thinking..." }]);
       await generateBotResponse(updatedHistory);
@@ -129,11 +128,10 @@ const ChatBotPage = () => {
 
       {/* Chat langas */}
       <div
-        className={`fixed bottom-0 right-0 w-full h-full sm:bottom-22.5 sm:right-9 sm:w-105 sm:h-auto sm:max-h-150 bg-white sm:rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 origin-bottom-right z-1001 ${
-          showChatBot
-            ? "opacity-100 scale-100 pointer-events-auto"
-            : "opacity-0 scale-95 pointer-events-none"
-        }`}
+        className={`fixed bottom-0 right-0 w-full h-full sm:bottom-22.5 sm:right-9 sm:w-105 sm:h-auto sm:max-h-150 bg-white sm:rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 origin-bottom-right z-1001 ${showChatBot
+          ? "opacity-100 scale-100 pointer-events-auto"
+          : "opacity-0 scale-95 pointer-events-none"
+          }`}
       >
         {/* Antraštė */}
         <div className="flex flex-row justify-between bg-lime-600 py-6 px-4">
@@ -175,11 +173,10 @@ const ChatBotPage = () => {
               <button
                 key={option.id}
                 onClick={() => handleOptionClick(option)}
-                className={`text-xs py-1.5 px-3 rounded-full border transition-all cursor-pointer ${
-                  option.isBack
-                    ? "border-gray-300 bg-gray-50 text-gray-600 hover:bg-gray-100"
-                    : "border-lime-600 bg-white text-lime-700 hover:bg-lime-50 font-medium"
-                }`}
+                className={`text-xs py-1.5 px-3 rounded-full border transition-all cursor-pointer ${option.isBack
+                  ? "border-gray-300 bg-gray-50 text-gray-600 hover:bg-gray-100"
+                  : "border-lime-600 bg-white text-lime-700 hover:bg-lime-50 font-medium"
+                  }`}
               >
                 {option.label}
               </button>

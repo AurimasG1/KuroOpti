@@ -1,4 +1,3 @@
-import React from "react";
 import ChatBotIcon from "./ChatBotIcon";
 import ReactMarkdown from "react-markdown";
 import { Link } from "react-router-dom";

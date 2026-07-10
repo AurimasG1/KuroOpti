@@ -1,16 +1,28 @@
-import React from "react";
-
-const CardImage = ({ src, alt = "Card Image", className = "" }) => {
+const CardImage = ({
+  src,
+  alt = "Card image",
+  className = "",
+}) => {
   return (
-    <div className={`w-24 h-24 overflow-hidden rounded-full`}>
+    <div
+      className={`w-24 h-24 overflow-hidden rounded-full ${className}`}
+    >
       {src ? (
-        <img src={src} className="w-full h-full object-cover" />
+        <img
+          src={src}
+          alt={alt}
+          className="w-full h-full object-cover"
+        />
       ) : (
         <div
-          className="w-full h-full bg-linear-to-r from-gray-200 to-gray-400 flex
-             items-center justify-center"
+          className="
+            flex h-full w-full items-center justify-center
+            bg-linear-to-r from-gray-200 to-gray-400
+          "
         >
-          <span className="text-gray-400 text-sm">No image avalable</span>
+          <span className="text-sm text-gray-400">
+            No image available
+          </span>
         </div>
       )}
     </div>

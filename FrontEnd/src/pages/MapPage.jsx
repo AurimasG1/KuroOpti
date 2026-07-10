@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import polyline from "@mapbox/polyline";
 import * as turf from "@turf/turf";
@@ -17,7 +17,7 @@ const MapPage = () => {
   const [routePoints, setRoutePoints] = useState(null);
   const [startAddr, setStartAddr] = useState("");
   const [endAddr, setEndAddr] = useState("");
-  const [isRouteActive, setIsRouteActive] = useState(false);
+  const [, setIsRouteActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [polylineStr, setPolylineStr] = useState("");
   const [routeCoordinates, setRouteCoordinates] = useState([]);
@@ -31,8 +31,8 @@ const MapPage = () => {
   const [fuelType, setFuelType] = useState(defaultFuel);
   const [distance, setDistance] = useState(15);
 
-  const [wayFrom, setWayFrom] = useState("");
-  const [wayTo, setWayTo] = useState("");
+  const [, setWayFrom] = useState("");
+  const [, setWayTo] = useState("");
 
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -211,11 +211,7 @@ const MapPage = () => {
       day: "2-digit",
     });
   };
-  const [updatedDate, setUpdatedDate] = useState(getFormattedDate);
-
-  const updateDateOnClick = () => {
-    setUpdatedDate(getFormattedDate());
-  };
+  const [updatedDate,] = useState(getFormattedDate);
 
   const displayStations = React.useMemo(() => {
 
@@ -344,10 +340,6 @@ const MapPage = () => {
         endLng: routePoints.end[1],
         polyline: polylineStr
       }, currentToken);
-
-      const tikriStoteliuId = selectedWaypoints
-        .map((wp) => wp.Id || wp.id)
-        .filter((id) => id !== undefined && !String(id).startsWith("hist-"));
 
       await sendRouteToBackend({
         routeId: createdRoute.id,

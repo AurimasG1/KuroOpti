@@ -26,7 +26,8 @@ const RouteLayer = ({ start, end, addedWaypoints = [], onRouteFound }) => {
     if (routingControlRef.current) {
       try {
         map.removeControl(routingControlRef.current);
-      } catch (e) {
+      } catch (error) {
+        console.error("Failed to process route data:", error);
       }
     }
 
@@ -78,7 +79,9 @@ const RouteLayer = ({ start, end, addedWaypoints = [], onRouteFound }) => {
             map.removeControl(routingControlRef.current);
           }
         } catch (error) {
-        } finally {
+          console.error("Failed to process route data:", error);
+        }
+        finally {
           routingControlRef.current = null;
         }
       }

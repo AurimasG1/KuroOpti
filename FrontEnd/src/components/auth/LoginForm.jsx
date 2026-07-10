@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import { FcGoogle } from "react-icons/fc";
-import { FaEye, FaEyeSlash, FaFacebook, FaLinkedinIn } from "react-icons/fa";
+import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { login, forgotPassword } from "../../services/authService.js";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";

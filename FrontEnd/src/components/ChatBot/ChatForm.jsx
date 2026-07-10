@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { FiArrowUpCircle } from "react-icons/fi";
 
 const ChatForm = ({ chatHistory, setChatHistory, generateBotResponse }) => {

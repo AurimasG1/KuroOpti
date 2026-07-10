@@ -7,14 +7,30 @@ export default function AnalyticsPage() {
     const [filtered, setFiltered] = useState([]);
 
     useEffect(() => {
-        load();
-    }, []);
+        let cancelled = false;
 
-    const load = async () => {
-        const data = await getRegionPrices();
-        setRegions(data);
-        setFiltered(data); // ← svarbiausia dalis
-    };
+        const load = async () => {
+            try {
+                const data = await getRegionPrices();
+
+                if (!cancelled) {
+                    setRegions(data);
+                    setFiltered(data);
+                }
+            } catch (error) {
+                console.error(
+                    "Failed to load region prices:",
+                    error,
+                );
+            }
+        };
+
+        void load();
+
+        return () => {
+            cancelled = true;
+        };
+    }, []);
 
     return (
         <div className="p-4">

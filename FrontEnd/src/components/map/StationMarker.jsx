@@ -1,12 +1,9 @@
-import React from "react";
 import { Marker, Popup } from "react-leaflet";
 
-
-
-const StationMarker = ({ station, addedWaypoints = [], onToggleRoute }) => {  
+const StationMarker = ({ station, addedWaypoints = [], onToggleRoute }) => {
   const lat = parseFloat(station.Latitude || station.latitude || station.lat);
   const lng = parseFloat(station.Longitude || station.longitude || station.lng);
- 
+
   if (isNaN(lat) || isNaN(lng)) {
     return null;
   }
@@ -17,7 +14,7 @@ const StationMarker = ({ station, addedWaypoints = [], onToggleRoute }) => {
 
   return (
     <Marker
-      position={[lat, lng]} 
+      position={[lat, lng]}
       eventHandlers={{
         add: (e) => {
           requestAnimationFrame(() => {
@@ -34,7 +31,7 @@ const StationMarker = ({ station, addedWaypoints = [], onToggleRoute }) => {
           <div className="text-[10px] text-slate-500 mb-2">
             {station.Address}, {station.Municipality}
           </div>
-          
+
           <div className="space-y-1 text-xs">
             <div className="flex justify-between">
               <span>Benzinas:</span> <span className="font-bold">{station.PetrolPrice} €</span>
@@ -46,13 +43,12 @@ const StationMarker = ({ station, addedWaypoints = [], onToggleRoute }) => {
               <span>Dujos:</span> <span className="font-bold">{station.LpgPrice} €</span>
             </div>
           </div>
- 
+
           <button
             type="button"
             onClick={() => onToggleRoute && onToggleRoute(station)}
-            className={`mt-3 w-full text-[10px] p-2 rounded transition-colors uppercase font-bold text-white ${
-              isInRoute ? 'bg-red-600 hover:bg-red-500' : 'bg-lime-600 hover:bg-lime-500'
-            }`}
+            className={`mt-3 w-full text-[10px] p-2 rounded transition-colors uppercase font-bold text-white ${isInRoute ? 'bg-red-600 hover:bg-red-500' : 'bg-lime-600 hover:bg-lime-500'
+              }`}
           >
             {isInRoute ? 'Nuimti iš maršruto' : 'Pridėti į maršrutą'}
           </button>

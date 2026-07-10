@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import { toast } from "react-hot-toast";
 
 export default function UsersManagement({ apiBaseUrl }) {
@@ -25,35 +25,52 @@ export default function UsersManagement({ apiBaseUrl }) {
     }, 100);
   };
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
-      let token = localStorage.getItem("token");
-      const response = await fetch(`${apiBaseUrl}/users`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+
+      const token =
+        localStorage.getItem("token");
+
+      const response = await fetch(
+        `${apiBaseUrl}/users`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
       if (response.status === 401) {
-        console.warn("Tokenas pasibaige...");
+        console.warn("Tokenas pasibaigė.");
         setUsers([]);
         return;
       }
-      if (!response.ok) throw new Error("Nepavyko užkrauti vartotojų");
+
+      if (!response.ok) {
+        throw new Error(
+          "Nepavyko užkrauti vartotojų",
+        );
+      }
 
       const data = await response.json();
       setUsers(data);
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error(
+        "Error fetching users:",
+        error,
+      );
+
       setError(error.message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [apiBaseUrl]);
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    void fetchUsers();
+  }, [fetchUsers]);
 
   const handleCreateUser = async (e) => {
     e.preventDefault();
@@ -377,11 +394,10 @@ export default function UsersManagement({ apiBaseUrl }) {
                 </td>
                 <td className="px-4 py-3">
                   <span
-                    className={`px-2.5 py-0.5 rounded-full text-xs font-black tracking-wider uppercase ${
-                      user.role === "admin"
-                        ? "bg-purple-200 text-purple-900 border border-purple-300"
-                        : "bg-slate-200 text-slate-900 border border-slate-300"
-                    }`}
+                    className={`px-2.5 py-0.5 rounded-full text-xs font-black tracking-wider uppercase ${user.role === "admin"
+                      ? "bg-purple-200 text-purple-900 border border-purple-300"
+                      : "bg-slate-200 text-slate-900 border border-slate-300"
+                      }`}
                   >
                     {user.role}
                   </span>

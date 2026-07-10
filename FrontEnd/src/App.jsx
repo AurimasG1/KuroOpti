@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Toaster } from "react-hot-toast";
 import {
-  BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
@@ -49,7 +48,7 @@ const App = () => {
   const navigate = useNavigate();
 
   const handleLoginPopup = () => {
-    setLoginPopup(!loginPopup);
+    setLoginPopup((currentValue) => !currentValue);
   };
   const bgImageStyle = {
     width: "100%",
@@ -80,7 +79,7 @@ const App = () => {
         {/* Home Page */}
         <Route
           path="/"
-          element={<HomePage handleLoginPopup={handleLoginPopup} user={user} />}
+          element={<HomePage user={user} />}
         />
         {/* ... */}
         <Route path="/reset-password" element={<ResetPassword />} />

@@ -1,4 +1,3 @@
-import React from "react";
 import { LuLeafyGreen } from "react-icons/lu";
 import { PiTreeEvergreenBold } from "react-icons/pi";
 import { TbHealthRecognition } from "react-icons/tb";
@@ -26,7 +25,7 @@ const Services = () => {
       <div className="bg-gray-200 py-10">
         <div className="container">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 sm:gap-8">
-            {services.map((service, index) => {
+            {services.map((service) => {
               return (
                 <div className="sm:p-12 bg-white rounded-xl shadow-sm flex flex-col justify-center items-center gap-3">
                   <div>{service.icon}</div>

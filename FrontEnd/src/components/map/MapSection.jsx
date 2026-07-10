@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import L from "leaflet";
@@ -77,7 +77,6 @@ const MapSection = ({
   addedWaypoints = [],
   polyline = null, // <-- nauja
   onRouteFound,
-  onAddToRoute,
   onToggleRoute,
 }) => {
   const defaultCenter = [54.8985, 23.9036];

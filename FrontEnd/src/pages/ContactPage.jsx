@@ -1,9 +1,7 @@
-import React from "react";
 import Card from "../components/Card/Card";
 import CardImage from "../components/Card/CardImage";
 import { carsdData } from "../data/cardsData";
 import CardHeader from "../components/Card/CardHeader";
-import { span } from "framer-motion/client";
 import CardTitle from "../components/Card/CardTitle";
 import CardBody from "../components/Card/CardBody";
 import CardFooter from "../components/Card/CardFooter";

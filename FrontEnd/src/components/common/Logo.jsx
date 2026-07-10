@@ -1,4 +1,3 @@
-import React from "react";
 // import logo from "../../assets/images/logo.png";
 // import greenlogo from "../../assets/images/greenlogo.png";
 import darkgreen from "../../assets/images/darkgreen.png";

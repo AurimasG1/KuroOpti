@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import { toast } from "react-hot-toast";
 
 export default function GasStationsManagement() {
@@ -41,23 +41,31 @@ export default function GasStationsManagement() {
     }, 100);
   };
 
-  const fetchGasStations = async () => {
+  const fetchGasStations = useCallback(async () => {
     try {
       setLoading(true);
+      setError("");
+
       const response = await fetch(apiUrl);
-      if (!response.ok) throw new Error("Nepavyko užkrauti degalinių");
+
+      if (!response.ok) {
+        throw new Error(
+          "Nepavyko užkrauti degalinių",
+        );
+      }
+
       const data = await response.json();
       setGasStations(data);
-    } catch (err) {
-      setError(err.message);
+    } catch (error) {
+      setError(error.message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [apiUrl]);
 
   useEffect(() => {
-    fetchGasStations();
-  }, []);
+    void fetchGasStations();
+  }, [fetchGasStations]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

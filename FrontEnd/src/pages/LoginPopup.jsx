@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import Signup from "../components/auth/SignupForm.jsx";
 import Login from "../components/auth/LoginForm.jsx";
 import { motion } from "framer-motion";
@@ -27,7 +27,7 @@ const LoginPopup = ({ show, onClose, onLoginSuccess }) => {
     };
   }, [show, onClose]);
 
-  if (!show) return null; 
+  if (!show) return null;
 
   return (
     <div
@@ -43,24 +43,24 @@ const LoginPopup = ({ show, onClose, onLoginSuccess }) => {
         >
           {showSignup ? (
             <Signup handleSignIn={handleSignIn} />
-          ) : ( 
-            <Login 
-              handleSignIn={handleSignIn} 
+          ) : (
+            <Login
+              handleSignIn={handleSignIn}
               onLoginSuccess={(userData) => {
                 onLoginSuccess(userData);
                 onClose();
               }}
             />
           )}
-          
-          <button 
+
+          <button
             onClick={onClose}
             className="absolute top-2 right-2 text-gray-500 hover:text-black p-2"
           >
             ✕
           </button>
         </motion.div>
-      </div> 
+      </div>
     </div>
   );
 };
