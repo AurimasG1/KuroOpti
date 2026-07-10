@@ -76,7 +76,7 @@ jobs:
         run: >
           dotnet ef migrations has-pending-model-changes
           --project BackEnd/KuroOpti.Data
-          --startup-project BackEnd/KuroOpti.Console
+          --startup-project BackEnd/KuroOpti.API
           --configuration Release
           --no-build
 
@@ -104,3 +104,15 @@ jobs:
 
       - name: Build frontend
         run: npm run build
+
+  docker:
+    name: Docker - Build Images
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Build Docker images
+        run: docker compose build

@@ -1,21 +1,29 @@
-bin/
-obj/
+# .NET
+**/bin/
+**/obj/
 .vs/
 *.user
 *.suo
-*.db
-*.log
 *.nupkg
 packages/
-komandos.txt
-sln add.txt
-.github
-*.lscache
-.copilitindices/
-.ProjectEvaluation/
-.DS_Store
+
+# Node / Vite
 node_modules/
-dist
+dist/
+.vite/
+*.lscache
+
+# Local environment and secrets
 .env
-.env.local
-.vite
+.env.*
+!.env.example
+
+# Logs and local databases
+*.log
+*.db
+
+# IDE and generated files
+.idea/
+.DS_Store
+.copilotindices/
+.ProjectEvaluation/
