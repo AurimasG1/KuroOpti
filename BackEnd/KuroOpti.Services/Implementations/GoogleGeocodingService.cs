@@ -12,7 +12,7 @@ namespace KuroOpti.Services.Implementations
 
         private readonly HttpClient _httpClient;
         private readonly ILogger<GoogleGeocodingService> _logger;
-        private readonly string _apiKey;
+        private readonly string? _apiKey;
 
         public GoogleGeocodingService(
             HttpClient httpClient,
@@ -22,8 +22,10 @@ namespace KuroOpti.Services.Implementations
         {
             _httpClient = httpClient;
             _logger = logger;
-            _apiKey = configuration["Google:GeocodingApiKey"] ?? string.Empty;
+            _apiKey = configuration["GoogleGeocodingApiKey"] ?? string.Empty;
         }
+
+        public bool IsConfigured => !string.IsNullOrWhiteSpace(_apiKey);
 
         public async Task<(decimal Latitude, decimal Longitude)> GeocodeAsync(
             string address,
