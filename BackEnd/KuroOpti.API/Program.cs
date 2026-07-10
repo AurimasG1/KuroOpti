@@ -1,5 +1,6 @@
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Text;
+using KuroOpti.API.Extensions;
 using KuroOpti.API.Mapping;
 using KuroOpti.Common.Config;
 using KuroOpti.Data;
@@ -137,6 +138,8 @@ builder.Services.AddScoped<IRoutePlanningHistoryService, RoutePlanningHistorySer
 builder.Services.AddScoped<IAdminService, AdminService>();
 
 var app = builder.Build();
+
+await app.ApplyDatabaseMigrationsAsync();
 
 app.UseCors("AllowFrontend");
 app.UseAuthentication();

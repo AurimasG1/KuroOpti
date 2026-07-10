@@ -4,23 +4,87 @@ services:
     container_name: kuroopti-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: KuroOpti
-      MYSQL_USER: appuser
-      MYSQL_PASSWORD: apppass
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-KuroOpti}
+      MYSQL_USER: ${MYSQL_USER:-appuser}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-apppass}
     ports:
       - '3306:3306'
     volumes:
-      - mysql_data:/var/lib/mysql
+      - kuroopti_mysql_data:/var/lib/mysql
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'mysqladmin ping -h 127.0.0.1 -uroot -p$${MYSQL_ROOT_PASSWORD} --silent',
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
+  api:
+    build:
+      context: .
+      dockerfile: BackEnd/KuroOpti.API/Dockerfile
+    container_name: kuroopti-api
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+
+      ConnectionStrings__DefaultConnection: >-
+        Server=mysql;
+        Port=3306;
+        Database=${MYSQL_DATABASE:-KuroOpti};
+        User=${MYSQL_USER:-appuser};
+        Password=${MYSQL_PASSWORD:-apppass};
+
+      Jwt__Issuer: KuroOpti
+      Jwt__Audience: KuroOptiClient
+      Jwt__AccessTokenLifetimeMinutes: 60
+      Jwt__RefreshTokenLifetimeDays: 7
+      Jwt__SecretKey: ${JWT_SECRET_KEY}
+
+      AdminSettings__AdminCode: ${ADMIN_CODE}
+
+      GoogleGeocodingApiKey: ${GOOGLE_GEOCODING_API_KEY:-}
+
+      EmailSettings__Host: smtp.gmail.com
+      EmailSettings__Port: 587
+      EmailSettings__EnableSsl: 'true'
+      EmailSettings__User: ${EMAIL_USER:-}
+      EmailSettings__Password: ${EMAIL_PASSWORD:-}
+    ports:
+      - '5211:8080'
+
+  frontend:
+    build:
+      context: .
+      dockerfile: FrontEnd/Dockerfile
+    container_name: kuroopti-frontend
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - '5173:80'
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+    image: phpmyadmin:5-apache
+    container_name: kuroopti-phpmyadmin
     restart: unless-stopped
-    ports:
-      - '8080:80'
+    depends_on:
+      mysql:
+        condition: service_healthy
     environment:
       PMA_HOST: mysql
-      MYSQL_ROOT_PASSWORD: root
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+    ports:
+      - '8080:80'
 
 volumes:
-  mysql_data:
+  kuroopti_mysql_data:

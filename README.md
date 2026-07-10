@@ -1,103 +1,332 @@
 # KuroOpti
 
-Graduation Project – Fullstack system (React + .NET + MySQL)
+KuroOpti is a full-stack route-planning application that helps users calculate routes, find nearby fuel stations, compare fuel prices, add fuel stops and save routes.
 
-# Reikalavimai
+The project was originally created as a team graduation project. The `v2-aurimas` branch contains independent stabilization work, testing, CI, Docker support, frontend cleanup and a redesigned ENA fuel-price importer.
 
-## 1. .NET 8 SDK
+## Main features
 
-Reikalingas BackEnd projektams.
+- User registration and JWT authentication
+- Persistent login state and protected routes
+- Role-based administrator access
+- Route calculation between two addresses
+- Fuel stations displayed near the route
+- Configurable station distance from the route
+- Filtering by fuel type, station name, address and municipality
+- Adding and removing fuel-station waypoints
+- Opening the final route in Google Maps
+- Saving and restoring route history
+- Importing fuel prices from ENA Excel data
+- Geocoding new stations with Google Geocoding API
+- Swagger / OpenAPI documentation
 
-https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-8.0.422-windows-x64-installer
+## Technology stack
 
-## 2. EF Core CLI Tool
+### Backend
 
-Reikalingas DB migracijoms.
+- .NET 8
+- ASP.NET Core Web API
+- Entity Framework Core 8
+- Pomelo Entity Framework Core provider for MySQL
+- MySQL 8
+- JWT authentication
+- Swagger / OpenAPI
+- `HttpClient`
+- `HtmlAgilityPack`
+- `ClosedXML`
+- Google Geocoding API
+- xUnit
+- Moq
+
+### Frontend
+
+- React 18
+- Vite 5
+- React Router
+- Tailwind CSS
+- Leaflet
+- React Leaflet
+- Leaflet Routing Machine
+- Turf.js
+- native Fetch API
+- ESLint
+
+### Infrastructure
+
+- Docker
+- Docker Compose
+- Nginx
+- phpMyAdmin
+- GitHub Actions
+
+## ENA fuel-price importer
+
+The importer uses:
+
+- `HtmlAgilityPack` to read the ENA webpage and locate the current SharePoint Excel link;
+- `HttpClient` to download and validate the XLSX file;
+- `ClosedXML` to read worksheets, columns, dates and prices;
+- grouping logic to combine separate fuel rows into one fuel-station record;
+- Entity Framework Core to update MySQL;
+- Google Geocoding API only for stations without stored coordinates.
+
+It supports both long and wide Excel layouts and rejects stale source data before modifying the database.
+
+Axios is not listed because the application uses the browser's native Fetch API for frontend HTTP requests.
+
+## Run the full application with Docker Compose
+
+### Requirements
+
+- Docker Desktop
+- Git
+
+The .NET SDK and Node.js are not required when the complete stack is run through Docker.
+
+### 1. Create `.env`
+
+From the repository root:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Edit `.env` and set at least:
+
+```dotenv
+JWT_SECRET_KEY=replace-with-a-long-random-secret-at-least-32-characters
+ADMIN_CODE=replace-with-an-admin-code
+```
+
+Optional integrations:
+
+```dotenv
+GOOGLE_GEOCODING_API_KEY=
+EMAIL_USER=
+EMAIL_PASSWORD=
+```
+
+Do not commit `.env`.
+
+### 2. Enable automatic migrations
+
+Run once from the repository root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\apply-kuroopti-docker-update.ps1
+```
+
+The script adds this call to `Program.cs` immediately after the application is built:
+
+```csharp
+await app.ApplyDatabaseMigrationsAsync();
+```
+
+The migration extension retries while MySQL is starting and then calls:
+
+```csharp
+await dbContext.Database.MigrateAsync();
+```
+
+### 3. Start the complete stack
 
 ```bash
-dotnet tool install --global dotnet-ef --version 8.*
+docker compose up --build -d
 ```
 
-Patikrinimas:
+Docker Compose starts:
 
-```
-dotnet ef
-```
+- MySQL;
+- ASP.NET Core API;
+- React frontend served by Nginx;
+- phpMyAdmin.
 
----
+The API waits for MySQL to become healthy and applies pending EF Core migrations during startup.
 
-## 3. Node.js
+### 4. Open the services
 
-Reikalingas React FrontEnd projektui.
+| Service    | Address                       |
+| ---------- | ----------------------------- |
+| Frontend   | http://localhost:5173         |
+| API        | http://localhost:5211         |
+| Swagger    | http://localhost:5211/swagger |
+| phpMyAdmin | http://localhost:8080         |
+| MySQL      | localhost:3306                |
 
-https://nodejs.org/
+### 5. Check status and logs
 
-## 4. Docker Desktop
-
-Reikalingas MySQL konteinerio paleidimui.
-
-https://www.docker.com/products/docker-desktop/
-
-### Įsirašyti React projekto dependencies
-
-\*leidžiama iš KuroOpti/FrontEnd/ direktorijos
-
-```
-npm install --legacy-peer-deps
-
+```bash
+docker compose ps
 ```
 
-# Projekto paleidimas eilės tvarka 1-5
-
-### 1. Docker konteinerio sukūrimo komanda
-
-Reikia tik pirmą kartą.
-
-\*leidžiama iš KuroOpti/ direktorijos
-
-```
-docker compose up -d
-
+```bash
+docker compose logs -f api
 ```
 
-### 2. BackEnd DB migration
+Successful API startup includes:
 
-Sukuria lenteles lokalioje duomenų bazėje.
-
-\*leidžiama iš KuroOpti/ direktorijos
-
-```
-dotnet ef database update -p BackEnd/KuroOpti.Data -s BackEnd/KuroOpti.Console
+```text
+Database migrations applied successfully
 ```
 
-### 3. Console projekto paleidimas
+### 6. Stop the application
 
-paima kuro kainų duomenis iš interneto ir importuoja juos į MySQL duombazę.
-Pirmą kartą labai ilgai dėlios koordinates.
-Jeigu liks tas pats Docker Image, tai antrą kartą labai greitai atsinaujins tik kuro kainos ir atnaujinimo laikas.
-
-\*leidžiama iš KuroOpti/ direktorijos
-
-```
-dotnet run --project BackEnd/KuroOpti.Console
+```bash
+docker compose down
 ```
 
-### 4. API projekto paleidimas
+To delete the local MySQL volume and all database data:
 
-BackEnd serverio paleidimas.
-
-\*atskiras bash, leidžiama iš KuroOpti/ direktorijos
-
-```
-dotnet run --project BackEnd/KuroOpti.API
+```bash
+docker compose down -v
 ```
 
-### 5. React projekto paleidimas
+## Run without Docker
 
-FrontEnd serverio paleidimas.
+Requirements:
 
-\* atskiras bash, leidžiama iš KuroOpti/FrontEnd/ direktorijos
+- .NET 8 SDK
+- Node.js 20 or newer
+- MySQL 8
 
+Backend:
+
+```bash
+dotnet restore KuroOpti.sln
+
+dotnet run \
+  --project BackEnd/KuroOpti.API/KuroOpti.API.csproj
 ```
+
+Frontend:
+
+```bash
+npm ci --legacy-peer-deps
 npm run dev
 ```
+
+## Local User Secrets
+
+User Secrets are used by local `dotnet run`. Docker Compose uses `.env` and container environment variables.
+
+```bash
+dotnet user-secrets init \
+  --project BackEnd/KuroOpti.API/KuroOpti.API.csproj
+```
+
+```bash
+dotnet user-secrets set \
+  "ConnectionStrings:DefaultConnection" \
+  "Server=localhost;Port=3306;Database=KuroOpti;User=appuser;Password=apppass" \
+  --project BackEnd/KuroOpti.API/KuroOpti.API.csproj
+```
+
+```bash
+dotnet user-secrets set \
+  "Jwt:SecretKey" \
+  "replace-with-a-long-random-secret" \
+  --project BackEnd/KuroOpti.API/KuroOpti.API.csproj
+```
+
+```bash
+dotnet user-secrets set \
+  "AdminSettings:AdminCode" \
+  "replace-with-an-admin-code" \
+  --project BackEnd/KuroOpti.API/KuroOpti.API.csproj
+```
+
+```bash
+dotnet user-secrets set \
+  "GoogleGeocodingApiKey" \
+  "replace-with-your-google-api-key" \
+  --project BackEnd/KuroOpti.API/KuroOpti.API.csproj
+```
+
+## Database migrations
+
+Create a migration during development:
+
+```bash
+dotnet ef migrations add MigrationName \
+  --project BackEnd/KuroOpti.Data \
+  --startup-project BackEnd/KuroOpti.API
+```
+
+Pending migrations are applied automatically when the API starts.
+
+## Quality checks
+
+Backend:
+
+```bash
+dotnet build KuroOpti.sln --configuration Release
+dotnet test KuroOpti.sln --configuration Release
+```
+
+Frontend:
+
+```bash
+npm run lint
+npm run build
+```
+
+Docker:
+
+```bash
+docker compose build
+```
+
+## Continuous integration
+
+GitHub Actions checks:
+
+```text
+Backend
+├── restore
+├── Release build
+├── tests
+└── pending EF Core model changes
+
+Frontend
+├── npm ci
+├── ESLint
+└── production build
+
+Docker
+└── Docker Compose image build
+```
+
+## Project structure
+
+```text
+KuroOpti/
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+├── BackEnd/
+│   └── KuroOpti.API/
+│       ├── Dockerfile
+│       └── Extensions/
+│           └── DatabaseMigrationExtensions.cs
+├── FrontEnd/
+│   ├── Dockerfile
+│   └── nginx.conf
+├── .dockerignore
+├── .env.example
+├── apply-kuroopti-docker-update.ps1
+├── docker-compose.yml
+└── README.md
+```
+
+## Security
+
+Never commit:
+
+- `.env`;
+- Google API keys;
+- JWT signing secrets;
+- email app passwords;
+- administrator codes;
+- production connection strings.
+
+Use User Secrets for local development and environment variables or a dedicated secret manager for containerized deployments.
