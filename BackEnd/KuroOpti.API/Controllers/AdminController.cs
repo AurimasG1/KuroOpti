@@ -1,60 +1,59 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
+﻿using KuroOpti.Common.DTO;
 using KuroOpti.Services.Interfaces;
-using KuroOpti.Common.DTO;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace KuroOpti.API.Controllers
 {
-	[ApiController]
-	[Route("api/admin")]
-	public class AdminController : ControllerBase
-	{
-		private readonly IAdminService adminService;
-		public AdminController(IAdminService adminService)
-		{
-			this.adminService = adminService;
-		}
+    [ApiController]
+    [Route("api/admin")]
+    public class AdminController : ControllerBase
+    {
+        private readonly IAdminService adminService;
 
-		[HttpGet("dashboard-stats")]
-		public async Task<IActionResult> GetDashboardStats()
-		{
-			var totalUsers = await adminService.GetTotalUsersAsync();
+        public AdminController(IAdminService adminService)
+        {
+            this.adminService = adminService;
+        }
 
-			return Ok(new
-			{
-				TotalUsers = totalUsers,
-				ServerTime = DateTime.UtcNow
-			});
-		}
+        [HttpGet("dashboard-stats")]
+        public async Task<IActionResult> GetDashboardStats()
+        {
+            var totalUsers = await adminService.GetTotalUsersAsync();
 
-		[HttpGet("users")]
-		public async Task<IActionResult> GetAllUsers()
-		{
-			var users = await adminService.GetAllUsersAsync();
-			return Ok(users);
-		}
+            return Ok(new { TotalUsers = totalUsers, ServerTime = DateTime.UtcNow });
+        }
 
-		[HttpPut("users/{id}")]
-		public async Task<IActionResult> UpdateUser(int id, [FromBody] UserDto userDto)
-		{
-			if (userDto == null) return BadRequest("Invalid data");
+        [HttpGet("users")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await adminService.GetAllUsersAsync();
+            return Ok(users);
+        }
 
-			var result = await adminService.UpdateUserAsync(id, userDto);
+        [HttpPut("users/{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserDto userDto)
+        {
+            if (userDto == null)
+                return BadRequest("Invalid data");
 
-			if (!result) return NotFound($"User with ID {id} not found");
+            var result = await adminService.UpdateUserAsync(id, userDto);
 
-			return Ok(new { message = "User updated successfully" });
-		}
+            if (!result)
+                return NotFound($"User with ID {id} not found");
 
+            return Ok(new { message = "User updated successfully" });
+        }
 
-		[HttpDelete("users/{id}")]
-		public async Task<IActionResult> DeleteUser(int id)
-		{
-			var result = await adminService.DeleteUserAsync(id);
+        [HttpDelete("users/{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            var result = await adminService.DeleteUserAsync(id);
 
-			if (!result) return NotFound($"User with ID {id} was not found.");
+            if (!result)
+                return NotFound($"User with ID {id} was not found.");
 
-			return Ok(new { message = "User deleted successfully." });
-		}
-	}
+            return Ok(new { message = "User deleted successfully." });
+        }
+    }
 }
