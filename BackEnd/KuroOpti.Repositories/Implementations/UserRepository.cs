@@ -75,13 +75,18 @@ namespace KuroOpti.Repositories.Implementations
         public async Task<bool> UpdateAsync(User user)
         {
             var existingUser = await db.Users.FindAsync(user.Id);
+
             if (existingUser == null)
+            {
                 return false;
+            }
 
             existingUser.Email = user.Email;
             existingUser.PasswordHash = user.PasswordHash;
+            existingUser.Role = user.Role;
 
             await db.SaveChangesAsync();
+
             return true;
         }
 

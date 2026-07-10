@@ -120,7 +120,8 @@ namespace KuroOpti.Services.Implementations
 
                 Stations = string.IsNullOrWhiteSpace(item.StationsJson)
                     ? new List<FuelStationDto>()
-                    : JsonSerializer.Deserialize<List<FuelStationDto>>(item.StationsJson),
+                    : JsonSerializer.Deserialize<List<FuelStationDto>>(item.StationsJson)
+                        ?? new List<FuelStationDto>(),
             };
         }
 

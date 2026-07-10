@@ -35,11 +35,27 @@ namespace KuroOpti.Services.Implementations
         public async Task<bool> UpdateUserAsync(int id, UserDto userDto)
         {
             var user = await userRepository.GetByIdAsync(id);
-            if (user == null)
-                return false;
 
-            user.Email = userDto.Email;
-            user.Role = userDto.Role;
+            if (user == null)
+            {
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(userDto.Email) || string.IsNullOrWhiteSpace(userDto.Role))
+            {
+                return false;
+            }
+
+            var normalizedRole = userDto.Role.Trim().ToLowerInvariant();
+
+            if (normalizedRole is not ("user" or "admin"))
+            {
+                return false;
+            }
+
+            user.Email = userDto.Email.Trim().ToLowerInvariant();
+
+            user.Role = normalizedRole;
 
             return await userRepository.UpdateAsync(user);
         }

@@ -33,9 +33,13 @@ namespace KuroOpti.Services.Implementations
             // idetas roles nustatymas pagal adminCode vietoje default user
             string role = "user";
 
-            string configuredAdminCode = configuration["AdminSettings:AdminCode"];
+            string? configuredAdminCode = configuration["AdminSettings:AdminCode"];
 
-            if (!string.IsNullOrWhiteSpace(adminCode) && adminCode == configuredAdminCode)
+            if (
+                !string.IsNullOrWhiteSpace(adminCode)
+                && !string.IsNullOrWhiteSpace(configuredAdminCode)
+                && adminCode == configuredAdminCode
+            )
             {
                 role = "admin";
             }
