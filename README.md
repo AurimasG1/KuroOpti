@@ -1,8 +1,12 @@
 # KuroOpti
 
+[![CI](https://github.com/AurimasG1/KuroOpti/actions/workflows/ci.yml/badge.svg?branch=v2-aurimas)](https://github.com/AurimasG1/KuroOpti/actions/workflows/ci.yml)
+
 KuroOpti is a full-stack route-planning application that helps users calculate routes, find nearby fuel stations, compare fuel prices, add fuel stops and save routes.
 
 The project was originally created as a team graduation project. The `v2-aurimas` branch contains independent stabilization work, testing, CI, Docker support, frontend cleanup and a redesigned ENA fuel-price importer.
+
+![KuroOpti route planner](docs/screenshots/route-with-stations.png)
 
 ## Main features
 
@@ -330,3 +334,20 @@ Never commit:
 - production connection strings.
 
 Use User Secrets for local development and environment variables or a dedicated secret manager for containerized deployments.
+
+## Application screenshots
+
+### Route planning and nearby fuel stations
+
+![Route with fuel stations](docs/screenshots/route-with-stations.png)
+![Route with fuel stations](docs/screenshots/route-planner.png)
+
+### Saved route history
+
+![Saved route history](docs/screenshots/route-history-1.png)
+![Saved route history](docs/screenshots/route-history-2.png)
+
+### Administration panel
+
+![Administration panel](docs/screenshots/admin-panel-1.png)
+![Administration panel](docs/screenshots/admin-panel-2.png)
