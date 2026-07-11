@@ -125,7 +125,7 @@ Docker Compose starts:
 
 The API waits for MySQL to become healthy and applies pending EF Core migrations during startup.
 
-### 4. Open the services
+### 3. Open the services
 
 | Service    | Address                       |
 | ---------- | ----------------------------- |
@@ -135,7 +135,7 @@ The API waits for MySQL to become healthy and applies pending EF Core migrations
 | phpMyAdmin | http://localhost:8080         |
 | MySQL      | localhost:3306                |
 
-### 5. Check status and logs
+### 4. Check status and logs
 
 ```bash
 docker compose ps
@@ -151,7 +151,7 @@ Successful API startup includes:
 Database migrations applied successfully
 ```
 
-### 6. Stop the application
+### 5. Stop the application
 
 ```bash
 docker compose down
