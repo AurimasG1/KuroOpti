@@ -76,8 +76,6 @@ The importer uses:
 
 It supports both long and wide Excel layouts and rejects stale source data before modifying the database.
 
-Axios is not listed because the application uses the browser's native Fetch API for frontend HTTP requests.
-
 ## Run the full application with Docker Compose
 
 ### Requirements
@@ -112,27 +110,7 @@ EMAIL_PASSWORD=
 
 Do not commit `.env`.
 
-### 2. Enable automatic migrations
-
-Run once from the repository root:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\apply-kuroopti-docker-update.ps1
-```
-
-The script adds this call to `Program.cs` immediately after the application is built:
-
-```csharp
-await app.ApplyDatabaseMigrationsAsync();
-```
-
-The migration extension retries while MySQL is starting and then calls:
-
-```csharp
-await dbContext.Database.MigrateAsync();
-```
-
-### 3. Start the complete stack
+### 2. Start the complete stack
 
 ```bash
 docker compose up --build -d
@@ -317,7 +295,6 @@ KuroOpti/
 │   └── nginx.conf
 ├── .dockerignore
 ├── .env.example
-├── apply-kuroopti-docker-update.ps1
 ├── docker-compose.yml
 └── README.md
 ```
